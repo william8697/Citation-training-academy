@@ -550,6 +550,9 @@
             padding: 1.5rem;
             background: #f9f9f9;
             border-radius: var(--border-radius);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         .bitcoin-logo {
@@ -566,6 +569,8 @@
             word-break: break-all;
             margin: 1rem 0;
             border: 1px dashed #ccc;
+            width: 100%;
+            max-width: 400px;
         }
         
         .qr-code {
@@ -951,6 +956,8 @@
         
         .payment-plan:last-child {
             border-bottom: none;
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
         }
         
         .payment-plan:hover {
@@ -1052,7 +1059,7 @@
             <div class="program-details" id="program">
                 <h2 class="section-title">Program Details</h2>
                 
-                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Citation Jet Aircraft" class="aircraft-image">
+                <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwa90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Citation Jet Aircraft" class="aircraft-image">
                 
                 <h3>Citation 500 Series Type Rating</h3>
                 <p>Our comprehensive program prepares you to operate Citation 500 series aircraft with confidence and precision. The course combines advanced simulator training with actual flight experience.</p>
@@ -1247,7 +1254,7 @@
                             <div class="bitcoin-payment">
                                 <svg class="bitcoin-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="12" cy="12" r="9" fill="#f7931a"/>
-                                    <path d="M12.873 9.5c.116-.820-.5-1.26-1.352-1.555l.276-1.105-.674-.168-.27 1.08c-.177-.044-.359-.085-.535-.126l.27-1.085-.675-.168-.276 1.105c-.146-.033-.29-.067-.43-.103l.001-.004-1.1-.275-.212.85s.5.115.49.122c.273.068.322.249.314.392l-.315 1.265c.019.004.044.011.071.021l-.072-.018-.445 1.785c-.034.086-.12.215-.314.166.007.011-.49-.122-.49-.122l-.335.762 1.074.268c.200.050.396.102.588.150l-.278 1.117.673.168.276-1.105c.184.049.362.095.536.137l-.275 1.102.675.168.278-1.114c1.14.216 2 .129 2.362-.9.292-.820-.015-1.293-.618-1.601.44-.101.77-.39.858-.989zm-1.638 2.34c-.208.833-1.615.383-2.071.270l.37-1.482c.456.114 1.92.340 1.701 1.212zm.207-2.36c-.19.760-1.36.374-1.74.280l.335-1.345c.380.095 1.605.274 1.405 1.065z" fill="#fff"/>
+                                    <path d="M12.873 9.5c.116-.820-.5-1.26-1.352-1.555l.276-1.105-.674-.168-.27 1.08c-.177-.044-.359-.085-.535-.126l.27-1.085-.675-.168-.276 1.105c-.146-.033-.29-.067-.43-.103l.001-.004-1.1-.275-.212.85s.5.115.49.122c.273.068.322.249.314.392l-.315 1.265c.019.004.044.011.071.021l-.072-.018-.445 1.785c-.034.086-.12.215-.314.166.007.011-.49-.122-.49-.122l-.335.762 1.074.268c.200.050.396.102.588.150l-.278 1.117.673.168.276-1.105c.184.049.362.095.536.137l-.275 1.102.675.168.278-1.114c1.14.216 2 .129 2.362-.9.292-.820-.015-1.293-.618-1.601.44-.101.77-.39.858-.989zm-1.638 2.34c-.208.833-1.615.383-2.071.270l.37-1.482c.456.114 1.92.340 1.701 1.212zm.207-2.36c-.19.76-1.36.374-1.74.280l.335-1.345c.380.095 1.605.274 1.405 1.065z" fill="#fff"/>
                                 </svg>
                                 
                                 <h3>Bitcoin Payment</h3>
@@ -1872,7 +1879,7 @@
                         };
                     }
                     
-                    // Submit to backend - FIXED URL (removed typo)
+                    // Submit to backend
                     const response = await fetch('https://citation-training-academy-backend.onrender.com/api/enroll', {
                         method: 'POST',
                         headers: {
