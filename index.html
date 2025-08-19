@@ -9,7 +9,10 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@300;400;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6Ty5ZHqoSA2jlyqnyi1c7HqLp6G8Ij7I&libraries=places&callback=initAutocomplete" async defer></script>
@@ -24,18 +27,24 @@
     
     <style>
         :root {
-            --primary: #1a365d;
-            --secondary: #2a4a7f;
-            --accent: #d4af37;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #28a745;
-            --danger: #dc3545;
-            --warning: #ffc107;
-            --info: #17a2b8;
-            --gray: #6c757d;
-            --border-radius: 8px;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --primary: #1e40af;
+            --primary-dark: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #0f172a;
+            --accent: #f59e0b;
+            --accent-dark: #d97706;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --box-shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
             --transition: all 0.3s ease;
         }
         
@@ -49,9 +58,8 @@
             font-family: 'Inter', sans-serif;
             line-height: 1.6;
             color: var(--dark);
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-color: var(--light);
             min-height: 100vh;
-            padding-bottom: 2rem;
             overflow-x: hidden;
         }
         
@@ -61,24 +69,23 @@
             padding: 0 20px;
         }
         
-        /* Header Styles */
+        /* Header Styles - Professional redesign */
         header {
-            background: var(--primary);
-            color: white;
-            padding: 1.5rem 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            position: relative;
-            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            color: var(--secondary);
+            padding: 0.8rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             position: fixed;
             width: 100%;
             top: 0;
-            transition: all 0.4s ease;
+            z-index: 1000;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
         }
         
         header.scrolled {
-            padding: 0.8rem 0;
-            background: rgba(26, 54, 93, 0.95);
-            backdrop-filter: blur(10px);
+            padding: 0.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
         
         .header-content {
@@ -90,63 +97,48 @@
         .logo-title-container {
             display: flex;
             align-items: center;
+            gap: 1rem;
         }
         
         .bithash-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            border-radius: var(--border-radius-sm);
             object-fit: cover;
-            margin-right: 1rem;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-            transition: all 0.5s ease;
-        }
-        
-        header.scrolled .bithash-logo {
-            width: 60px;
-            height: 60px;
+            transition: var(--transition);
         }
         
         .title-container h1 {
-            font-family: 'Rowdies', cursive;
             font-weight: 700;
-            font-size: 2.2rem;
+            font-size: 1.5rem;
             margin: 0;
-            letter-spacing: 0.5px;
-            transition: all 0.5s ease;
-        }
-        
-        header.scrolled .title-container h1 {
-            font-size: 1.8rem;
+            color: var(--primary);
+            transition: var(--transition);
         }
         
         .title-container p {
-            font-family: 'Manrope', sans-serif;
-            font-weight: 500;
-            font-size: 1rem;
+            font-size: 0.85rem;
             opacity: 0.9;
             margin: 0;
-            transition: all 0.5s ease;
-        }
-        
-        header.scrolled .title-container p {
-            font-size: 0.9rem;
+            color: var(--gray);
+            transition: var(--transition);
         }
         
         /* Navigation */
         .main-nav {
             display: flex;
             gap: 2rem;
+            align-items: center;
         }
         
         .nav-link {
-            color: white;
+            color: var(--secondary);
             text-decoration: none;
             font-weight: 500;
             position: relative;
             padding: 0.5rem 0;
-            transition: all 0.3s ease;
+            transition: var(--transition);
+            font-size: 0.95rem;
         }
         
         .nav-link:after {
@@ -164,19 +156,42 @@
             width: 100%;
         }
         
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .nav-cta:after {
+            display: none;
+        }
+        
         /* Mobile menu */
         .mobile-menu-btn {
             display: none;
             background: none;
             border: none;
-            color: white;
+            color: var(--secondary);
             font-size: 1.5rem;
             cursor: pointer;
+            z-index: 1001;
         }
         
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(26, 54, 93, 0.85), rgba(26, 54, 93, 0.95)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1474&q=80') center/cover no-repeat;
+            background: linear-gradient(rgba(30, 64, 175, 0.85), rgba(15, 23, 42, 0.9)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1474&q=80') center/cover no-repeat;
             color: white;
             padding: 10rem 0 6rem;
             text-align: center;
@@ -193,10 +208,10 @@
         }
         
         .hero h2 {
-            font-family: 'Rowdies', cursive;
-            font-size: 2.8rem;
+            font-weight: 800;
+            font-size: 3rem;
             margin-bottom: 1.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
             opacity: 0;
             transform: translateY(30px);
         }
@@ -209,15 +224,17 @@
             margin-right: auto;
             opacity: 0;
             transform: translateY(30px);
+            font-weight: 400;
+            opacity: 0.9;
         }
         
         .hero-cta {
             opacity: 0;
             transform: translateY(30px);
-        }
-        
-        .hero-cta .btn {
-            margin: 0 0.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         
         /* Floating elements */
@@ -276,8 +293,8 @@
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1.2fr;
-            gap: 3rem;
-            margin-bottom: 3rem;
+            gap: 2.5rem;
+            margin-bottom: 4rem;
         }
         
         /* Program Details */
@@ -291,10 +308,10 @@
         }
         
         .section-title {
-            font-family: 'Rowdies', cursive;
+            font-weight: 700;
             color: var(--primary);
             margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.75rem;
             border-bottom: 2px solid var(--accent);
             font-size: 1.8rem;
         }
@@ -303,14 +320,13 @@
             width: 100%;
             border-radius: var(--border-radius);
             margin-bottom: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow);
             transition: var(--transition);
-            transform: scale(1);
         }
         
         .aircraft-image:hover {
             transform: scale(1.02);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--box-shadow-lg);
         }
         
         .program-features {
@@ -320,7 +336,7 @@
         
         .program-features li {
             padding: 0.8rem 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--gray-light);
             display: flex;
             align-items: center;
             opacity: 0;
@@ -331,40 +347,41 @@
             content: "✓";
             color: var(--success);
             font-weight: bold;
-            margin-right: 10px;
-            background: rgba(40, 167, 69, 0.1);
-            width: 24px;
-            height: 24px;
+            margin-right: 12px;
+            background: rgba(16, 185, 129, 0.1);
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
         
         .pricing {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 1.5rem;
+            padding: 1.8rem;
             border-radius: var(--border-radius);
             margin: 1.5rem 0;
             text-align: center;
             opacity: 0;
             transform: translateY(30px);
+            box-shadow: var(--box-shadow);
         }
         
         .price {
             font-size: 2.5rem;
-            font-weight: 700;
+            font-weight: 800;
             margin: 0.5rem 0;
-            font-family: 'Manrope', sans-serif;
         }
         
         .financing-note {
-            background-color: rgba(212, 175, 55, 0.15);
+            background-color: rgba(245, 158, 11, 0.1);
             border-left: 4px solid var(--accent);
-            padding: 1rem;
+            padding: 1.2rem;
             margin: 1.5rem 0;
-            border-radius: 4px;
+            border-radius: var(--border-radius-sm);
             opacity: 0;
         }
         
@@ -387,15 +404,16 @@
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--dark);
+            font-size: 0.95rem;
         }
         
         .form-control {
             width: 100%;
             padding: 0.875rem 1rem;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-sm);
             font-size: 1rem;
             transition: var(--transition);
             font-family: 'Inter', sans-serif;
@@ -403,8 +421,8 @@
         
         .form-control:focus {
             outline: none;
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(42, 74, 127, 0.2);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
         
         .form-row {
@@ -420,7 +438,7 @@
         
         .payment-tabs {
             display: flex;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid var(--gray-light);
             margin-bottom: 1.5rem;
         }
         
@@ -449,8 +467,8 @@
         
         /* Credit Card Form */
         .card-form {
-            background: #f9f9f9;
-            padding: 1.5rem;
+            background: #f9fafb;
+            padding: 1.8rem;
             border-radius: var(--border-radius);
         }
         
@@ -459,13 +477,13 @@
         }
         
         .card-wrapper {
-            background: linear-gradient(135deg, #4a6fa5 0%, #2a4a7f 100%);
-            border-radius: 12px;
-            padding: 1.5rem;
+            background: linear-gradient(135deg, #4a6fa5 0%, var(--primary-dark) 100%);
+            border-radius: 16px;
+            padding: 1.8rem;
             color: white;
-            height: 180px;
+            height: 200px;
             position: relative;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--box-shadow);
             perspective: 1000px;
             transition: transform 0.6s;
         }
@@ -475,8 +493,8 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border-radius: 12px;
-            padding: 1.5rem;
+            border-radius: 16px;
+            padding: 1.8rem;
             top: 0;
             left: 0;
         }
@@ -495,16 +513,16 @@
         }
         
         .card-number {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             letter-spacing: 2px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
             font-family: 'Courier New', monospace;
         }
         
         .card-details {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         
         .card-holder {
@@ -518,9 +536,9 @@
         .card-cvv {
             background: white;
             color: var(--dark);
-            padding: 0.5rem;
-            border-radius: 4px;
-            margin-top: 2.5rem;
+            padding: 0.6rem;
+            border-radius: 6px;
+            margin-top: 2.8rem;
             text-align: right;
             font-family: 'Courier New', monospace;
         }
@@ -528,27 +546,30 @@
         .card-strip {
             height: 40px;
             background: #333;
-            margin: 1.5rem 0;
+            margin: 1.8rem 0;
         }
         
         .card-flip-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 12px;
+            right: 12px;
             background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         /* Bitcoin Payment */
         .bitcoin-payment {
             text-align: center;
-            padding: 1.5rem;
-            background: #f9f9f9;
+            padding: 1.8rem;
+            background: #f9fafb;
             border-radius: var(--border-radius);
             display: flex;
             flex-direction: column;
@@ -558,48 +579,52 @@
         .bitcoin-logo {
             width: 80px;
             height: 80px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
         
         .bitcoin-address {
-            background: #f1f1f1;
-            padding: 1rem;
-            border-radius: var(--border-radius);
+            background: #f1f5f9;
+            padding: 1.2rem;
+            border-radius: var(--border-radius-sm);
             font-family: 'Courier New', monospace;
             word-break: break-all;
-            margin: 1rem 0;
-            border: 1px dashed #ccc;
+            margin: 1.2rem 0;
+            border: 1px dashed #cbd5e1;
             width: 100%;
             max-width: 400px;
+            font-size: 0.9rem;
         }
         
         .qr-code {
             width: 180px;
             height: 180px;
-            margin: 1rem auto;
-            background: #f1f1f1;
+            margin: 1.2rem auto;
+            background: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #ddd;
-            border-radius: var(--border-radius);
+            border: 1px solid var(--gray-light);
+            border-radius: var(--border-radius-sm);
+            padding: 10px;
         }
         
         /* Buttons */
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             padding: 0.875rem 1.75rem;
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-sm);
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             text-align: center;
             text-decoration: none;
-            font-family: 'Manrope', sans-serif;
             position: relative;
             overflow: hidden;
         }
@@ -623,22 +648,33 @@
         }
         
         .btn:hover {
-            background: var(--secondary);
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--box-shadow);
         }
         
         .btn-accent {
             background: var(--accent);
-            color: var(--dark);
+            color: white;
         }
         
         .btn-accent:hover {
-            background: #c99a1f;
+            background: var(--accent-dark);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
         }
         
         .btn-block {
-            display: block;
+            display: flex;
             width: 100%;
         }
         
@@ -668,10 +704,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 2000;
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
         
         .modal-overlay.active {
@@ -682,35 +719,40 @@
         .modal {
             background: white;
             border-radius: var(--border-radius);
-            padding: 2.5rem;
+            padding: 3rem;
             max-width: 500px;
             width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--box-shadow-lg);
             position: relative;
-            transform: translateY(50px);
+            transform: translateY(50px) scale(0.95);
             transition: all 0.5s ease;
         }
         
         .modal-overlay.active .modal {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
         
         .modal-close {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.2rem;
+            right: 1.2rem;
             background: none;
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--gray);
+            transition: var(--transition);
+        }
+        
+        .modal-close:hover {
+            color: var(--dark);
         }
         
         .modal-icon {
             text-align: center;
             font-size: 4rem;
             color: var(--success);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         /* Notification System */
@@ -723,9 +765,9 @@
         }
         
         .notification {
-            padding: 15px 20px;
+            padding: 16px 20px;
             margin-bottom: 15px;
-            border-radius: var(--border-radius);
+            border-radius: var(--border-radius-sm);
             color: white;
             box-shadow: var(--box-shadow);
             display: flex;
@@ -738,12 +780,12 @@
         
         .notification.success {
             background-color: var(--success);
-            border-left: 4px solid #1e7e34;
+            border-left: 4px solid #0d9669;
         }
         
         .notification.error {
             background-color: var(--danger);
-            border-left: 4px solid #bd2130;
+            border-left: 4px solid #dc2626;
         }
         
         .notification-content {
@@ -781,11 +823,80 @@
         
         /* Footer */
         footer {
-            text-align: center;
-            padding: 2rem 0;
-            color: var(--gray);
-            font-size: 0.9rem;
+            background: var(--secondary);
+            color: white;
+            padding: 3rem 0 2rem;
             opacity: 0;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.2rem;
+            color: white;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-column h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .footer-column p, .footer-column a {
+            color: #cbd5e1;
+            margin-bottom: 0.8rem;
+            display: block;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: var(--transition);
+        }
+        
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
         }
         
         /* Animations */
@@ -806,13 +917,41 @@
         }
         
         /* Responsive Design */
-        @media (max-width: 992px) {
+        @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
+                gap: 2rem;
             }
             
             .hero h2 {
-                font-size: 2.2rem;
+                font-size: 2.5rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+            
+            .logo-title-container {
+                gap: 0.8rem;
+            }
+            
+            .title-container h1 {
+                font-size: 1.3rem;
+            }
+            
+            .title-container p {
+                font-size: 0.8rem;
+            }
+            
+            .bithash-logo {
+                width: 45px;
+                height: 45px;
             }
             
             .main-nav {
@@ -827,15 +966,16 @@
                 position: fixed;
                 top: 0;
                 right: -100%;
-                width: 70%;
+                width: 80%;
                 height: 100vh;
-                background: var(--primary);
+                background: white;
                 z-index: 999;
-                padding: 2rem;
+                padding: 5rem 2rem 2rem;
                 transition: right 0.4s ease;
                 display: flex;
                 flex-direction: column;
                 gap: 1.5rem;
+                box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
             }
             
             .mobile-nav.active {
@@ -843,47 +983,53 @@
             }
             
             .mobile-nav-close {
-                align-self: flex-end;
+                position: absolute;
+                top: 1.5rem;
+                right: 1.5rem;
                 background: none;
                 border: none;
-                color: white;
+                color: var(--dark);
                 font-size: 1.5rem;
             }
             
-            .notification-container {
-                max-width: 300px;
-                right: 10px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                text-align: center;
+            .mobile-nav .nav-link {
+                color: var(--dark);
+                font-size: 1.1rem;
+                padding: 0.8rem 0;
+                border-bottom: 1px solid var(--gray-light);
             }
             
-            .logo-title-container {
-                margin-bottom: 1rem;
+            .hero {
+                padding: 8rem 0 4rem;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
             }
             
             .form-row {
                 grid-template-columns: 1fr;
             }
             
-            .hero h2 {
-                font-size: 1.8rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
             .payment-tabs {
                 flex-direction: column;
             }
             
-            .notification-container {
-                max-width: 250px;
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .program-details, .enrollment-form {
+                padding: 1.8rem;
             }
         }
         
@@ -927,13 +1073,13 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
+            height: 3px;
             background: transparent;
             z-index: 1000;
         }
         
         .progress-bar {
-            height: 4px;
+            height: 3px;
             background: var(--accent);
             width: 0%;
             transition: width 0.2s ease;
@@ -942,14 +1088,14 @@
         /* Payment plan options */
         .payment-plan-options {
             margin: 1.5rem 0;
-            border: 1px solid #eee;
+            border: 1px solid var(--gray-light);
             border-radius: var(--border-radius);
             overflow: hidden;
         }
         
         .payment-plan {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--gray-light);
             cursor: pointer;
             transition: background-color 0.2s;
         }
@@ -961,11 +1107,11 @@
         }
         
         .payment-plan:hover {
-            background-color: #f9f9f9;
+            background-color: #f9fafb;
         }
         
         .payment-plan.selected {
-            background-color: rgba(26, 54, 93, 0.05);
+            background-color: rgba(30, 64, 175, 0.05);
             border-left: 4px solid var(--primary);
         }
         
@@ -983,7 +1129,7 @@
         
         .payment-plan-price {
             font-weight: 700;
-            color: var(--secondary);
+            color: var(--primary-dark);
         }
         
         .payment-plan-details {
@@ -995,6 +1141,29 @@
             margin-top: 0.5rem;
             font-size: 0.85rem;
             font-style: italic;
+            color: var(--accent);
+        }
+        
+        /* Trust badges */
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .trust-badge i {
+            color: var(--success);
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -1025,17 +1194,19 @@
                 <a href="#program" class="nav-link">Program</a>
                 <a href="#enrollment" class="nav-link">Enroll</a>
                 <a href="#contact" class="nav-link">Contact</a>
+                <a href="#enrollment" class="nav-link nav-cta">Apply Now</a>
             </nav>
             
-            <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+            <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
         </div>
     </header>
     
     <nav class="mobile-nav" id="mobile-nav">
-        <button class="mobile-nav-close" id="mobile-nav-close">×</button>
+        <button class="mobile-nav-close" id="mobile-nav-close"><i class="fas fa-times"></i></button>
         <a href="#program" class="nav-link">Program</a>
         <a href="#enrollment" class="nav-link">Enroll</a>
         <a href="#contact" class="nav-link">Contact</a>
+        <a href="#enrollment" class="nav-link nav-cta">Apply Now</a>
     </nav>
 
     <section class="hero">
@@ -1048,13 +1219,28 @@
             <h2>Citation Jet Type Rating Program</h2>
             <p>Become a certified Citation pilot through our intensive, professional training program designed to meet the highest industry standards. Our graduates fly for major airlines and corporate aviation departments worldwide.</p>
             <div class="hero-cta">
-                <a href="#enrollment" class="btn btn-accent">Enroll Now</a>
-                <a href="#program" class="btn">Learn More</a>
+                <a href="#enrollment" class="btn btn-accent"><i class="fas fa-graduation-cap"></i> Enroll Now</a>
+                <a href="#program" class="btn btn-outline"><i class="fas fa-info-circle"></i> Learn More</a>
             </div>
         </div>
     </section>
 
     <div class="container">
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <i class="fas fa-check-circle"></i>
+                <span>FAA Certified</span>
+            </div>
+            <div class="trust-badge">
+                <i class="fas fa-check-circle"></i>
+                <span>Industry-Recognized</span>
+            </div>
+            <div class="trust-badge">
+                <i class="fas fa-check-circle"></i>
+                <span>Job Placement Assistance</span>
+            </div>
+        </div>
+        
         <div class="main-content">
             <div class="program-details" id="program">
                 <h2 class="section-title">Program Details</h2>
@@ -1180,8 +1366,8 @@
                         </div>
                         
                         <div class="payment-tabs">
-                            <div class="payment-tab active" data-tab="credit-card">Credit Card</div>
-                            <div class="payment-tab" data-tab="bitcoin">Bitcoin</div>
+                            <div class="payment-tab active" data-tab="credit-card"><i class="fas fa-credit-card"></i> Credit Card</div>
+                            <div class="payment-tab" data-tab="bitcoin"><i class="fab fa-bitcoin"></i> Bitcoin</div>
                         </div>
                         
                         <div class="payment-content active" id="credit-card-content">
@@ -1189,7 +1375,7 @@
                                 <div class="card-container">
                                     <div class="card-wrapper">
                                         <div class="card-front">
-                                            <button type="button" class="card-flip-btn">↻</button>
+                                            <button type="button" class="card-flip-btn"><i class="fas fa-sync-alt"></i></button>
                                             <div class="card-chip"></div>
                                             <div class="card-number" id="display-card-number">•••• •••• •••• ••••</div>
                                             <div class="card-details">
@@ -1246,7 +1432,7 @@
                                     </div>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-block" id="submit-enrollment">Submit Enrollment & Pay <span id="payment-amount">$2,500</span></button>
+                                <button type="submit" class="btn btn-accent btn-block" id="submit-enrollment"><i class="fas fa-paper-plane"></i> Submit Enrollment & Pay <span id="payment-amount">$2,500</span></button>
                             </div>
                         </div>
                         
@@ -1267,7 +1453,7 @@
                                 
                                 <p>After payment, you will receive a confirmation email within 24 hours.</p>
                                 
-                                <button type="button" class="btn btn-accent btn-block" id="copy-bitcoin-address">Copy Bitcoin Address</button>
+                                <button type="button" class="btn btn-accent btn-block" id="copy-bitcoin-address"><i class="fas fa-copy"></i> Copy Bitcoin Address</button>
                             </div>
                         </div>
                     </div>
@@ -1278,16 +1464,53 @@
 
     <footer id="contact">
         <div class="container">
-            <p>Citation Training Academy © 2025. All rights reserved. | FAA Certified Training Center #CTA-89432</p>
-            <p>Contact: admissions@citationtraining.academy | +1 (800) 555-3285</p>
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Citation Training Academy</h3>
+                    <p>Professional pilot certification programs that set the standard for excellence in aviation training.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Programs</h3>
+                    <a href="#">Citation 500 Series</a>
+                    <a href="#">Citation 600 Series</a>
+                    <a href="#">CitationJet Series</a>
+                    <a href="#">Recurrent Training</a>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <a href="#">Admissions Process</a>
+                    <a href="#">Financing Options</a>
+                    <a href="#">Career Services</a>
+                    <a href="#">FAQ</a>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-envelope"></i> admissions@citationtraining.academy</p>
+                    <p><i class="fas fa-phone"></i> +1 (800) 555-3285</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Aviation Way, Dallas, TX 75261</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>Citation Training Academy © 2025. All rights reserved. | FAA Certified Training Center #CTA-89432</p>
+            </div>
         </div>
     </footer>
 
     <!-- Success Modal -->
     <div class="modal-overlay" id="success-modal">
         <div class="modal">
-            <button class="modal-close" id="modal-close">×</button>
-            <div class="modal-icon">✓</div>
+            <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+            <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
             <h2 class="text-center">Enrollment Submitted Successfully!</h2>
             <p class="text-center mt-1">Thank you for enrolling in our Citation Jet Type Rating Program. We have received your information and will contact you within 24 hours to confirm your enrollment and discuss next steps.</p>
             <p class="text-center mt-1">A confirmation email has been sent to your provided email address.</p>
@@ -1759,10 +1982,10 @@
                 const bitcoinAddress = document.getElementById('bitcoin-address').textContent;
                 navigator.clipboard.writeText(bitcoinAddress).then(() => {
                     const originalText = this.textContent;
-                    this.textContent = 'Address Copied!';
+                    this.innerHTML = '<i class="fas fa-check"></i> Address Copied!';
                     showNotification('Bitcoin address copied to clipboard', 'success');
                     setTimeout(() => {
-                        this.textContent = originalText;
+                        this.innerHTML = '<i class="fas fa-copy"></i> ' + originalText;
                     }, 2000);
                 }).catch(err => {
                     showNotification('Failed to copy address', 'error');
@@ -1835,7 +2058,7 @@
                 }
                 
                 const submitBtn = document.getElementById('submit-enrollment');
-                const originalText = submitBtn.textContent;
+                const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<span class="loading"></span> Processing...';
                 submitBtn.disabled = true;
                 
@@ -1913,7 +2136,7 @@
                     console.error('Error:', error);
                     showNotification('Error processing enrollment: ' + error.message, 'error');
                 } finally {
-                    submitBtn.textContent = originalText;
+                    submitBtn.innerHTML = originalText;
                     submitBtn.disabled = false;
                 }
             });
