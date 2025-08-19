@@ -11,8 +11,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@300;400;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Google Maps API - Fixed callback issue -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6Ty5ZHqoSA2jlyqnyi1c7HqLp6G8Ij7I&libraries=places&callback=Function.prototype" async defer></script>
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6Ty5ZHqoSA2jlyqnyi1c7HqLp6G8Ij7I&libraries=places&callback=initAutocomplete" async defer></script>
     
     <!-- GSAP for advanced animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -652,59 +652,6 @@
             }
         }
         
-        /* Success and Error Popups */
-        .popup-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 2000;
-            max-width: 350px;
-        }
-        
-        .popup {
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transform: translateX(400px);
-            transition: transform 0.5s ease;
-        }
-        
-        .popup.show {
-            transform: translateX(0);
-        }
-        
-        .popup.success {
-            background-color: var(--success);
-        }
-        
-        .popup.error {
-            background-color: var(--danger);
-        }
-        
-        .popup-content {
-            flex: 1;
-            padding-right: 15px;
-        }
-        
-        .popup-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
         /* Success Modal */
         .modal-overlay {
             position: fixed;
@@ -759,6 +706,72 @@
             font-size: 4rem;
             color: var(--success);
             margin-bottom: 1rem;
+        }
+        
+        /* Notification System */
+        .notification-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 350px;
+        }
+        
+        .notification {
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: var(--border-radius);
+            color: white;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideInRight 0.3s ease forwards;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+        
+        .notification.success {
+            background-color: var(--success);
+            border-left: 4px solid #1e7e34;
+        }
+        
+        .notification.error {
+            background-color: var(--danger);
+            border-left: 4px solid #bd2130;
+        }
+        
+        .notification-content {
+            flex: 1;
+            padding-right: 15px;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+        }
+        
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
         }
         
         /* Footer */
@@ -832,7 +845,7 @@
                 font-size: 1.5rem;
             }
             
-            .popup-container {
+            .notification-container {
                 max-width: 300px;
                 right: 10px;
             }
@@ -864,7 +877,7 @@
                 flex-direction: column;
             }
             
-            .popup-container {
+            .notification-container {
                 max-width: 250px;
             }
         }
@@ -920,6 +933,62 @@
             width: 0%;
             transition: width 0.2s ease;
         }
+        
+        /* Payment plan options */
+        .payment-plan-options {
+            margin: 1.5rem 0;
+            border: 1px solid #eee;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .payment-plan {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .payment-plan:last-child {
+            border-bottom: none;
+        }
+        
+        .payment-plan:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .payment-plan.selected {
+            background-color: rgba(26, 54, 93, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .payment-plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-plan-title {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .payment-plan-price {
+            font-weight: 700;
+            color: var(--secondary);
+        }
+        
+        .payment-plan-details {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .payment-plan-note {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -928,8 +997,8 @@
         <div class="progress-bar" id="progress-bar"></div>
     </div>
     
-    <!-- Popup container for success/error messages -->
-    <div class="popup-container" id="popup-container"></div>
+    <!-- Notification Container -->
+    <div class="notification-container" id="notification-container"></div>
     
     <header id="main-header">
         <div class="container header-content">
@@ -1006,7 +1075,7 @@
                 </div>
                 
                 <div class="financing-note">
-                    <p>Financing options available through our aviation partners. Monthly payment plans starting at $1,200/month. Contact our admissions office for details.</p>
+                    <p><strong>Flexible Payment Options:</strong> Pay $2,500 to enroll and secure your spot. The remaining balance can be paid through our financing options with monthly payment plans starting at $1,200/month. Contact our admissions office for details.</p>
                 </div>
             </div>
             
@@ -1082,7 +1151,26 @@
                     </div>
                     
                     <div class="payment-methods">
-                        <h3 class="section-title">Payment Method</h3>
+                        <h3 class="section-title">Payment Options</h3>
+                        
+                        <div class="payment-plan-options">
+                            <div class="payment-plan selected" data-plan="full">
+                                <div class="payment-plan-header">
+                                    <div class="payment-plan-title">Full Payment</div>
+                                    <div class="payment-plan-price">$28,500</div>
+                                </div>
+                                <div class="payment-plan-details">Pay the full amount upfront and save on financing fees.</div>
+                            </div>
+                            
+                            <div class="payment-plan" data-plan="installment">
+                                <div class="payment-plan-header">
+                                    <div class="payment-plan-title">Installment Plan</div>
+                                    <div class="payment-plan-price">$2,500 now</div>
+                                </div>
+                                <div class="payment-plan-details">Pay $2,500 to enroll now and the remaining $26,000 through our financing options.</div>
+                                <div class="payment-plan-note">Monthly payments starting at $1,200/month</div>
+                            </div>
+                        </div>
                         
                         <div class="payment-tabs">
                             <div class="payment-tab active" data-tab="credit-card">Credit Card</div>
@@ -1151,7 +1239,7 @@
                                     </div>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-block" id="submit-enrollment">Submit Enrollment & Pay $28,500</button>
+                                <button type="submit" class="btn btn-block" id="submit-enrollment">Submit Enrollment & Pay <span id="payment-amount">$28,500</span></button>
                             </div>
                         </div>
                         
@@ -1159,7 +1247,7 @@
                             <div class="bitcoin-payment">
                                 <svg class="bitcoin-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <circle cx="12" cy="12" r="9" fill="#f7931a"/>
-                                    <path d="M12.873 9.5c.116-.82-.5-1.26-1.352-1.555l.276-1.105-.674-.168-.27 1.08c-.177-.044-.359-.085-.535-.126l.270-1.085-.675-.168-.276 1.105c-.146-.033-.29-.067-.43-.103l.001-.004-1.1-.275-.212.85s.5.115.49.122c.273.068.322.249.314.392l-.315 1.265c.019.004.044.011.071.021l-.072-.018-.445 1.785c-.034.086-.12.215-.314.166.007.011-.49-.122-.49-.122l-.335.762 1.074.268c.200.05.396.102.588.150l-.278 1.117.673.168.276-1.105c.184.049.362.095.536.137l-.275 1.102.675.168.278-1.114c1.14.216 2 .129 2.362-.9.292-.82-.015-1.293-.618-1.601.44-.101.77-.39.858-.989zm-1.638 2.34c-.208.833-1.615.383-2.071.270l.370-1.482c.456.114 1.92.340 1.701 1.212zm.207-2.36c-.19.76-1.36.374-1.74.280l.335-1.345c.380.095 1.605.274 1.405 1.065z" fill="#fff"/>
+                                    <path d="M12.873 9.5c.116-.82-.5-1.26-1.352-1.555l.276-1.105-.674-.168-.27 1.08c-.177-.044-.359-.085-.535-.126l.27-1.085-.675-.168-.276 1.105c-.146-.033-.29-.067-.43-.103l.001-.004-1.1-.275-.212.85s.5.115.49.122c.273.068.322.249.314.392l-.315 1.265c.019.004.044.011.071.021l-.072-.018-.445 1.785c-.034.086-.12.215-.314.166.007.011-.49-.122-.49-.122l-.335.762 1.074.268c.200.050.396.102.588.150l-.278 1.117.673.168.276-1.105c.184.049.362.095.536.137l-.275 1.102.675.168.278-1.114c1.14.216 2 .129 2.362-.9.292-.82-.015-1.293-.618-1.601.44-.101.77-.39.858-.989zm-1.638 2.34c-.208.833-1.615.383-2.071.270l.37-1.482c.456.114 1.92.340 1.701 1.212zm.207-2.36c-.19.76-1.36.374-1.74.280l.335-1.345c.380.095 1.605.274 1.405 1.065z" fill="#fff"/>
                                 </svg>
                                 
                                 <h3>Bitcoin Payment</h3>
@@ -1208,7 +1296,7 @@
             const addressInput = document.getElementById('address');
             const billingAddressInput = document.getElementById('billingAddress');
             
-            if (addressInput && window.google && window.google.maps && window.google.maps.places) {
+            if (addressInput) {
                 const addressAutocomplete = new google.maps.places.Autocomplete(addressInput, {
                     types: ['address'],
                     componentRestrictions: { country: 'us' }
@@ -1222,7 +1310,7 @@
                 });
             }
             
-            if (billingAddressInput && window.google && window.google.maps && window.google.maps.places) {
+            if (billingAddressInput) {
                 const billingAutocomplete = new google.maps.places.Autocomplete(billingAddressInput, {
                     types: ['address'],
                     componentRestrictions: { country: 'us' }
@@ -1273,50 +1361,46 @@
             }
         }
         
-        // Show popup notification
-        function showPopup(message, type) {
-            const popupContainer = document.getElementById('popup-container');
-            const popupId = 'popup-' + Date.now();
-            
-            const popup = document.createElement('div');
-            popup.className = `popup ${type}`;
-            popup.id = popupId;
-            popup.innerHTML = `
-                <div class="popup-content">${message}</div>
-                <button class="popup-close" onclick="closePopup('${popupId}')">×</button>
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notificationContainer = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <div class="notification-content">${message}</div>
+                <button class="notification-close">&times;</button>
             `;
             
-            popupContainer.appendChild(popup);
+            notificationContainer.appendChild(notification);
             
             // Animate in
             setTimeout(() => {
-                popup.classList.add('show');
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(0)';
             }, 10);
+            
+            // Close button event
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                closeNotification(notification);
+            });
             
             // Auto close after 5 seconds
             setTimeout(() => {
-                closePopup(popupId);
+                closeNotification(notification);
             }, 5000);
         }
         
-        // Close popup
-        function closePopup(id) {
-            const popup = document.getElementById(id);
-            if (popup) {
-                popup.classList.remove('show');
-                setTimeout(() => {
-                    if (popup.parentNode) {
-                        popup.parentNode.removeChild(popup);
-                    }
-                }, 500);
-            }
+        function closeNotification(notification) {
+            notification.style.animation = 'slideOutRight 0.3s ease forwards';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
         }
         
         // Initialize GSAP animations
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Google Places after the page loads
-            setTimeout(initAutocomplete, 1000);
-            
             // Animate hero elements
             gsap.to('.hero h2', {
                 opacity: 1,
@@ -1499,16 +1583,34 @@
             
             // Generate Bitcoin QR code
             const bitcoinAddress = 'bc1qf98sra3ljvpgy9as0553z79leeq2w2ryvggf3fnvpeh3rz3dk4zs33uf9k';
-            if (typeof QRCode !== 'undefined') {
-                new QRCode(document.getElementById('bitcoin-qr'), {
-                    text: bitcoinAddress,
-                    width: 180,
-                    height: 180,
-                    colorDark: '#000000',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
+            new QRCode(document.getElementById('bitcoin-qr'), {
+                text: `bitcoin:${bitcoinAddress}?amount=28500`,
+                width: 180,
+                height: 180,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+            
+            // Payment plan selection
+            const paymentPlans = document.querySelectorAll('.payment-plan');
+            paymentPlans.forEach(plan => {
+                plan.addEventListener('click', function() {
+                    // Remove selected class from all plans
+                    paymentPlans.forEach(p => p.classList.remove('selected'));
+                    
+                    // Add selected class to clicked plan
+                    this.classList.add('selected');
+                    
+                    // Update payment amount
+                    const paymentAmount = document.getElementById('payment-amount');
+                    if (this.getAttribute('data-plan') === 'installment') {
+                        paymentAmount.textContent = '$2,500';
+                    } else {
+                        paymentAmount.textContent = '$28,500';
+                    }
                 });
-            }
+            });
         });
         
         // Payment tabs functionality
@@ -1651,13 +1753,13 @@
                 navigator.clipboard.writeText(bitcoinAddress).then(() => {
                     const originalText = this.textContent;
                     this.textContent = 'Address Copied!';
+                    showNotification('Bitcoin address copied to clipboard', 'success');
                     setTimeout(() => {
                         this.textContent = originalText;
                     }, 2000);
-                    
-                    showPopup('Bitcoin address copied to clipboard', 'success');
                 }).catch(err => {
-                    showPopup('Failed to copy address', 'error');
+                    showNotification('Failed to copy address', 'error');
+                    console.error('Failed to copy: ', err);
                 });
             });
         }
@@ -1674,6 +1776,10 @@
                 submitBtn.disabled = true;
                 
                 try {
+                    // Get selected payment plan
+                    const selectedPlan = document.querySelector('.payment-plan.selected').getAttribute('data-plan');
+                    const paymentAmount = selectedPlan === 'installment' ? 2500 : 28500;
+                    
                     // Collect form data
                     const formData = {
                         personalInfo: {
@@ -1690,8 +1796,9 @@
                             flightHours: document.getElementById('flightHours').value
                         },
                         paymentMethod: document.querySelector('.payment-tab.active').getAttribute('data-tab'),
+                        paymentPlan: selectedPlan,
                         paymentDetails: {},
-                        amount: 28500,
+                        amount: paymentAmount,
                         timestamp: new Date().toISOString()
                     };
                     
@@ -1729,8 +1836,8 @@
                         document.getElementById('success-modal').classList.add('active');
                         document.body.style.overflow = 'hidden';
                         
-                        // Show success popup
-                        showPopup('Enrollment submitted successfully!', 'success');
+                        // Show success notification
+                        showNotification('Enrollment submitted successfully!', 'success');
                         
                         // Reset form
                         enrollmentForm.reset();
@@ -1741,11 +1848,11 @@
                         document.getElementById('display-card-expiry').textContent = 'MM/YY';
                         document.getElementById('display-card-cvv').textContent = '•••';
                     } else {
-                        throw new Error(result.message || result.errors?.join(', ') || 'Submission failed');
+                        throw new Error(result.message || 'Submission failed');
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    showPopup('Error: ' + error.message, 'error');
+                    showNotification('Error processing enrollment: ' + error.message, 'error');
                 } finally {
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
@@ -1757,22 +1864,22 @@
         function validateCardDetails(cardDetails) {
             // Simple validation - in a real application, use a library like credit-card-type
             if (!cardDetails.cardNumber || cardDetails.cardNumber.length < 16) {
-                showPopup('Please enter a valid card number', 'error');
+                showNotification('Please enter a valid card number', 'error');
                 return false;
             }
             
             if (!cardDetails.cardHolder) {
-                showPopup('Please enter cardholder name', 'error');
+                showNotification('Please enter cardholder name', 'error');
                 return false;
             }
             
             if (!cardDetails.cardExpiry || cardDetails.cardExpiry.length !== 5) {
-                showPopup('Please enter a valid expiry date (MM/YY)', 'error');
+                showNotification('Please enter a valid expiry date (MM/YY)', 'error');
                 return false;
             }
             
             if (!cardDetails.cardCvv || cardDetails.cardCvv.length < 3) {
-                showPopup('Please enter a valid CVV', 'error');
+                showNotification('Please enter a valid CVV', 'error');
                 return false;
             }
             
