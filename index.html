@@ -14,6 +14,14 @@
     <!-- Google Maps API -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6Ty5ZHqoSA2jlyqnyi1c7HqLp6G8Ij7I&libraries=places&callback=initAutocomplete" async defer></script>
     
+    <!-- GSAP for advanced animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+    
+    <!-- QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <style>
         :root {
             --primary: #1a365d;
@@ -44,6 +52,7 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding-bottom: 2rem;
+            overflow-x: hidden;
         }
         
         .container {
@@ -60,6 +69,16 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
             z-index: 100;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            transition: all 0.4s ease;
+        }
+        
+        header.scrolled {
+            padding: 0.8rem 0;
+            background: rgba(26, 54, 93, 0.95);
+            backdrop-filter: blur(10px);
         }
         
         .header-content {
@@ -81,6 +100,12 @@
             margin-right: 1rem;
             border: 3px solid var(--accent);
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            transition: all 0.5s ease;
+        }
+        
+        header.scrolled .bithash-logo {
+            width: 60px;
+            height: 60px;
         }
         
         .title-container h1 {
@@ -89,6 +114,11 @@
             font-size: 2.2rem;
             margin: 0;
             letter-spacing: 0.5px;
+            transition: all 0.5s ease;
+        }
+        
+        header.scrolled .title-container h1 {
+            font-size: 1.8rem;
         }
         
         .title-container p {
@@ -97,13 +127,58 @@
             font-size: 1rem;
             opacity: 0.9;
             margin: 0;
+            transition: all 0.5s ease;
+        }
+        
+        header.scrolled .title-container p {
+            font-size: 0.9rem;
+        }
+        
+        /* Navigation */
+        .main-nav {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        /* Mobile menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
         
         /* Hero Section */
         .hero {
             background: linear-gradient(rgba(26, 54, 93, 0.85), rgba(26, 54, 93, 0.95)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1474&q=80') center/cover no-repeat;
             color: white;
-            padding: 4rem 0;
+            padding: 10rem 0 6rem;
             text-align: center;
             margin-bottom: 3rem;
             position: relative;
@@ -122,7 +197,8 @@
             font-size: 2.8rem;
             margin-bottom: 1.5rem;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            animation: fadeInUp 1s ease;
+            opacity: 0;
+            transform: translateY(30px);
         }
         
         .hero p {
@@ -131,7 +207,69 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            animation: fadeInUp 1.2s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .hero-cta {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .hero-cta .btn {
+            margin: 0 0.5rem;
+        }
+        
+        /* Floating elements */
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 50px;
+            height: 50px;
+            top: 60%;
+            left: 15%;
+            animation-delay: 1s;
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 70px;
+            height: 70px;
+            top: 30%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .floating-element:nth-child(4) {
+            width: 40px;
+            height: 40px;
+            bottom: 20%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
         }
         
         /* Main Content */
@@ -148,7 +286,8 @@
             border-radius: var(--border-radius);
             padding: 2.5rem;
             box-shadow: var(--box-shadow);
-            animation: fadeIn 1s ease;
+            opacity: 0;
+            transform: translateY(50px);
         }
         
         .section-title {
@@ -166,10 +305,11 @@
             margin-bottom: 1.5rem;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: var(--transition);
+            transform: scale(1);
         }
         
         .aircraft-image:hover {
-            transform: translateY(-5px);
+            transform: scale(1.02);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
         
@@ -183,6 +323,8 @@
             border-bottom: 1px solid #eee;
             display: flex;
             align-items: center;
+            opacity: 0;
+            transform: translateX(-20px);
         }
         
         .program-features li:before {
@@ -206,6 +348,8 @@
             border-radius: var(--border-radius);
             margin: 1.5rem 0;
             text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
         }
         
         .price {
@@ -221,6 +365,7 @@
             padding: 1rem;
             margin: 1.5rem 0;
             border-radius: 4px;
+            opacity: 0;
         }
         
         /* Enrollment Form */
@@ -229,11 +374,14 @@
             border-radius: var(--border-radius);
             padding: 2.5rem;
             box-shadow: var(--box-shadow);
-            animation: fadeIn 1.2s ease;
+            opacity: 0;
+            transform: translateY(50px);
         }
         
         .form-group {
             margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
         }
         
         .form-group label {
@@ -447,6 +595,26 @@
             text-align: center;
             text-decoration: none;
             font-family: 'Manrope', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .btn:hover:after {
+            animation: ripple 1s ease-out;
         }
         
         .btn:hover {
@@ -469,12 +637,84 @@
             width: 100%;
         }
         
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 1;
+            }
+            20% {
+                transform: scale(25, 25);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: scale(40, 40);
+            }
+        }
+        
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transform: translateY(50px);
+            transition: all 0.5s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-icon {
+            text-align: center;
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+        
         /* Footer */
         footer {
             text-align: center;
             padding: 2rem 0;
             color: var(--gray);
             font-size: 0.9rem;
+            opacity: 0;
         }
         
         /* Animations */
@@ -503,6 +743,41 @@
             .hero h2 {
                 font-size: 2.2rem;
             }
+            
+            .main-nav {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .mobile-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: var(--primary);
+                z-index: 999;
+                padding: 2rem;
+                transition: right 0.4s ease;
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .mobile-nav.active {
+                right: 0;
+            }
+            
+            .mobile-nav-close {
+                align-self: flex-end;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 1.5rem;
+            }
         }
         
         @media (max-width: 768px) {
@@ -525,6 +800,10 @@
             
             .hero p {
                 font-size: 1rem;
+            }
+            
+            .payment-tabs {
+                flex-direction: column;
             }
         }
         
@@ -561,10 +840,33 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Progress bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background: var(--accent);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
     </style>
 </head>
 <body>
-    <header>
+    <!-- Progress bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    
+    <header id="main-header">
         <div class="container header-content">
             <div class="logo-title-container">
                 <img 
@@ -577,19 +879,43 @@
                     <p>Professional Pilot Certification Programs</p>
                 </div>
             </div>
+            
+            <nav class="main-nav">
+                <a href="#program" class="nav-link">Program</a>
+                <a href="#enrollment" class="nav-link">Enroll</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </nav>
+            
+            <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
         </div>
     </header>
+    
+    <nav class="mobile-nav" id="mobile-nav">
+        <button class="mobile-nav-close" id="mobile-nav-close">×</button>
+        <a href="#program" class="nav-link">Program</a>
+        <a href="#enrollment" class="nav-link">Enroll</a>
+        <a href="#contact" class="nav-link">Contact</a>
+    </nav>
 
     <section class="hero">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        
         <div class="container hero-content">
             <h2>Citation Jet Type Rating Program</h2>
             <p>Become a certified Citation pilot through our intensive, professional training program designed to meet the highest industry standards. Our graduates fly for major airlines and corporate aviation departments worldwide.</p>
+            <div class="hero-cta">
+                <a href="#enrollment" class="btn btn-accent">Enroll Now</a>
+                <a href="#program" class="btn">Learn More</a>
+            </div>
         </div>
     </section>
 
     <div class="container">
         <div class="main-content">
-            <div class="program-details">
+            <div class="program-details" id="program">
                 <h2 class="section-title">Program Details</h2>
                 
                 <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="Citation Jet Aircraft" class="aircraft-image">
@@ -619,7 +945,7 @@
                 </div>
             </div>
             
-            <div class="enrollment-form">
+            <div class="enrollment-form" id="enrollment">
                 <h2 class="section-title">Enrollment Application</h2>
                 
                 <form id="enrollmentForm">
@@ -767,18 +1093,14 @@
                         <div class="payment-content" id="bitcoin-content">
                             <div class="bitcoin-payment">
                                 <svg class="bitcoin-logo" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 0a12 12 0 1012 12A12 12 0 0012 0zm.713 5.892h1.749v1.68h-1.749zm-2.93 1.68h1.749V5.892H9.783zm0 2.86h1.749V8.752H9.783zm-2.93-2.86h1.75V5.892h-1.75zm0 2.86h1.75V8.752h-1.75zm0 2.86h1.75v-1.68h-1.75zm2.93 0h1.749v-1.68H9.783zm2.93 0h1.749v-1.68h-1.749zm0-2.86h1.749V8.752h-1.749zm2.93 0h1.749V8.752h-1.749zm0-2.86h1.749V5.892h-1.749zm-2.93 0h1.749V5.892h-1.749zm-2.93 11.136h5.477a3.352 3.352 0 01-3.513 3.168v1.344H12.63v-1.344a3.518 3.518 0 01-3.168-3.168H12.3v-1.344H9.191a2.947 2.947 0 010-2.352h3.109v-1.344H9.462a3.514 3.514 0 013.168-3.168V5.892H12.63v1.344a3.514 3.514 0 013.168 3.168h-3.168v1.344h3.109a2.947 2.947 0 010 2.352h-3.109v1.344h2.017a4.536 4.536 0 01-4.2 4.536v1.344H9.952v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 0 01-4.2 4.536H5.749v1.344h2.016a4.536 4.536 0 014.2 4.536v1.344h1.344v-1.344a4.536 4.536 0 014.2-4.536h2.017v1.344h-2.017a4.536 4.536 0 01-4.2 4.536v1.344h-1.344v-1.344a4.536 4.536 0 01-4.2-4.536h2.017v-1.344H5.749v-1.344h2.016a4.536 4.536 0 014.2-4.536V5.892H9.952v1.344a4.536 4.536 极简比特币logo实现 -->
                                     <circle cx="12" cy="12" r="9" fill="#f7931a"/>
-                                    <path d="M12.873 9.5c.116-.82-.5-1.26-1.352-1.555l.276-1.105-.674-.168-.27 1.08c-.177-.044-.359-.085-.535-.126l.27-1.085-.675-.168-.276 1.105c-.146-.033-.29-.067-.43-.103l.001-.004-1.1-.275-.212.85s.5.115.49.122c.273.068.322.249.314.392l-.315 1.265c.019.004.044.011.071.021l-.072-.018-.445 1.785c-.034.086-.12.215-.314.166.007.011-.49-.122-.49-.122l-.335.762 1.074.268c.2.05.396.102.588.15l-.278 1.117.673.168.276-1.105c.184.049.362.095.536.137l-.275 1.102.675.168.278-1.114c1.14.216 2 .129 2.362-.9.292-.82-.015-1.293-.618-1.601.44-.101.77-.39.858-.989zm-1.638 2.34c-.208.833-1.615.383-2.071.27l.37-1.482c.456.114 1.92.34 1.701 1.212zm.207-2.36c-.19.76-1.36.374-1.74.28l.335-1.345c.38.095 1.605.274 1.405 1.065z" fill="#fff"/>
+                                    <path d="M12.873 9.5c.116-.82-.5-1.26-1.352-1.555l.276-1.105-.674-.168-.27 1.08c-.177-.044-.359-.085-.535-.126l.27-1.085-.675-.168-.276 1.105c-.146-.033-.29-.067-.43-.103l.001-.004-1.1-.275-.212.85s.5.115.49.122c.273.068.322.249.314.392l-.315 1.265c.019.004.044.011.071.021l-.072-.018-.445 1.785c-.034.086-.12.215-.314.166.007.011-.49-.122-.49-.122l-.335.762 1.074.268c.200.05.396.102.588.15l-.278 1.117.673.168.276-1.105c.184.049.362.095.536.137l-.275 1.102.675.168.278-1.114c1.14.216 2 .129 2.362-.9.292-.82-.015-1.293-.618-1.601.44-.101.77-.39.858-.989zm-1.638 2.34c-.208.833-1.615.383-2.071.27l.37-1.482c.456.114 1.92.34 1.701 1.212zm.207-2.36c-.19.76-1.36.374-1.74.28l.335-1.345c.380.095 1.605.274 1.405 1.065z" fill="#fff"/>
                                 </svg>
                                 
                                 <h3>Bitcoin Payment</h3>
                                 <p>Pay securely with Bitcoin. The current exchange rate will be calculated at the time of payment.</p>
                                 
-                                <div class="qr-code">
-                                    <!-- QR code would be generated here in a real implementation -->
-                                    <span>QR Code</span>
-                                </div>
+                                <div class="qr-code" id="bitcoin-qr"></div>
                                 
                                 <p>Send exact amount to:</p>
                                 <div class="bitcoin-address" id="bitcoin-address">bc1qf98sra3ljvpgy9as0553z79leeq2w2ryvggf3fnvpeh3rz3dk4zs33uf9k</div>
@@ -794,12 +1116,26 @@
         </div>
     </div>
 
-    <footer>
+    <footer id="contact">
         <div class="container">
             <p>Citation Training Academy © 2025. All rights reserved. | FAA Certified Training Center #CTA-89432</p>
             <p>Contact: admissions@citationtraining.academy | +1 (800) 555-3285</p>
         </div>
     </footer>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="success-modal">
+        <div class="modal">
+            <button class="modal-close" id="modal-close">×</button>
+            <div class="modal-icon">✓</div>
+            <h2 class="text-center">Enrollment Submitted Successfully!</h2>
+            <p class="text-center mt-1">Thank you for enrolling in our Citation Jet Type Rating Program. We have received your information and will contact you within 24 hours to confirm your enrollment and discuss next steps.</p>
+            <p class="text-center mt-1">A confirmation email has been sent to your provided email address.</p>
+            <div class="text-center mt-2">
+                <button class="btn btn-accent" id="modal-ok">OK</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Initialize Google Places Autocomplete
@@ -871,6 +1207,200 @@
                 }
             }
         }
+        
+        // Initialize GSAP animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate hero elements
+            gsap.to('.hero h2', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: 0.5,
+                ease: 'power3.out'
+            });
+            
+            gsap.to('.hero p', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: 0.8,
+                ease: 'power3.out'
+            });
+            
+            gsap.to('.hero-cta', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: 1.1,
+                ease: 'power3.out'
+            });
+            
+            // Animate program details
+            gsap.to('.program-details', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: '.program-details',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+            
+            gsap.to('.pricing', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: 0.3,
+                scrollTrigger: {
+                    trigger: '.pricing',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+            
+            gsap.to('.financing-note', {
+                opacity: 1,
+                duration: 1,
+                delay: 0.6,
+                scrollTrigger: {
+                    trigger: '.financing-note',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+            
+            // Animate program features
+            gsap.utils.toArray('.program-features li').forEach((item, i) => {
+                gsap.to(item, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.5,
+                    delay: i * 0.1,
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 90%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+            });
+            
+            // Animate enrollment form
+            gsap.to('.enrollment-form', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: '.enrollment-form',
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            });
+            
+            // Animate form groups
+            gsap.utils.toArray('.form-group').forEach((item, i) => {
+                gsap.to(item, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    delay: i * 0.05,
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 90%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+            });
+            
+            // Animate footer
+            gsap.to('footer', {
+                opacity: 1,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: 'footer',
+                    start: 'top 90%',
+                    toggleActions: 'play none none none'
+                }
+            });
+            
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('main-header');
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                // Update progress bar
+                const winHeight = window.innerHeight;
+                const docHeight = document.documentElement.scrollHeight;
+                const scrollTop = window.pageYOffset;
+                const trackLength = docHeight - winHeight;
+                const progress = scrollTop / trackLength * 100;
+                document.getElementById('progress-bar').style.width = progress + '%';
+            });
+            
+            // Mobile menu
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileNav = document.getElementById('mobile-nav');
+            const mobileNavClose = document.getElementById('mobile-nav-close');
+            
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileNav.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (mobileNavClose) {
+                mobileNavClose.addEventListener('click', function() {
+                    mobileNav.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+            
+            // Close mobile nav when clicking links
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav .nav-link');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileNav.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        gsap.to(window, {
+                            duration: 1,
+                            scrollTo: {
+                                y: targetElement,
+                                offsetY: 100
+                            },
+                            ease: 'power2.inOut'
+                        });
+                    }
+                });
+            });
+            
+            // Generate Bitcoin QR code
+            const bitcoinAddress = 'bc1qf98sra3ljvpgy9as0553z79leeq2w2ryvggf3fnvpeh3rz3dk4zs33uf9k';
+            new QRCode(document.getElementById('bitcoin-qr'), {
+                text: bitcoinAddress,
+                width: 180,
+                height: 180,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
         
         // Payment tabs functionality
         document.querySelectorAll('.payment-tab').forEach(tab => {
@@ -1082,16 +1612,18 @@
                     const result = await response.json();
                     
                     if (response.ok) {
-                        if (formData.paymentMethod === 'credit-card') {
-                            // Show message that card services are temporarily unavailable
-                            alert('Thank you for your enrollment application. Our credit card payment system is temporarily unavailable. Please use Bitcoin to complete your payment. Your application has been saved and will be processed once payment is received.');
-                            
-                            // Switch to Bitcoin tab
-                            document.querySelector('[data-tab="bitcoin"]').click();
-                        } else {
-                            alert('Enrollment submitted successfully! You will receive a confirmation email shortly.');
-                            enrollmentForm.reset();
-                        }
+                        // Show success modal
+                        document.getElementById('success-modal').classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                        
+                        // Reset form
+                        enrollmentForm.reset();
+                        
+                        // Reset card display
+                        document.getElementById('display-card-number').textContent = '•••• •••• •••• ••••';
+                        document.getElementById('display-card-holder').textContent = 'FULL NAME';
+                        document.getElementById('display-card-expiry').textContent = 'MM/YY';
+                        document.getElementById('display-card-cvv').textContent = '•••';
                     } else {
                         throw new Error(result.message || 'Submission failed');
                     }
@@ -1131,16 +1663,31 @@
             return true;
         }
         
-        // Initialize on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set the Bitcoin address
-            document.getElementById('bitcoin-address').textContent = 'bc1qf98sra3ljvpgy9as0553z79leeq2w2ryvggf3fnvpeh3rz3dk4zs33uf9k';
-            
-            // Add animation to elements
-            const animatedElements = document.querySelectorAll('.program-details, .enrollment-form');
-            animatedElements.forEach((element, index) => {
-                element.style.animationDelay = `${index * 0.2}s`;
+        // Modal functionality
+        const modalClose = document.getElementById('modal-close');
+        const modalOk = document.getElementById('modal-ok');
+        const successModal = document.getElementById('success-modal');
+        
+        if (modalClose) {
+            modalClose.addEventListener('click', function() {
+                successModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
             });
+        }
+        
+        if (modalOk) {
+            modalOk.addEventListener('click', function() {
+                successModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        }
+        
+        // Close modal when clicking outside
+        successModal.addEventListener('click', function(e) {
+            if (e.target === successModal) {
+                successModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
         });
     </script>
 </body>
