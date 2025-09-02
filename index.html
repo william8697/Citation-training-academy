@@ -19,6 +19,9 @@
             --gray: #78909c;
             --white: #ffffff;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --mpesa-green: #0cb785;
+            --visa-blue: #1a1f71;
+            --mastercard-red: #ff5f00;
         }
 
         * {
@@ -395,6 +398,208 @@
             transform: translateX(0);
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Payment Method Styles */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .payment-method {
+            border: 2px solid #eee;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary);
+            background-color: rgba(156, 39, 176, 0.1);
+        }
+
+        .payment-method.mpesa {
+            color: var(--mpesa-green);
+            border-color: var(--mpesa-green);
+        }
+
+        .payment-method.mpesa.selected {
+            background-color: rgba(12, 183, 133, 0.1);
+        }
+
+        .payment-method.visa {
+            color: var(--visa-blue);
+            border-color: var(--visa-blue);
+        }
+
+        .payment-method.visa.selected {
+            background-color: rgba(26, 31, 113, 0.1);
+        }
+
+        .payment-method.mastercard {
+            color: var(--mastercard-red);
+            border-color: var(--mastercard-red);
+        }
+
+        .payment-method.mastercard.selected {
+            background-color: rgba(255, 95, 0, 0.1);
+        }
+
+        .payment-method i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        .btn-mpesa {
+            background-color: var(--mpesa-green);
+            color: white;
+        }
+
+        .btn-mpesa:hover {
+            opacity: 0.9;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* Animation */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -415,199 +620,189 @@
             </div>
             <div class="header-actions">
                 <div class="user-info">
-                    <div class="user-avatar">JD</div>
-                    <div>John Doe (Cashier)</div>
+                    <div class="user-avatar" id="user-avatar">JD</div>
+                    <div id="user-info-text">John Doe (Cashier)</div>
                 </div>
-                <div>10:45 AM | Nov 12, 2023</div>
+                <div id="current-time">10:45 AM | Nov 12, 2023</div>
             </div>
         </header>
 
         <aside class="sidebar">
-            <div class="nav-item active">
+            <div class="nav-item active" data-page="dashboard">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-page="pos">
                 <i class="fas fa-cash-register"></i>
                 <span>Point of Sale</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-page="inventory">
                 <i class="fas fa-boxes"></i>
                 <span>Inventory</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-page="customers">
                 <i class="fas fa-users"></i>
                 <span>Customers</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-page="reports">
                 <i class="fas fa-chart-bar"></i>
                 <span>Reports</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" data-page="settings">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </div>
-            <div class="nav-item">
+            <div class="nav-item" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Logout</span>
             </div>
         </aside>
 
         <main>
-            <div class="dashboard-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Today's Sales</div>
-                        <i class="fas fa-dollar-sign"></i>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="label">TOTAL SALES</div>
-                            <div class="value">$4,582</div>
-                            <div class="label">Today</div>
+            <!-- Dashboard View -->
+            <div class="view" id="dashboard-view">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Today's Sales</div>
+                            <i class="fas fa-dollar-sign"></i>
                         </div>
-                        <div class="stat-card" style="background: linear-gradient(135deg, #FF512F 0%, #DD2476 100%);">
-                            <div class="label">TRANSACTIONS</div>
-                            <div class="value">127</div>
-                            <div class="label">Today</div>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="label">TOTAL SALES</div>
+                                <div class="value" id="today-sales">$0.00</div>
+                                <div class="label">Today</div>
+                            </div>
+                            <div class="stat-card" style="background: linear-gradient(135deg, #FF512F 0%, #DD2476 100%);">
+                                <div class="label">TRANSACTIONS</div>
+                                <div class="value" id="today-transactions">0</div>
+                                <div class="label">Today</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Inventory Status</div>
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-card" style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);">
+                                <div class="label">TOTAL PRODUCTS</div>
+                                <div class="value" id="total-products">0</div>
+                                <div class="label">In Stock</div>
+                            </div>
+                            <div class="stat-card" style="background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);">
+                                <div class="label">LOW STOCK</div>
+                                <div class="value" id="low-stock">0</div>
+                                <div class="label">Items</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Inventory Status</div>
-                        <i class="fas fa-box"></i>
+                        <div class="card-title">Recent Transactions</div>
+                        <i class="fas fa-history"></i>
                     </div>
-                    <div class="stats-grid">
-                        <div class="stat-card" style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);">
-                            <div class="label">TOTAL PRODUCTS</div>
-                            <div class="value">586</div>
-                            <div class="label">In Stock</div>
-                        </div>
-                        <div class="stat-card" style="background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);">
-                            <div class="label">LOW STOCK</div>
-                            <div class="value">12</div>
-                            <div class="label">Items</div>
-                        </div>
+                    <div class="card-body">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #eee;">
+                                    <th style="text-align: left; padding: 10px;">Transaction ID</th>
+                                    <th style="text-align: left; padding: 10px;">Time</th>
+                                    <th style="text-align: left; padding: 10px;">Amount</th>
+                                    <th style="text-align: left; padding: 10px;">Payment Method</th>
+                                    <th style="text-align: left; padding: 10px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-transactions">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 20px;">No recent transactions</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <div class="scanner-section">
-                <h3>Product Scanner</h3>
-                <div class="scanner-input">
-                    <input type="text" id="barcode-input" placeholder="Scan barcode or enter product code...">
-                    <button class="scanner-btn" onclick="simulateScan()">
-                        <i class="fas fa-camera"></i> Simulate Scan
-                    </button>
+            <!-- POS View -->
+            <div class="view" id="pos-view" style="display: none;">
+                <div class="scanner-section">
+                    <h3>Product Scanner</h3>
+                    <div class="scanner-input">
+                        <input type="text" id="barcode-input" placeholder="Scan barcode or enter product code...">
+                        <button class="scanner-btn" id="scan-btn">
+                            <i class="fas fa-camera"></i> Simulate Scan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pos-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Products</div>
+                            <div>
+                                <input type="text" id="product-search" placeholder="Search products..." style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            </div>
+                        </div>
+                        <div class="products-grid" id="products-grid">
+                            <div class="spinner" id="products-spinner"></div>
+                        </div>
+                    </div>
+
+                    <div class="cart-container">
+                        <div class="card-header">
+                            <div class="card-title">Current Sale</div>
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="cart-items" id="cart-items">
+                            <div style="text-align: center; padding: 20px; color: var(--gray);">
+                                No items in cart
+                            </div>
+                        </div>
+                        <div class="cart-total">
+                            <div>Total:</div>
+                            <div id="cart-total">$0.00</div>
+                        </div>
+                        <button class="checkout-btn" id="checkout-btn" disabled>
+                            <i class="fas fa-credit-card"></i> Process Payment
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="pos-container">
+            <!-- Inventory View -->
+            <div class="view" id="inventory-view" style="display: none;">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Products</div>
-                        <div>
-                            <input type="text" placeholder="Search products..." style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
-                        </div>
+                        <div class="card-title">Inventory Management</div>
+                        <button class="btn btn-primary" id="add-product-btn">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
                     </div>
-                    <div class="products-grid">
-                        <div class="product-card" onclick="addToCart(1)">
-                            <div class="product-image">
-                                <i class="fas fa-pump-soap"></i>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">Hydrating Face Cream</div>
-                                <div class="product-price">$24.99</div>
-                            </div>
-                        </div>
-                        <div class="product-card" onclick="addToCart(2)">
-                            <div class="product-image">
-                                <i class="fas fa-spa"></i>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">Vitamin C Serum</div>
-                                <div class="product-price">$34.99</div>
-                            </div>
-                        </div>
-                        <div class="product-card" onclick="addToCart(3)">
-                            <div class="product-image">
-                                <i class="fas fa-fire"></i>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">Exfoliating Scrub</div>
-                                <div class="product-price">$19.99</div>
-                            </div>
-                        </div>
-                        <div class="product-card" onclick="addToCart(4)">
-                            <div class="product-image">
-                                <i class="fas fa-eye"></i>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">Anti-Aging Eye Cream</div>
-                                <div class="product-price">$29.99</div>
-                            </div>
-                        </div>
-                        <div class="product-card" onclick="addToCart(5)">
-                            <div class="product-image">
-                                <i class="fas fa-wind"></i>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">Hydrating Toner</div>
-                                <div class="product-price">$16.99</div>
-                            </div>
-                        </div>
-                        <div class="product-card" onclick="addToCart(6)">
-                            <div class="product-image">
-                                <i class="fas fa-moon"></i>
-                            </div>
-                            <div class="product-info">
-                                <div class="product-name">Overnight Mask</div>
-                                <div class="product-price">$26.50</div>
-                            </div>
-                        </div>
+                    <div class="card-body">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid #eee;">
+                                    <th style="text-align: left; padding: 10px;">Product</th>
+                                    <th style="text-align: left; padding: 10px;">SKU</th>
+                                    <th style="text-align: left; padding: 10px;">Price</th>
+                                    <th style="text-align: left; padding: 10px;">Stock</th>
+                                    <th style="text-align: left; padding: 10px;">Status</th>
+                                    <th style="text-align: left; padding: 10px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; padding: 20px;">
+                                        <div class="spinner" id="inventory-spinner"></div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-
-                <div class="cart-container">
-                    <div class="card-header">
-                        <div class="card-title">Current Sale</div>
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="cart-items">
-                        <div class="cart-item">
-                            <div class="item-details">
-                                <div class="item-name">Hydrating Face Cream</div>
-                                <div class="item-price">$24.99</div>
-                            </div>
-                            <div class="item-quantity">
-                                <div class="quantity-btn" onclick="updateQuantity(1, -1)">-</div>
-                                <span>2</span>
-                                <div class="quantity-btn" onclick="updateQuantity(1, 1)">+</div>
-                            </div>
-                            <div style="font-weight: 700;">$49.98</div>
-                        </div>
-                        <div class="cart-item">
-                            <div class="item-details">
-                                <div class="item-name">Vitamin C Serum</div>
-                                <div class="item-price">$34.99</div>
-                            </div>
-                            <div class="item-quantity">
-                                <div class="quantity-btn" onclick="updateQuantity(2, -1)">-</div>
-                                <span>1</span>
-                                <div class="quantity-btn" onclick="updateQuantity(2, 1)">+</div>
-                            </div>
-                            <div style="font-weight: 700;">$34.99</div>
-                        </div>
-                    </div>
-                    <div class="cart-total">
-                        <div>Total:</div>
-                        <div>$84.97</div>
-                    </div>
-                    <button class="checkout-btn" onclick="processPayment()">
-                        <i class="fas fa-credit-card"></i> Process Payment
-                    </button>
                 </div>
             </div>
         </main>
@@ -617,56 +812,485 @@
         </footer>
     </div>
 
-    <div class="notification" id="notification">
-        Product scanned successfully!
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Process Payment</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="cart-total" style="border: none; padding: 0 0 15px 0;">
+                    <div>Total Amount:</div>
+                    <div id="payment-total">$0.00</div>
+                </div>
+                
+                <div class="payment-methods">
+                    <div class="payment-method mpesa" data-method="mpesa">
+                        <i class="fab fa-mpesa"></i>
+                        <div>M-Pesa</div>
+                    </div>
+                    <div class="payment-method visa" data-method="card" data-type="visa">
+                        <i class="fab fa-cc-visa"></i>
+                        <div>Visa</div>
+                    </div>
+                    <div class="payment-method mastercard" data-method="card" data-type="mastercard">
+                        <i class="fab fa-cc-mastercard"></i>
+                        <div>Mastercard</div>
+                    </div>
+                    <div class="payment-method" data-method="cash">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <div>Cash</div>
+                    </div>
+                </div>
+                
+                <div id="mpesa-payment" style="display: none;">
+                    <div class="form-group">
+                        <label for="phone-number">Phone Number</label>
+                        <input type="tel" id="phone-number" placeholder="07XX XXX XXX">
+                    </div>
+                    <button class="btn btn-mpesa" id="mpesa-pay-btn" style="width: 100%;">
+                        <i class="fab fa-mpesa"></i> Pay with M-Pesa
+                    </button>
+                </div>
+                
+                <div id="card-payment" style="display: none;">
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="expiry-date">Expiry Date</label>
+                            <input type="text" id="expiry-date" placeholder="MM/YY">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="XXX">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="card-pay-btn" style="width: 100%;">
+                        Process Card Payment
+                    </button>
+                </div>
+                
+                <div id="cash-payment" style="display: none;">
+                    <div class="form-group">
+                        <label for="cash-received">Amount Received</label>
+                        <input type="number" id="cash-received" placeholder="0.00">
+                    </div>
+                    <div class="cart-total" style="border: none; padding: 10px 0;">
+                        <div>Change:</div>
+                        <div id="change-amount">$0.00</div>
+                    </div>
+                    <button class="btn btn-success" id="cash-pay-btn" style="width: 100%;">
+                        Complete Cash Transaction
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal-overlay" id="add-product-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Add New Product</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-product-form">
+                    <div class="form-group">
+                        <label for="product-name">Product Name</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-sku">SKU/Barcode</label>
+                        <input type="text" id="product-sku" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-price">Price ($)</label>
+                        <input type="number" id="product-price" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-stock">Initial Stock</label>
+                        <input type="number" id="product-stock" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="product-category">Category</label>
+                        <input type="text" id="product-category">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancel-add-product">Cancel</button>
+                <button class="btn btn-primary" id="save-product">Save Product</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Success Modal -->
+    <div class="modal-overlay" id="success-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Transaction Successful</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 15px;"></i>
+                <h3>Payment Processed Successfully</h3>
+                <p>Transaction ID: <span id="success-transaction-id"></span></p>
+                <p>Amount: <span id="success-amount"></span></p>
+                <p>Payment Method: <span id="success-method"></span></p>
+                <div id="success-change" style="display: none;">
+                    <p>Change: <span id="success-change-amount"></span></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="print-receipt">
+                    <i class="fas fa-receipt"></i> Print Receipt
+                </button>
+                <button class="btn btn-success" id="new-sale">
+                    <i class="fas fa-plus"></i> New Sale
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Sample product database
-        const products = [
-            { id: 1, name: "Hydrating Face Cream", price: 24.99, barcode: "800123456789" },
-            { id: 2, name: "Vitamin C Serum", price: 34.99, barcode: "800123456790" },
-            { id: 3, name: "Exfoliating Scrub", price: 19.99, barcode: "800123456791" },
-            { id: 4, name: "Anti-Aging Eye Cream", price: 29.99, barcode: "800123456792" },
-            { id: 5, name: "Hydrating Toner", price: 16.99, barcode: "800123456793" },
-            { id: 6, name: "Overnight Mask", price: 26.50, barcode: "800123456794" }
-        ];
+        // API Base URL
+        const API_BASE_URL = 'https://citation-training-academy-backend.onrender.com';
+        
+        // Global state
+        let state = {
+            user: null,
+            products: [],
+            cart: [],
+            currentView: 'dashboard',
+            selectedPaymentMethod: null,
+            paymentType: null
+        };
 
-        // Cart functionality
-        let cart = [
-            { productId: 1, quantity: 2, price: 24.99, name: "Hydrating Face Cream" },
-            { productId: 2, quantity: 1, price: 34.99, name: "Vitamin C Serum" }
-        ];
+        // DOM Elements
+        const elements = {
+            views: document.querySelectorAll('.view'),
+            navItems: document.querySelectorAll('.nav-item'),
+            productsGrid: document.getElementById('products-grid'),
+            cartItems: document.getElementById('cart-items'),
+            cartTotal: document.getElementById('cart-total'),
+            checkoutBtn: document.getElementById('checkout-btn'),
+            paymentModal: document.getElementById('payment-modal'),
+            paymentTotal: document.getElementById('payment-total'),
+            successModal: document.getElementById('success-modal'),
+            notification: document.getElementById('notification'),
+            barcodeInput: document.getElementById('barcode-input'),
+            productSearch: document.getElementById('product-search'),
+            inventoryTable: document.getElementById('inventory-table'),
+            addProductModal: document.getElementById('add-product-modal'),
+            todaySales: document.getElementById('today-sales'),
+            todayTransactions: document.getElementById('today-transactions'),
+            totalProducts: document.getElementById('total-products'),
+            lowStock: document.getElementById('low-stock'),
+            recentTransactions: document.getElementById('recent-transactions')
+        };
 
-        // Simulate barcode scanning
-        function simulateScan() {
-            const barcodeInput = document.getElementById('barcode-input');
-            // Simulate scanning a random product
-            const randomProduct = products[Math.floor(Math.random() * products.length)];
-            barcodeInput.value = randomProduct.barcode;
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+            setupEventListeners();
+            updateDateTime();
+            setInterval(updateDateTime, 60000); // Update time every minute
+        });
+
+        // Initialize application
+        function initApp() {
+            // Check if user is logged in
+            const authToken = localStorage.getItem('authToken');
+            if (!authToken) {
+                window.location.href = 'login.html';
+                return;
+            }
             
-            // Find and add the product to cart
-            const product = products.find(p => p.barcode === randomProduct.barcode);
-            if (product) {
-                addToCart(product.id);
-                showNotification('Product scanned successfully!');
+            const userData = localStorage.getItem('pos_user');
+            if (userData) {
+                state.user = JSON.parse(userData);
+                updateUserInfo();
+            }
+            
+            // Load products from backend
+            loadProducts();
+            loadInventory();
+            loadDashboardData();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            elements.navItems.forEach(item => {
+                if (item.id !== 'logout-btn') {
+                    item.addEventListener('click', () => switchView(item.dataset.page));
+                }
+            });
+            
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            
+            // Checkout
+            elements.checkoutBtn.addEventListener('click', () => {
+                showPaymentModal();
+            });
+            
+            // Scanner
+            document.getElementById('scan-btn').addEventListener('click', handleBarcodeScan);
+            elements.barcodeInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleBarcodeInput(elements.barcodeInput.value);
+                }
+            });
+            
+            // Product search
+            elements.productSearch.addEventListener('input', filterProducts);
+            
+            // Payment method selection
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.addEventListener('click', () => selectPaymentMethod(method));
+            });
+            
+            // Modal close buttons
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.closest('.modal-overlay').classList.remove('active');
+                });
+            });
+            
+            // Cash payment calculation
+            const cashReceived = document.getElementById('cash-received');
+            if (cashReceived) {
+                cashReceived.addEventListener('input', calculateChange);
+            }
+            
+            // Payment buttons
+            document.getElementById('mpesa-pay-btn')?.addEventListener('click', processMpesaPayment);
+            document.getElementById('card-pay-btn')?.addEventListener('click', processCardPayment);
+            document.getElementById('cash-pay-btn')?.addEventListener('click', processCashPayment);
+            
+            // Add product
+            document.getElementById('add-product-btn')?.addEventListener('click', () => {
+                document.getElementById('add-product-modal').classList.add('active');
+            });
+            
+            document.getElementById('cancel-add-product')?.addEventListener('click', () => {
+                document.getElementById('add-product-modal').classList.remove('active');
+            });
+            
+            document.getElementById('save-product')?.addEventListener('click', addNewProduct);
+            
+            // Success modal actions
+            document.getElementById('print-receipt')?.addEventListener('click', printReceipt);
+            document.getElementById('new-sale')?.addEventListener('click', startNewSale);
+        }
+
+        // Switch between views
+        function switchView(viewName) {
+            // Update navigation
+            elements.navItems.forEach(item => {
+                if (item.dataset.page === viewName) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Update view visibility
+            elements.views.forEach(view => {
+                view.style.display = 'none';
+            });
+            
+            document.getElementById(`${viewName}-view`).style.display = 'block';
+            state.currentView = viewName;
+            
+            // Load data for the view if needed
+            if (viewName === 'inventory') {
+                loadInventory();
+            } else if (viewName === 'dashboard') {
+                loadDashboardData();
+            } else if (viewName === 'pos') {
+                loadProducts();
             }
         }
 
-        // Add product to cart
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
+        // Load products from backend
+        async function loadProducts() {
+            try {
+                elements.productsGrid.innerHTML = '<div class="spinner" id="products-spinner"></div>';
+                
+                const authToken = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/products`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const products = await response.json();
+                state.products = products;
+                renderProducts();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showNotification('Failed to load products. Please try again.', 'error');
+                elements.productsGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">Failed to load products</div>';
+            }
+        }
 
-            const existingItem = cart.find(item => item.productId === productId);
+        // Load inventory from backend
+        async function loadInventory() {
+            try {
+                elements.inventoryTable.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;"><div class="spinner" id="inventory-spinner"></div></td></tr>';
+                
+                const authToken = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/inventory`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const inventory = await response.json();
+                renderInventory(inventory);
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+                showNotification('Failed to load inventory. Please try again.', 'error');
+                elements.inventoryTable.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Failed to load inventory</td></tr>';
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                const authToken = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                updateDashboard(data);
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showNotification('Failed to load dashboard data.', 'error');
+            }
+        }
+
+        // Render products to the grid
+        function renderProducts() {
+            if (state.products.length === 0) {
+                elements.productsGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">No products available</div>';
+                return;
+            }
+            
+            elements.productsGrid.innerHTML = '';
+            
+            state.products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <i class="fas ${product.category === 'skincare' ? 'fa-spa' : 'fa-pump-soap'}"></i>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                    </div>
+                `;
+                productCard.addEventListener('click', () => addToCart(product));
+                elements.productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Render inventory table
+        function renderInventory(inventory) {
+            if (inventory.length === 0) {
+                elements.inventoryTable.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No inventory items</td></tr>';
+                return;
+            }
+            
+            let tableHTML = '';
+            inventory.forEach(item => {
+                const status = item.stock > 10 ? 'In Stock' : item.stock > 0 ? 'Low Stock' : 'Out of Stock';
+                const statusColor = item.stock > 10 ? 'green' : item.stock > 0 ? 'orange' : 'red';
+                
+                tableHTML += `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px;">${item.name}</td>
+                        <td style="padding: 10px;">${item.sku}</td>
+                        <td style="padding: 10px;">$${item.price.toFixed(2)}</td>
+                        <td style="padding: 10px;">${item.stock}</td>
+                        <td style="padding: 10px; color: ${statusColor};">${status}</td>
+                        <td style="padding: 10px;">
+                            <button class="btn" onclick="editProduct('${item._id}')">Edit</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            elements.inventoryTable.innerHTML = tableHTML;
+        }
+
+        // Update dashboard with data
+        function updateDashboard(data) {
+            elements.todaySales.textContent = `$${data.todaySales.toFixed(2)}`;
+            elements.todayTransactions.textContent = data.todayTransactions;
+            elements.totalProducts.textContent = data.totalProducts;
+            elements.lowStock.textContent = data.lowStockItems;
+            
+            // Update recent transactions
+            if (data.recentTransactions.length === 0) {
+                elements.recentTransactions.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No recent transactions</td></tr>';
+                return;
+            }
+            
+            let transactionsHTML = '';
+            data.recentTransactions.forEach(transaction => {
+                transactionsHTML += `
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 10px;">${transaction._id}</td>
+                        <td style="padding: 10px;">${new Date(transaction.timestamp).toLocaleTimeString()}</td>
+                        <td style="padding: 10px;">$${transaction.total.toFixed(2)}</td>
+                        <td style="padding: 10px;">${transaction.paymentMethod}</td>
+                        <td style="padding: 10px; color: green;">Completed</td>
+                    </tr>
+                `;
+            });
+            
+            elements.recentTransactions.innerHTML = transactionsHTML;
+        }
+
+        // Add product to cart
+        function addToCart(product) {
+            const existingItem = state.cart.find(item => item.productId === product._id);
+            
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
-                cart.push({
-                    productId: product.id,
-                    quantity: 1,
+                state.cart.push({
+                    productId: product._id,
+                    name: product.name,
                     price: product.price,
-                    name: product.name
+                    quantity: 1
                 });
             }
             
@@ -674,36 +1298,424 @@
             showNotification(`${product.name} added to cart`);
         }
 
-        // Update item quantity
-        function updateQuantity(productId, change) {
-            const item = cart.find(item => item.productId === productId);
-            if (!item) return;
+        // Update cart display
+        function updateCartDisplay() {
+            if (state.cart.length === 0) {
+                elements.cartItems.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">No items in cart</div>';
+                elements.cartTotal.textContent = '$0.00';
+                elements.checkoutBtn.disabled = true;
+                return;
+            }
+            
+            let cartHTML = '';
+            let total = 0;
+            
+            state.cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                cartHTML += `
+                    <div class="cart-item">
+                        <div class="item-details">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-price">$${item.price.toFixed(2)}</div>
+                        </div>
+                        <div class="item-quantity">
+                            <div class="quantity-btn" onclick="updateQuantity('${item.productId}', -1)">-</div>
+                            <span>${item.quantity}</span>
+                            <div class="quantity-btn" onclick="updateQuantity('${item.productId}', 1)">+</div>
+                        </div>
+                        <div style="font-weight: 700;">$${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+            });
+            
+            elements.cartItems.innerHTML = cartHTML;
+            elements.cartTotal.textContent = `$${total.toFixed(2)}`;
+            elements.checkoutBtn.disabled = false;
+        }
 
+        // Update item quantity in cart
+        function updateQuantity(productId, change) {
+            const item = state.cart.find(item => item.productId === productId);
+            if (!item) return;
+            
             item.quantity += change;
+            
             if (item.quantity <= 0) {
-                cart = cart.filter(i => i.productId !== productId);
+                state.cart = state.cart.filter(i => i.productId !== productId);
             }
             
             updateCartDisplay();
         }
 
-        // Update cart display
-        function updateCartDisplay() {
-            // In a real implementation, this would update the DOM
-            console.log('Cart updated:', cart);
+        // Handle barcode scan
+        function handleBarcodeScan() {
+            const barcode = elements.barcodeInput.value.trim();
+            if (!barcode) {
+                showNotification('Please enter a barcode', 'warning');
+                return;
+            }
+            
+            handleBarcodeInput(barcode);
         }
 
-        // Process payment
-        function processPayment() {
-            showNotification('Payment processed successfully!');
-            // In a real implementation, this would integrate with payment gateway
-            // and record the transaction in MongoDB
+        // Handle barcode input
+        function handleBarcodeInput(barcode) {
+            const product = state.products.find(p => p.sku === barcode);
+            if (product) {
+                addToCart(product);
+                elements.barcodeInput.value = '';
+            } else {
+                showNotification('Product not found', 'error');
+            }
+        }
+
+        // Filter products based on search input
+        function filterProducts() {
+            const searchTerm = elements.productSearch.value.toLowerCase();
+            
+            if (!searchTerm) {
+                renderProducts();
+                return;
+            }
+            
+            const filteredProducts = state.products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) || 
+                product.sku.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredProducts.length === 0) {
+                elements.productsGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">No products found</div>';
+                return;
+            }
+            
+            elements.productsGrid.innerHTML = '';
+            
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <i class="fas ${product.category === 'skincare' ? 'fa-spa' : 'fa-pump-soap'}"></i>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                    </div>
+                `;
+                productCard.addEventListener('click', () => addToCart(product));
+                elements.productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Show payment modal
+        function showPaymentModal() {
+            const total = calculateCartTotal();
+            elements.paymentTotal.textContent = `$${total.toFixed(2)}`;
+            elements.paymentModal.classList.add('active');
+            
+            // Reset payment UI
+            document.getElementById('mpesa-payment').style.display = 'none';
+            document.getElementById('card-payment').style.display = 'none';
+            document.getElementById('cash-payment').style.display = 'none';
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.classList.remove('selected');
+            });
+            
+            state.selectedPaymentMethod = null;
+            state.paymentType = null;
+        }
+
+        // Calculate cart total
+        function calculateCartTotal() {
+            return state.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        // Select payment method
+        function selectPaymentMethod(methodElement) {
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.classList.remove('selected');
+            });
+            
+            methodElement.classList.add('selected');
+            
+            const method = methodElement.dataset.method;
+            const type = methodElement.dataset.type;
+            
+            state.selectedPaymentMethod = method;
+            state.paymentType = type;
+            
+            // Show appropriate payment form
+            document.getElementById('mpesa-payment').style.display = method === 'mpesa' ? 'block' : 'none';
+            document.getElementById('card-payment').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('cash-payment').style.display = method === 'cash' ? 'block' : 'none';
+            
+            // Reset cash received input
+            if (method === 'cash') {
+                document.getElementById('cash-received').value = '';
+                calculateChange();
+            }
+        }
+
+        // Calculate change for cash payment
+        function calculateChange() {
+            const cashReceived = parseFloat(document.getElementById('cash-received').value) || 0;
+            const total = calculateCartTotal();
+            const change = cashReceived - total;
+            
+            document.getElementById('change-amount').textContent = `$${change >= 0 ? change.toFixed(2) : '0.00'}`;
+            
+            // Enable/disable cash payment button based on sufficient funds
+            document.getElementById('cash-pay-btn').disabled = change < 0;
+        }
+
+        // Process M-Pesa payment
+        async function processMpesaPayment() {
+            const phoneNumber = document.getElementById('phone-number').value.trim();
+            
+            if (!phoneNumber) {
+                showNotification('Please enter a phone number', 'warning');
+                return;
+            }
+            
+            try {
+                showNotification('Processing M-Pesa payment...', 'info');
+                
+                const authToken = localStorage.getItem('authToken');
+                const total = calculateCartTotal();
+                
+                const response = await fetch(`${API_BASE_URL}/api/mpesa/payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        phoneNumber,
+                        amount: total,
+                        cart: state.cart
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccessModal(total, 'M-Pesa', result.transactionId);
+                    elements.paymentModal.classList.remove('active');
+                    state.cart = [];
+                    updateCartDisplay();
+                } else {
+                    showNotification('M-Pesa payment failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error processing M-Pesa payment:', error);
+                showNotification('Failed to process M-Pesa payment. Please try again.', 'error');
+            }
+        }
+
+        // Process card payment
+        async function processCardPayment() {
+            const cardNumber = document.getElementById('card-number').value.trim();
+            const expiryDate = document.getElementById('expiry-date').value.trim();
+            const cvv = document.getElementById('cvv').value.trim();
+            
+            if (!cardNumber || !expiryDate || !cvv) {
+                showNotification('Please fill all card details', 'warning');
+                return;
+            }
+            
+            try {
+                showNotification('Processing card payment...', 'info');
+                
+                const authToken = localStorage.getItem('authToken');
+                const total = calculateCartTotal();
+                
+                const response = await fetch(`${API_BASE_URL}/api/card/payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        cardNumber,
+                        expiryDate,
+                        cvv,
+                        amount: total,
+                        cart: state.cart,
+                        cardType: state.paymentType
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccessModal(total, state.paymentType, result.transactionId);
+                    elements.paymentModal.classList.remove('active');
+                    state.cart = [];
+                    updateCartDisplay();
+                } else {
+                    showNotification('Card payment failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error processing card payment:', error);
+                showNotification('Failed to process card payment. Please try again.', 'error');
+            }
+        }
+
+        // Process cash payment
+        async function processCashPayment() {
+            const cashReceived = parseFloat(document.getElementById('cash-received').value);
+            const total = calculateCartTotal();
+            const change = cashReceived - total;
+            
+            if (change < 0) {
+                showNotification('Insufficient cash received', 'error');
+                return;
+            }
+            
+            try {
+                showNotification('Processing cash payment...', 'info');
+                
+                const authToken = localStorage.getItem('authToken');
+                
+                const response = await fetch(`${API_BASE_URL}/api/transactions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        paymentMethod: 'cash',
+                        amount: total,
+                        cashReceived,
+                        change,
+                        cart: state.cart
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccessModal(total, 'Cash', result.transactionId, change);
+                    elements.paymentModal.classList.remove('active');
+                    state.cart = [];
+                    updateCartDisplay();
+                } else {
+                    showNotification('Cash payment failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error processing cash payment:', error);
+                showNotification('Failed to process cash payment. Please try again.', 'error');
+            }
+        }
+
+        // Show success modal
+        function showSuccessModal(amount, method, transactionId, change = null) {
+            document.getElementById('success-transaction-id').textContent = transactionId;
+            document.getElementById('success-amount').textContent = `$${amount.toFixed(2)}`;
+            document.getElementById('success-method').textContent = method;
+            
+            if (change !== null) {
+                document.getElementById('success-change').style.display = 'block';
+                document.getElementById('success-change-amount').textContent = `$${change.toFixed(2)}`;
+            } else {
+                document.getElementById('success-change').style.display = 'none';
+            }
+            
+            elements.successModal.classList.add('active');
+        }
+
+        // Print receipt
+        function printReceipt() {
+            // In a real implementation, this would generate a printable receipt
+            showNotification('Receipt sent to printer', 'success');
+        }
+
+        // Start new sale
+        function startNewSale() {
+            elements.successModal.classList.remove('active');
+            state.cart = [];
+            updateCartDisplay();
+        }
+
+        // Add new product
+        async function addNewProduct() {
+            const name = document.getElementById('product-name').value.trim();
+            const sku = document.getElementById('product-sku').value.trim();
+            const price = parseFloat(document.getElementById('product-price').value);
+            const stock = parseInt(document.getElementById('product-stock').value);
+            const category = document.getElementById('product-category').value.trim();
+            
+            if (!name || !sku || isNaN(price) || isNaN(stock)) {
+                showNotification('Please fill all required fields', 'warning');
+                return;
+            }
+            
+            try {
+                const authToken = localStorage.getItem('authToken');
+                
+                const response = await fetch(`${API_BASE_URL}/api/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        name,
+                        sku,
+                        price,
+                        stock,
+                        category
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('Product added successfully', 'success');
+                    document.getElementById('add-product-modal').classList.remove('active');
+                    document.getElementById('add-product-form').reset();
+                    loadInventory();
+                    loadProducts();
+                } else {
+                    showNotification('Failed to add product: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error adding product:', error);
+                showNotification('Failed to add product. Please try again.', 'error');
+            }
+        }
+
+        // Edit product
+        function editProduct(productId) {
+            // In a real implementation, this would open an edit modal
+            showNotification('Edit functionality coming soon', 'info');
         }
 
         // Show notification
-        function showNotification(message) {
+        function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
+            notification.style.backgroundColor = type === 'success' ? 'var(--success)' : 
+                                              type === 'error' ? 'var(--danger)' : 
+                                              type === 'warning' ? 'var(--warning)' : 'var(--primary)';
             notification.classList.add('show');
             
             setTimeout(() => {
@@ -711,11 +1723,27 @@
             }, 3000);
         }
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            // In a real implementation, this would fetch data from MongoDB
-            console.log('POS System Initialized');
-        });
+        // Update date and time display
+        function updateDateTime() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric', year: 'numeric' };
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', options);
+        }
+
+        // Update user info display
+        function updateUserInfo() {
+            if (state.user) {
+                document.getElementById('user-avatar').textContent = state.user.initials;
+                document.getElementById('user-info-text').textContent = `${state.user.name} (${state.user.role})`;
+            }
+        }
+
+        // Logout user
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('pos_user');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>
