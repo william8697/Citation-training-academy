@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algracia Cosmetics - Sign In</title>
+    <title>Algracia Cosmetics - Enterprise Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -28,26 +28,27 @@
         }
 
         body {
-            background-color: #f8f9fa;
-            color: #333;
-            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(255, 64, 129, 0.1) 100%);
             padding: 20px;
         }
 
-        .login-container {
-            width: 100%;
-            max-width: 420px;
-        }
-
-        .login-card {
+        .auth-container {
             background-color: var(--white);
             border-radius: 10px;
             box-shadow: var(--shadow);
-            padding: 30px;
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 25px 20px;
             text-align: center;
         }
 
@@ -55,8 +56,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 25px;
-            color: var(--primary);
+            margin-bottom: 15px;
         }
 
         .logo i {
@@ -69,22 +69,17 @@
             font-size: 1.8rem;
         }
 
-        .welcome-text {
-            margin-bottom: 25px;
+        .auth-header h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
         }
 
-        .welcome-text h2 {
-            color: var(--dark);
-            margin-bottom: 10px;
-        }
-
-        .welcome-text p {
-            color: var(--gray);
+        .auth-body {
+            padding: 25px 30px;
         }
 
         .form-group {
             margin-bottom: 20px;
-            text-align: left;
         }
 
         .form-group label {
@@ -94,99 +89,78 @@
             color: var(--dark);
         }
 
-        .input-with-icon {
-            position: relative;
-        }
-
-        .input-with-icon i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-        }
-
-        .input-with-icon input {
+        .form-control {
             width: 100%;
-            padding: 12px 15px 12px 45px;
+            padding: 12px 15px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 5px;
             font-size: 1rem;
             transition: all 0.3s ease;
         }
 
-        .input-with-icon input:focus {
+        .form-control:focus {
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
         }
 
-        .password-toggle {
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
             position: absolute;
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray);
-            cursor: pointer;
         }
 
-        .remember-forgot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        .remember {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .remember input {
-            width: 16px;
-            height: 16px;
-        }
-
-        .forgot-password {
-            color: var(--primary);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .forgot-password:hover {
-            color: var(--primary-dark);
-            text-decoration: underline;
-        }
-
-        .login-btn {
+        .btn {
+            display: block;
             width: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
+            padding: 12px;
             border: none;
-            padding: 14px;
-            border-radius: 8px;
-            font-size: 1.1rem;
+            border-radius: 5px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 20px;
         }
 
-        .login-btn:hover {
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
             opacity: 0.9;
             transform: translateY(-2px);
         }
 
-        .login-btn:active {
-            transform: translateY(0);
+        .btn-google {
+            background-color: var(--white);
+            color: #757575;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-google:hover {
+            background-color: #f5f5f5;
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
         }
 
         .divider {
             display: flex;
             align-items: center;
-            margin: 20px 0;
+            margin: 25px 0;
             color: var(--gray);
         }
 
@@ -194,320 +168,422 @@
         .divider::after {
             content: "";
             flex: 1;
-            border-bottom: 1px solid #ddd;
+            height: 1px;
+            background-color: #ddd;
         }
 
-        .divider span {
+        .divider-text {
             padding: 0 15px;
             font-size: 0.9rem;
         }
 
-        .social-login {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .social-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f5f5f5;
-            color: var(--dark);
-            border: 1px solid #ddd;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .social-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow);
-        }
-
-        .social-btn.google:hover {
-            background-color: #db4437;
-            color: white;
-            border-color: #db4437;
-        }
-
-        .social-btn.microsoft:hover {
-            background-color: #0078d7;
-            color: white;
-            border-color: #0078d7;
-        }
-
-        .register-link {
+        .auth-footer {
+            text-align: center;
             margin-top: 20px;
-            font-size: 0.9rem;
             color: var(--gray);
         }
 
-        .register-link a {
+        .auth-footer a {
             color: var(--primary);
             text-decoration: none;
             font-weight: 600;
-            transition: color 0.3s ease;
         }
 
-        .register-link a:hover {
-            color: var(--primary-dark);
+        .auth-footer a:hover {
             text-decoration: underline;
         }
 
+        .error-message {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            display: none;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
             padding: 15px 20px;
-            background-color: var(--danger);
+            background-color: var(--success);
             color: white;
             border-radius: 8px;
             box-shadow: var(--shadow);
             transform: translateX(100%);
             transition: transform 0.3s ease;
             z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .notification.error {
+            background-color: var(--danger);
         }
 
         .notification.show {
             transform: translateX(0);
         }
 
-        .notification.success {
-            background-color: var(--success);
+        .notification i {
+            margin-right: 10px;
         }
 
-        /* Responsive Design */
         @media (max-width: 480px) {
-            .login-card {
+            .auth-container {
+                max-width: 100%;
+            }
+            
+            .auth-body {
                 padding: 20px;
             }
-            
-            .logo {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .logo i {
-                margin-right: 0;
-                margin-bottom: 10px;
-            }
-            
-            .remember-forgot {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left: 4px solid var(--primary);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-            display: none;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
+    <div class="auth-container">
+        <div class="auth-header">
             <div class="logo">
                 <i class="fas fa-spa"></i>
-                <div class="logo-text">Algracia POS</div>
+                <span class="logo-text">Algracia</span>
             </div>
-            
-            <div class="welcome-text">
-                <h2>Welcome Back</h2>
-                <p>Sign in to access your POS dashboard</p>
-            </div>
-            
+            <h1>Enterprise POS Login</h1>
+        </div>
+        
+        <div class="auth-body">
             <form id="login-form">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="username" placeholder="Enter your username" required>
-                    </div>
+                    <label for="email">Enterprise Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="email@company.com" required>
+                    <div class="error-message" id="email-error"></div>
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" placeholder="Enter your password" required>
-                        <span class="password-toggle" id="password-toggle">
-                            <i class="fas fa-eye"></i>
-                        </span>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                        <i class="fas fa-eye-slash input-icon password-toggle" id="password-toggle"></i>
                     </div>
+                    <div class="error-message" id="password-error"></div>
                 </div>
                 
-                <div class="remember-forgot">
-                    <div class="remember">
-                        <input type="checkbox" id="remember-me">
-                        <label for="remember-me">Remember me</label>
-                    </div>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" id="login-btn">
+                        <span class="spinner" id="login-spinner"></span>
+                        <span>Login to POS System</span>
+                    </button>
                 </div>
-                
-                <button type="submit" class="login-btn" id="login-btn">
-                    <span id="btn-text">Sign In</span>
-                    <div class="spinner" id="login-spinner"></div>
-                </button>
             </form>
             
             <div class="divider">
-                <span>Or continue with</span>
+                <span class="divider-text">Or continue with</span>
             </div>
             
-            <div class="social-login">
-                <div class="social-btn google">
-                    <i class="fab fa-google"></i>
-                </div>
-                <div class="social-btn microsoft">
-                    <i class="fab fa-microsoft"></i>
-                </div>
+            <div class="form-group">
+                <button class="btn btn-google" id="google-signin">
+                    <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                        <path fill="#4285F4" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
+                    </svg>
+                    Sign in with Google
+                </button>
             </div>
             
-            <div class="register-link">
-                Don't have an account? <a href="signup.html">Create Account</a>
+            <div class="auth-footer">
+                <p>Don't have an enterprise account? <a href="sistersignup.html">Request access</a></p>
             </div>
         </div>
     </div>
 
-    <div class="notification" id="notification"></div>
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text"></span>
+    </div>
 
+    <!-- Google API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <script>
+        // API Configuration
+        const API_BASE_URL = 'https://citation-training-academy-backend.onrender.com';
+        const GOOGLE_CLIENT_ID = '634814462335-9o4t8q95c4orcsd9sijjl52374g6vm85.apps.googleusercontent.com';
+        const JWT_TOKEN = '17581758Na';
+
         // DOM Elements
         const loginForm = document.getElementById('login-form');
-        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.getElementById('password-toggle');
         const loginBtn = document.getElementById('login-btn');
-        const btnText = document.getElementById('btn-text');
         const loginSpinner = document.getElementById('login-spinner');
+        const googleSigninBtn = document.getElementById('google-signin');
         const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notification-text');
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is already logged in
-            const authToken = localStorage.getItem('authToken');
-            if (authToken) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
-            setupEventListeners();
-        });
+        // Initialize Google Sign-In
+        function initializeGoogleSignIn() {
+            google.accounts.id.initialize({
+                client_id: GOOGLE_CLIENT_ID,
+                callback: handleGoogleSignIn
+            });
 
-        // Set up event listeners
-        function setupEventListeners() {
-            // Password visibility toggle
-            passwordToggle.addEventListener('click', togglePasswordVisibility);
-            
-            // Form submission
-            loginForm.addEventListener('submit', handleLogin);
+            google.accounts.id.renderButton(
+                googleSigninBtn,
+                { 
+                    theme: "outline", 
+                    size: "large",
+                    width: googleSigninBtn.offsetWidth,
+                    text: "signin_with"
+                }
+            );
         }
 
-        // Toggle password visibility
-        function togglePasswordVisibility() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
+        // Handle Google Sign-In
+        function handleGoogleSignIn(response) {
+            showLoading(googleSigninBtn, true);
             
-            // Toggle eye icon
-            const eyeIcon = passwordToggle.querySelector('i');
-            eyeIcon.classList.toggle('fa-eye');
-            eyeIcon.classList.toggle('fa-eye-slash');
+            // Verify the Google token with your backend
+            fetch(`${API_BASE_URL}/api/auth/google`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${JWT_TOKEN}`
+                },
+                body: JSON.stringify({ credential: response.credential })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Google authentication failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Store the authentication token
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('pos_user', JSON.stringify(data.user));
+                    
+                    // Redirect to POS system
+                    window.location.href = 'pos.html';
+                } else {
+                    showNotification('Google authentication failed: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Google sign-in error:', error);
+                showNotification('Failed to authenticate with Google. Please try again.', 'error');
+            })
+            .finally(() => {
+                showLoading(googleSigninBtn, false);
+            });
         }
 
-        // Handle login form submission
-        async function handleLogin(e) {
+        // Handle form submission
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const username = usernameInput.value.trim();
+            // Validate form
+            if (validateForm()) {
+                // Submit form
+                submitLogin();
+            }
+        });
+
+        // Toggle password visibility
+        passwordToggle.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.classList.replace('fa-eye-slash', 'fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.classList.replace('fa-eye', 'fa-eye-slash');
+            }
+        });
+
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            
+            // Reset errors
+            document.getElementById('email-error').style.display = 'none';
+            document.getElementById('password-error').style.display = 'none';
+            
+            // Validate email
+            const email = emailInput.value.trim();
+            if (!email) {
+                showError('email-error', 'Email is required');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showError('email-error', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            // Validate password
             const password = passwordInput.value.trim();
-            
-            if (!username || !password) {
-                showNotification('Please enter both username and password', 'error');
-                return;
+            if (!password) {
+                showError('password-error', 'Password is required');
+                isValid = false;
+            } else if (password.length < 6) {
+                showError('password-error', 'Password must be at least 6 characters');
+                isValid = false;
             }
             
-            // Show loading state
-            setLoadingState(true);
-            
-            try {
-                // Simulate API call - in a real app, this would be an actual fetch request
-                setTimeout(() => {
-                    // Store user data (in a real app, this would come from the server)
-                    const userData = {
-                        name: "John Doe",
-                        email: username + "@example.com",
-                        role: "Cashier",
-                        initials: "JD"
-                    };
-                    
-                    // Generate a mock auth token
-                    const authToken = 'mock_token_' + Math.random().toString(36).substr(2);
-                    
-                    // Store in localStorage
-                    localStorage.setItem('authToken', authToken);
-                    localStorage.setItem('pos_user', JSON.stringify(userData));
-                    
-                    showNotification('Login successful! Redirecting...', 'success');
-                    
-                    // Redirect to main application after a brief delay
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                }, 1500);
-                
-            } catch (error) {
-                console.error('Login error:', error);
-                showNotification('Network error. Please try again.', 'error');
-                setLoadingState(false);
-            }
+            return isValid;
         }
 
-        // Set loading state for login button
-        function setLoadingState(isLoading) {
-            if (isLoading) {
-                btnText.style.display = 'none';
-                loginSpinner.style.display = 'block';
-                loginBtn.disabled = true;
-            } else {
-                btnText.style.display = 'block';
-                loginSpinner.style.display = 'none';
-                loginBtn.disabled = false;
-            }
+        // Submit login form
+        function submitLogin() {
+            showLoading(loginBtn, true);
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // Send login request to backend
+            fetch(`${API_BASE_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${JWT_TOKEN}`
+                },
+                body: JSON.stringify({ email, password })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'Login failed');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Store the authentication token
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('pos_user', JSON.stringify(data.user));
+                    
+                    // Show success message
+                    showNotification('Login successful! Redirecting...', 'success');
+                    
+                    // Redirect to POS system
+                    setTimeout(() => {
+                        window.location.href = 'pos.html';
+                    }, 1000);
+                } else {
+                    showNotification('Login failed: ' + data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                showNotification(error.message || 'Failed to login. Please try again.', 'error');
+            })
+            .finally(() => {
+                showLoading(loginBtn, false);
+            });
+        }
+
+        // Show error message
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
         }
 
         // Show notification
-        function showNotification(message, type = 'error') {
-            notification.textContent = message;
+        function showNotification(message, type = 'success') {
+            notificationText.textContent = message;
             notification.className = 'notification';
             
-            if (type === 'success') {
-                notification.classList.add('success');
+            if (type === 'error') {
+                notification.classList.add('error');
+                notification.querySelector('i').className = 'fas fa-exclamation-circle';
+            } else {
+                notification.querySelector('i').className = 'fas fa-check-circle';
             }
             
             notification.classList.add('show');
             
+            // Hide notification after 5 seconds
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 5000);
         }
+
+        // Show loading state
+        function showLoading(button, isLoading) {
+            const spinner = button.querySelector('.spinner');
+            if (isLoading) {
+                spinner.style.display = 'inline-block';
+                button.disabled = true;
+            } else {
+                spinner.style.display = 'none';
+                button.disabled = false;
+            }
+        }
+
+        // Validate email format
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Check if user is already logged in
+        function checkAuthentication() {
+            const authToken = localStorage.getItem('authToken');
+            if (authToken) {
+                // Verify token is still valid with backend
+                fetch(`${API_BASE_URL}/api/auth/verify`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Token is valid, redirect to POS
+                        window.location.href = 'pos.html';
+                    }
+                })
+                .catch(error => {
+                    // Token is invalid, clear it
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('pos_user');
+                });
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            
+            // Initialize Google Sign-In with a slight delay to ensure the library is loaded
+            setTimeout(initializeGoogleSignIn, 500);
+        });
     </script>
 </body>
 </html>
