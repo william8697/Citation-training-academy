@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algracia Cosmetics - Login</title>
+    <title>Algracia Cosmetics - Sign In</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -35,12 +35,12 @@
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(255, 64, 129, 0.1) 100%);
+            padding: 20px;
         }
 
         .login-container {
             width: 100%;
             max-width: 420px;
-            padding: 20px;
         }
 
         .login-card {
@@ -119,6 +119,15 @@
             border-color: var(--primary);
             outline: none;
             box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            cursor: pointer;
         }
 
         .remember-forgot {
@@ -310,15 +319,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gray);
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -382,7 +382,7 @@
             </div>
             
             <div class="register-link">
-                Don't have an account? <a href="signup.html">Signup Now</a>
+                Don't have an account? <a href="signup.html">Create Account</a>
             </div>
         </div>
     </div>
@@ -390,9 +390,6 @@
     <div class="notification" id="notification"></div>
 
     <script>
-        // API Base URL
-        const API_BASE_URL = 'https://citation-training-academy-backend.onrender.com';
-        
         // DOM Elements
         const loginForm = document.getElementById('login-form');
         const usernameInput = document.getElementById('username');
@@ -451,23 +448,22 @@
             setLoadingState(true);
             
             try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username,
-                        password
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok && data.success) {
-                    // Store authentication token and user data
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('pos_user', JSON.stringify(data.user));
+                // Simulate API call - in a real app, this would be an actual fetch request
+                setTimeout(() => {
+                    // Store user data (in a real app, this would come from the server)
+                    const userData = {
+                        name: "John Doe",
+                        email: username + "@example.com",
+                        role: "Cashier",
+                        initials: "JD"
+                    };
+                    
+                    // Generate a mock auth token
+                    const authToken = 'mock_token_' + Math.random().toString(36).substr(2);
+                    
+                    // Store in localStorage
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('pos_user', JSON.stringify(userData));
                     
                     showNotification('Login successful! Redirecting...', 'success');
                     
@@ -475,10 +471,8 @@
                     setTimeout(() => {
                         window.location.href = 'index.html';
                     }, 1500);
-                } else {
-                    showNotification(data.message || 'Login failed. Please check your credentials.', 'error');
-                    setLoadingState(false);
-                }
+                }, 1500);
+                
             } catch (error) {
                 console.error('Login error:', error);
                 showNotification('Network error. Please try again.', 'error');
