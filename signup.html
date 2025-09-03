@@ -457,7 +457,7 @@
             </div>
             
             <div class="login-link">
-                Already have an account? <a href="sister-login.html">Sign In</a>
+                Already have an account? <a href="login.html">Sign In</a>
             </div>
         </div>
     </div>
@@ -554,13 +554,13 @@
                 color = 'transparent';
             } else if (strength < 50) {
                 message = 'Weak password';
-                color = var(--danger);
+                color = '#f44336';
             } else if (strength < 80) {
                 message = 'Medium password';
-                color = var(--warning);
+                color = '#ff9800';
             } else {
                 message = 'Strong password';
-                color = var(--success);
+                color = '#4caf50';
             }
             
             // Update UI
@@ -579,10 +579,10 @@
                 passwordMatch.textContent = '';
             } else if (password === confirmPassword) {
                 passwordMatch.textContent = 'Passwords match';
-                passwordMatch.style.color = var(--success);
+                passwordMatch.style.color = '#4caf50';
             } else {
                 passwordMatch.textContent = 'Passwords do not match';
-                passwordMatch.style.color = var(--danger);
+                passwordMatch.style.color = '#f44336';
             }
         }
 
@@ -618,43 +618,34 @@
             setLoadingState(true);
             
             try {
-                const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        firstName,
-                        lastName,
-                        email,
-                        phone,
-                        role,
-                        password
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok && data.success) {
-                    showNotification('Account created successfully! Redirecting to login...', 'success');
+                // Simulate API call - in a real app, this would be an actual fetch request
+                setTimeout(() => {
+                    // Store user data (in a real app, this would come from the server)
+                    const userData = {
+                        name: `${firstName} ${lastName}`,
+                        email: email,
+                        role: role,
+                        initials: `${firstName.charAt(0)}${lastName.charAt(0)}`
+                    };
                     
-                    // Clear form
-                    signupForm.reset();
-                    passwordStrengthBar.style.width = '0';
-                    passwordStrengthText.textContent = '';
-                    passwordMatch.textContent = '';
+                    // Generate a mock auth token
+                    const authToken = 'mock_token_' + Math.random().toString(36).substr(2);
                     
-                    // Redirect to login page after a brief delay
+                    // Store in localStorage
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('pos_user', JSON.stringify(userData));
+                    
+                    showNotification('Account created successfully! Redirecting to dashboard...', 'success');
+                    
+                    // Redirect to main application after a brief delay
                     setTimeout(() => {
-                        window.location.href = 'sister-login.html';
-                    }, 2000);
-                } else {
-                    showNotification(data.message || 'Registration failed. Please try again.', 'error');
-                    setLoadingState(false);
-                }
+                        window.location.href = 'index.html';
+                    }, 1500);
+                }, 1500);
+                
             } catch (error) {
                 console.error('Signup error:', error);
-                showNotification('Network error. Please try again.', 'error');
+                showNotification('Registration error. Please try again.', 'error');
                 setLoadingState(false);
             }
         }
