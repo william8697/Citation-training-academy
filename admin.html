@@ -1935,63 +1935,79 @@
         }
 
         // Approve user
-      // In admin.html, find the approveUser function and update it:
-async function approveUser(userId) {
-    try {
-        const response = await fetch(`/api/admin/users/${userId}/approve`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+        async function approveUser(userId) {
+            try {
+                const authToken = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/admin/approve-user/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('User approved successfully.', 'success');
+                    elements.userApprovalModal.classList.remove('active');
+                    
+                    // Refresh the approvals list
+                    loadPendingApprovals();
+                    loadDashboardData();
+                } else {
+                    showNotification('Failed to approve user: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error approving user:', error);
+                showNotification('Failed to approve user.', 'error');
             }
-        });
-
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.message || `HTTP error! status: ${response.status}`);
         }
-        
-        if (data.success) {
-            showNotification('User approved successfully', 'success');
-            loadPendingApprovals(); // Refresh the list
-        } else {
-            showNotification(data.message || 'Failed to approve user', 'error');
-        }
-    } catch (error) {
-        console.error('Error approving user:', error);
-        showNotification(error.message || 'Error approving user', 'error');
-    }
-}
 
-// Also update the rejectUser function:
-async function rejectUser(userId) {
-    try {
-        const response = await fetch(`/api/admin/users/${userId}/reject`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+        // Reject user
+        async function rejectUser(userId) {
+            try {
+                const authToken = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/admin/reject-user/${userId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showNotification('User rejected successfully.', 'success');
+                    elements.userApprovalModal.classList.remove('active');
+                    
+                    // Refresh the approvals list
+                    loadPendingApprovals();
+                    loadDashboardData();
+                } else {
+                    showNotification('Failed to reject user: ' + result.message, 'error');
+                }
+            } catch (error) {
+                console.error('Error rejecting user:', error);
+                showNotification('Failed to reject user.', 'error');
             }
-        });
+        }
 
-        const data = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(data.message || `HTTP error! status: ${response.status}`);
-        }
-        
-        if (data.success) {
-            showNotification('User rejected successfully', 'success');
-            loadPendingApprovals(); // Refresh the list
-        } else {
-            showNotification(data.message || 'Failed to reject user', 'error');
-        }
-    } catch (error) {
-        console.error('Error rejecting user:', error);
-        showNotification(error.message || 'Error rejecting user', 'error');
-    }
-}
         // Add new user
         async function addNewUser() {
             const name = document.getElementById('new-user-name').value.trim();
