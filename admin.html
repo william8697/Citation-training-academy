@@ -474,10 +474,129 @@
         .tab-content.active {
             display: block;
         }
+        
+        /* Login Modal Specific Styles */
+        .login-modal .modal {
+            max-width: 450px;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .login-logo i {
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .login-logo h2 {
+            color: var(--dark);
+            margin-top: 10px;
+        }
+        
+        .login-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .login-error {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .login-error.show {
+            display: block;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 38px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .password-input-container {
+            position: relative;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Modal -->
+    <div class="modal-overlay login-modal active" id="login-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Admin Portal Access</div>
+            </div>
+            <div class="modal-body">
+                <div class="login-logo">
+                    <i class="fas fa-spa"></i>
+                    <h2>Algracia Cosmetics</h2>
+                </div>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" class="form-control" placeholder="admin@algracia.com" required autocomplete="username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="password-input-container">
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                            <span class="password-toggle" id="password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="login-error" id="login-error">Invalid email or password. Please try again.</div>
+                    </div>
+                    
+                    <div class="login-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password" id="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                            <span id="login-btn-text">Sign In</span>
+                            <div class="spinner" id="login-spinner" style="display: none; width: 20px; height: 20px;"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div style="text-align: center; width: 100%; font-size: 0.9rem; color: var(--gray);">
+                    Secure Admin Portal | © 2023 Algracia Cosmetics
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="main-container" style="display: none;">
         <header>
             <div class="logo">
                 <i class="fas fa-spa"></i>
@@ -966,7 +1085,8 @@
             currentView: 'dashboard',
             pendingApprovals: [],
             activeUsers: [],
-            currentApprovalUser: null
+            currentApprovalUser: null,
+            sessionTimeout: null
         };
 
         // DOM Elements
@@ -986,7 +1106,16 @@
             transactionsTable: document.getElementById('transactions-table'),
             recentActivities: document.getElementById('recent-activities'),
             userApprovalModal: document.getElementById('user-approval-modal'),
-            addUserModal: document.getElementById('add-user-modal')
+            addUserModal: document.getElementById('add-user-modal'),
+            loginModal: document.getElementById('login-modal'),
+            loginForm: document.getElementById('login-form'),
+            loginEmail: document.getElementById('login-email'),
+            loginPassword: document.getElementById('login-password'),
+            passwordToggle: document.getElementById('password-toggle'),
+            loginError: document.getElementById('login-error'),
+            loginSpinner: document.getElementById('login-spinner'),
+            loginBtnText: document.getElementById('login-btn-text'),
+            mainContainer: document.getElementById('main-container')
         };
 
         // Initialize the application
@@ -999,37 +1128,57 @@
 
         // Initialize application
         function initApp() {
-            // Check if user is logged in and is admin
+            // Check if user is already logged in
             const authToken = localStorage.getItem('authToken');
-            if (!authToken) {
-                window.location.href = 'login.html';
-                return;
-            }
-            
             const userData = localStorage.getItem('pos_user');
-            if (userData) {
-                state.user = JSON.parse(userData);
-                
-                // Check if user is admin
-                if (state.user.role !== 'admin') {
-                    window.location.href = 'pos.html';
-                    return;
-                }
-                
-                updateUserInfo();
-            }
+            const tokenExpiry = localStorage.getItem('tokenExpiry');
             
-            // Load initial data
-            loadDashboardData();
-            loadPendingApprovals();
-            loadActiveUsers();
-            loadInventory();
-            loadTransactions();
-            loadRecentActivities();
+            if (authToken && userData && tokenExpiry) {
+                // Check if token is still valid
+                if (Date.now() < parseInt(tokenExpiry)) {
+                    state.user = JSON.parse(userData);
+                    
+                    // Check if user is admin
+                    if (state.user.role !== 'admin') {
+                        showNotification('Access denied. Admin privileges required.', 'error');
+                        logout();
+                        return;
+                    }
+                    
+                    // Hide login modal and show main app
+                    elements.loginModal.classList.remove('active');
+                    elements.mainContainer.style.display = 'grid';
+                    
+                    updateUserInfo();
+                    setupSessionTimeout();
+                    
+                    // Load initial data
+                    loadDashboardData();
+                    loadPendingApprovals();
+                    loadActiveUsers();
+                    loadInventory();
+                    loadTransactions();
+                    loadRecentActivities();
+                } else {
+                    // Token expired
+                    showNotification('Your session has expired. Please login again.', 'warning');
+                    logout();
+                }
+            } else {
+                // No valid session found, ensure login modal is visible
+                elements.loginModal.classList.add('active');
+                elements.mainContainer.style.display = 'none';
+            }
         }
 
         // Set up event listeners
         function setupEventListeners() {
+            // Login form submission
+            elements.loginForm.addEventListener('submit', handleLogin);
+            
+            // Password visibility toggle
+            elements.passwordToggle.addEventListener('click', togglePasswordVisibility);
+            
             // Navigation
             elements.navItems.forEach(item => {
                 if (item.id !== 'logout-btn') {
@@ -1073,6 +1222,143 @@
             
             // Filter transactions
             document.getElementById('filter-transactions').addEventListener('click', filterTransactions);
+            
+            // Forgot password
+            document.getElementById('forgot-password').addEventListener('click', handleForgotPassword);
+            
+            // Reset session timeout on user activity
+            document.addEventListener('mousemove', resetSessionTimeout);
+            document.addEventListener('keypress', resetSessionTimeout);
+            document.addEventListener('click', resetSessionTimeout);
+        }
+
+        // Handle login form submission
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = elements.loginEmail.value.trim();
+            const password = elements.loginPassword.value;
+            const rememberMe = document.getElementById('remember-me').checked;
+            
+            if (!email || !password) {
+                showLoginError('Please enter both email and password.');
+                return;
+            }
+            
+            // Show loading state
+            elements.loginSpinner.style.display = 'block';
+            elements.loginBtnText.textContent = 'Authenticating...';
+            elements.loginError.classList.remove('show');
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Check if user is admin
+                    if (data.user.role !== 'admin') {
+                        showLoginError('Access denied. Admin privileges required.');
+                        return;
+                    }
+                    
+                    // Store auth token and user data
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('pos_user', JSON.stringify(data.user));
+                    
+                    // Set token expiry (24 hours or 30 days if remember me is checked)
+                    const expiryTime = rememberMe ? 
+                        Date.now() + (30 * 24 * 60 * 60 * 1000) : // 30 days
+                        Date.now() + (24 * 60 * 60 * 1000); // 24 hours
+                    
+                    localStorage.setItem('tokenExpiry', expiryTime.toString());
+                    
+                    // Update state
+                    state.user = data.user;
+                    
+                    // Hide login modal and show main app
+                    elements.loginModal.classList.remove('active');
+                    elements.mainContainer.style.display = 'grid';
+                    
+                    // Update UI
+                    updateUserInfo();
+                    setupSessionTimeout();
+                    
+                    // Load initial data
+                    loadDashboardData();
+                    loadPendingApprovals();
+                    loadActiveUsers();
+                    loadInventory();
+                    loadTransactions();
+                    loadRecentActivities();
+                    
+                    showNotification('Login successful. Welcome back!', 'success');
+                } else {
+                    showLoginError(data.message || 'Invalid email or password. Please try again.');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showLoginError('Network error. Please check your connection and try again.');
+            } finally {
+                // Reset loading state
+                elements.loginSpinner.style.display = 'none';
+                elements.loginBtnText.textContent = 'Sign In';
+            }
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = elements.loginPassword;
+            const eyeIcon = elements.passwordToggle.querySelector('i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Show login error
+        function showLoginError(message) {
+            elements.loginError.textContent = message;
+            elements.loginError.classList.add('show');
+        }
+
+        // Handle forgot password
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            showNotification('Password reset functionality will be implemented soon.', 'info');
+        }
+
+        // Setup session timeout
+        function setupSessionTimeout() {
+            // Clear existing timeout if any
+            if (state.sessionTimeout) {
+                clearTimeout(state.sessionTimeout);
+            }
+            
+            // Set new timeout (30 minutes)
+            state.sessionTimeout = setTimeout(() => {
+                showNotification('Your session has expired due to inactivity.', 'warning');
+                logout();
+            }, 30 * 60 * 1000); // 30 minutes
+        }
+
+        // Reset session timeout on user activity
+        function resetSessionTimeout() {
+            if (state.user) {
+                setupSessionTimeout();
+            }
         }
 
         // Switch between views
@@ -1145,6 +1431,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1169,6 +1459,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1195,6 +1489,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1219,6 +1517,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1244,6 +1546,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1269,6 +1575,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1292,6 +1602,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1322,6 +1636,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1347,6 +1665,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1595,6 +1917,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1628,6 +1954,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1680,6 +2010,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1716,6 +2050,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1748,6 +2086,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1782,6 +2124,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1829,6 +2175,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1881,6 +2231,10 @@
                 });
                 
                 if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
@@ -1933,9 +2287,28 @@
 
         // Logout user
         function logout() {
+            // Clear session timeout
+            if (state.sessionTimeout) {
+                clearTimeout(state.sessionTimeout);
+            }
+            
+            // Clear stored data
             localStorage.removeItem('authToken');
             localStorage.removeItem('pos_user');
-            window.location.href = 'login.html';
+            localStorage.removeItem('tokenExpiry');
+            
+            // Reset state
+            state.user = null;
+            
+            // Show login modal and hide main app
+            elements.loginModal.classList.add('active');
+            elements.mainContainer.style.display = 'none';
+            
+            // Reset login form
+            elements.loginForm.reset();
+            elements.loginError.classList.remove('show');
+            
+            showNotification('You have been logged out successfully.', 'info');
         }
     </script>
 </body>
