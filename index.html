@@ -6,6 +6,7 @@
     <title>Algracia Cosmetics - Enterprise POS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
     <style>
         :root {
             --primary: #9c27b0;
@@ -379,6 +380,28 @@
             font-weight: 600;
         }
 
+        /* Scanner Camera View */
+        .scanner-camera {
+            margin-top: 15px;
+            position: relative;
+            display: none;
+        }
+
+        #scanner-viewport {
+            width: 100%;
+            height: 300px;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .scanner-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
         /* Notification */
         .notification {
             position: fixed;
@@ -396,6 +419,14 @@
 
         .notification.show {
             transform: translateX(0);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        .notification.warning {
+            background-color: var(--warning);
         }
 
         /* Modal Styles */
@@ -609,6 +640,31 @@
         .fade-in {
             animation: fadeIn 0.5s ease-in;
         }
+
+        /* Scanner Overlay */
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            height: 2px;
+            width: 100%;
+            background-color: var(--primary);
+            top: 50%;
+            animation: scan 2s infinite ease-in-out;
+        }
+
+        @keyframes scan {
+            0% { top: 20%; }
+            50% { top: 80%; }
+            100% { top: 20%; }
+        }
     </style>
 </head>
 <body>
@@ -733,9 +789,24 @@
                     <h3>Product Scanner</h3>
                     <div class="scanner-input">
                         <input type="text" id="barcode-input" placeholder="Scan barcode or enter product code...">
-                        <button class="scanner-btn" id="scan-btn">
-                            <i class="fas fa-camera"></i> Simulate Scan
+                        <button class="scanner-btn" id="manual-input-btn">
+                            <i class="fas fa-keyboard"></i> Manual Entry
                         </button>
+                        <button class="scanner-btn" id="camera-scan-btn">
+                            <i class="fas fa-camera"></i> Camera Scan
+                        </button>
+                    </div>
+                    
+                    <div class="scanner-camera" id="scanner-camera">
+                        <div id="scanner-viewport"></div>
+                        <div class="scanner-overlay">
+                            <div class="scan-line"></div>
+                        </div>
+                        <div class="scanner-controls">
+                            <button class="btn btn-primary" id="stop-scan-btn">
+                                <i class="fas fa-stop"></i> Stop Scanner
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -971,7 +1042,8 @@
             cart: [],
             currentView: 'dashboard',
             selectedPaymentMethod: null,
-            paymentType: null
+            paymentType: null,
+            isScanning: false
         };
 
         // DOM Elements
@@ -994,7 +1066,12 @@
             todayTransactions: document.getElementById('today-transactions'),
             totalProducts: document.getElementById('total-products'),
             lowStock: document.getElementById('low-stock'),
-            recentTransactions: document.getElementById('recent-transactions')
+            recentTransactions: document.getElementById('recent-transactions'),
+            scannerCamera: document.getElementById('scanner-camera'),
+            scannerViewport: document.getElementById('scanner-viewport'),
+            cameraScanBtn: document.getElementById('camera-scan-btn'),
+            stopScanBtn: document.getElementById('stop-scan-btn'),
+            manualInputBtn: document.getElementById('manual-input-btn')
         };
 
         // Initialize the application
@@ -1043,13 +1120,23 @@
                 showPaymentModal();
             });
             
-            // Scanner
-            document.getElementById('scan-btn').addEventListener('click', handleBarcodeScan);
+            // Barcode input
             elements.barcodeInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     handleBarcodeInput(elements.barcodeInput.value);
                 }
             });
+            
+            // Manual input button
+            elements.manualInputBtn.addEventListener('click', () => {
+                handleBarcodeInput(elements.barcodeInput.value);
+            });
+            
+            // Camera scan button
+            elements.cameraScanBtn.addEventListener('click', startBarcodeScan);
+            
+            // Stop scan button
+            elements.stopScanBtn.addEventListener('click', stopBarcodeScan);
             
             // Product search
             elements.productSearch.addEventListener('input', filterProducts);
@@ -1095,6 +1182,11 @@
 
         // Switch between views
         function switchView(viewName) {
+            // Stop scanning if moving away from POS view
+            if (state.currentView === 'pos' && state.isScanning) {
+                stopBarcodeScan();
+            }
+            
             // Update navigation
             elements.navItems.forEach(item => {
                 if (item.dataset.page === viewName) {
@@ -1349,25 +1441,101 @@
             updateCartDisplay();
         }
 
-        // Handle barcode scan
-        function handleBarcodeScan() {
-            const barcode = elements.barcodeInput.value.trim();
+        // Handle barcode input
+        function handleBarcodeInput(barcode) {
             if (!barcode) {
                 showNotification('Please enter a barcode', 'warning');
                 return;
             }
             
-            handleBarcodeInput(barcode);
-        }
-
-        // Handle barcode input
-        function handleBarcodeInput(barcode) {
             const product = state.products.find(p => p.sku === barcode);
             if (product) {
                 addToCart(product);
                 elements.barcodeInput.value = '';
+                playBeepSound();
             } else {
                 showNotification('Product not found', 'error');
+            }
+        }
+
+        // Start barcode scanning
+        function startBarcodeScan() {
+            if (state.isScanning) return;
+            
+            elements.scannerCamera.style.display = 'block';
+            state.isScanning = true;
+            
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: elements.scannerViewport,
+                    constraints: {
+                        width: 640,
+                        height: 480,
+                        facingMode: "environment" // Use the back camera
+                    }
+                },
+                decoder: {
+                    readers: [
+                        "code_128_reader",
+                        "ean_reader",
+                        "ean_8_reader",
+                        "code_39_reader",
+                        "upc_reader",
+                        "upc_e_reader"
+                    ]
+                }
+            }, function(err) {
+                if (err) {
+                    console.error("Error initializing QuaggaJS:", err);
+                    showNotification('Failed to initialize camera. Please check permissions.', 'error');
+                    stopBarcodeScan();
+                    return;
+                }
+                
+                Quagga.start();
+                
+                // Listen for detected barcodes
+                Quagga.onDetected(function(result) {
+                    const code = result.codeResult.code;
+                    handleBarcodeInput(code);
+                });
+            });
+        }
+
+        // Stop barcode scanning
+        function stopBarcodeScan() {
+            if (state.isScanning) {
+                Quagga.stop();
+                elements.scannerCamera.style.display = 'none';
+                state.isScanning = false;
+            }
+        }
+
+        // Play beep sound for successful scan
+        function playBeepSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.value = 800;
+                gainNode.gain.value = 0.3;
+                
+                oscillator.start();
+                setTimeout(() => {
+                    oscillator.stop();
+                }, 100);
+            } catch (error) {
+                console.error('Error playing beep sound:', error);
+                // Fallback to HTML5 audio if Web Audio API is not supported
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbVtfdJivrJBhNjVgodDbq2EcBj+a2/LDci0FLIHO+9qPOAoQZrzu8sVAgC5wr/LwzFEmDzV7t/Lz0mEtEzJwtfLz2mgyGzRrtfLz4nE3HzVptfLz6nU9IzVntfLz8nlDJzVmtfLz+n1HKzVltfLzAoBLMDVktfLzCoJOMjVjtfLzEoRRNTVjtfLzGoZUNzVjtfLzIohXOjVjtfLzKoxaPTVjtfLzMo5dQDVjtfLzOpBgQzVjtfLzQpJiRTVjtfLzSpRkSDVjtfLzUpZmSzVjtfLzWphqTTVjtfLzYppuUDVjtfLzaptxUjVjtfLzcp10VTVjtfLzep93WDVjtfLzgpF6WzVjtfLzipN9XjVjtfLzkpWBYTVjtfLzmpiEZTVjtfLzopqHazVjtfLzqpyKcDVjtfLzsp6NdTVjtfLzuqCQejVjtfLzwqKTfTVjtfLzyqSWgDVjtfLz0qaZgzVjtfLz2qichTVjtfLz4qqfjDVjtfLz6qyikTVjtfLz8q6llTVjtfLz+rComDVjtfLzArKunDVjtfLzCrS0ojVjtfLzEra3qDVjtfLzGri6rTVjtfLzIry9szVjtfLzKr7AuDVjtfLzMrDDvTVjtfLzOsHGwjVjtfLzQsTJyzVjtfLzSsbM0TVjtfLzUsnQ1zVjtfLzWsvW3DVjtfLzYs3Z4jVjtfLzatDc7DVjtfLzctLh8zVjtfLzetTk+TVjtfLzgtbo/TVjtfLzitjsAjVjtfLzktrxBjVjtfLzmtz2DDVjtfLzot74EzVjtfLzqtD9GjVjtfLzstMAHzVjtfLzutUDJTVjtfLzwtcGKzVjtfLzytoJMTVjtfLz0twNOTVjtfLz2t4QQDVjtfLz4uEURzVjtfLz6uMYSDVjtfLz8uQeUjVjtfLz+uYhWzVjtfLwAuolfTVjtfLwCuopgTVjtfLwEuo1jT');
+                audio.play().catch(e => console.error('Audio play failed:', e));
             }
         }
 
@@ -1713,9 +1881,14 @@
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.style.backgroundColor = type === 'success' ? 'var(--success)' : 
-                                              type === 'error' ? 'var(--danger)' : 
-                                              type === 'warning' ? 'var(--warning)' : 'var(--primary)';
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.classList.add('error');
+            } else if (type === 'warning') {
+                notification.classList.add('warning');
+            }
+            
             notification.classList.add('show');
             
             setTimeout(() => {
@@ -1740,6 +1913,11 @@
 
         // Logout user
         function logout() {
+            // Stop scanning if active
+            if (state.isScanning) {
+                stopBarcodeScan();
+            }
+            
             localStorage.removeItem('authToken');
             localStorage.removeItem('pos_user');
             window.location.href = 'login.html';
