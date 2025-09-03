@@ -540,6 +540,31 @@
         .password-input-container {
             position: relative;
         }
+        
+        /* Admin Badge */
+        .admin-badge {
+            background: linear-gradient(135deg, #ff4081 0%, #9c27b0 100%);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        /* Supreme Admin Indicator */
+        .supreme-indicator {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
     </style>
 </head>
 <body>
@@ -551,7 +576,7 @@
             </div>
             <div class="modal-body">
                 <div class="login-logo">
-                    <i class="fas fa-spa"></i>
+                    <i class="fas fa-crown"></i>
                     <h2>Algracia Cosmetics</h2>
                 </div>
                 
@@ -590,7 +615,7 @@
             </div>
             <div class="modal-footer">
                 <div style="text-align: center; width: 100%; font-size: 0.9rem; color: var(--gray);">
-                    Secure Admin Portal | © 2023 Algracia Cosmetics
+                    Supreme Admin Access | © 2023 Algracia Cosmetics
                 </div>
             </div>
         </div>
@@ -599,13 +624,13 @@
     <div class="container" id="main-container" style="display: none;">
         <header>
             <div class="logo">
-                <i class="fas fa-spa"></i>
+                <i class="fas fa-crown"></i>
                 <span>Algracia Admin</span>
             </div>
             <div class="header-actions">
                 <div class="user-info">
                     <div class="user-avatar" id="user-avatar">AD</div>
-                    <div id="user-info-text">Admin User (Administrator)</div>
+                    <div id="user-info-text">Admin User <span class="admin-badge">SUPREME ADMIN</span></div>
                 </div>
                 <div id="current-time">10:45 AM | Nov 12, 2023</div>
             </div>
@@ -711,7 +736,7 @@
             <div class="view" id="user-approvals-view" style="display: none;">
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Pending User Approvals</div>
+                        <div class="card-title">Pending User Approvals <span class="admin-badge">ADMIN DECISION FINAL</span></div>
                         <i class="fas fa-user-clock"></i>
                     </div>
                     <div class="card-body">
@@ -990,6 +1015,10 @@
         <footer>
             <div>Algracia Cosmetics Admin Portal © 2023 | Secure. Reliable. Enterprise-Ready.</div>
         </footer>
+        
+        <div class="supreme-indicator">
+            <i class="fas fa-crown"></i> Supreme Admin Mode
+        </div>
     </div>
 
     <!-- Notification -->
@@ -999,7 +1028,7 @@
     <div class="modal-overlay" id="user-approval-modal">
         <div class="modal">
             <div class="modal-header">
-                <div class="modal-title">User Approval</div>
+                <div class="modal-title">User Approval <span class="admin-badge">FINAL DECISION</span></div>
                 <button class="modal-close">&times;</button>
             </div>
             <div class="modal-body">
