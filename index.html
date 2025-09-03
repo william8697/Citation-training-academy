@@ -97,6 +97,20 @@
             font-weight: bold;
         }
 
+        /* Cashier Shift Info */
+        .shift-info {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .shift-info i {
+            margin-right: 5px;
+        }
+
         /* Sidebar Styles */
         .sidebar {
             grid-area: sidebar;
@@ -473,6 +487,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
 
         .modal-title {
@@ -487,6 +502,9 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--gray);
+            position: absolute;
+            right: 20px;
+            top: 20px;
         }
 
         .modal-body {
@@ -665,6 +683,40 @@
             50% { top: 80%; }
             100% { top: 20%; }
         }
+
+        /* Cashier Shift Modal */
+        .cashier-list {
+            margin-top: 15px;
+        }
+
+        .cashier-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .cashier-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .cashier-name {
+            font-weight: 600;
+        }
+
+        .cashier-status {
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background-color: #eee;
+        }
+
+        .cashier-status.on-shift {
+            background-color: var(--success);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -675,6 +727,10 @@
                 <span>Algracia POS</span>
             </div>
             <div class="header-actions">
+                <div class="shift-info" id="shift-info">
+                    <i class="fas fa-user-clock"></i>
+                    <span>Loading shift data...</span>
+                </div>
                 <div class="user-info">
                     <div class="user-avatar" id="user-avatar">JD</div>
                     <div id="user-info-text">John Doe (Cashier)</div>
@@ -770,12 +826,13 @@
                                     <th style="text-align: left; padding: 10px;">Time</th>
                                     <th style="text-align: left; padding: 10px;">Amount</th>
                                     <th style="text-align: left; padding: 10px;">Payment Method</th>
+                                    <th style="text-align: left; padding: 10px;">Cashier</th>
                                     <th style="text-align: left; padding: 10px;">Status</th>
                                 </tr>
                             </thead>
                             <tbody id="recent-transactions">
                                 <tr>
-                                    <td colspan="5" style="text-align: center; padding: 20px;">No recent transactions</td>
+                                    <td colspan="6" style="text-align: center; padding: 20px;">No recent transactions</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1031,6 +1088,26 @@
         </div>
     </div>
 
+    <!-- Cashier Shift Modal -->
+    <div class="modal-overlay" id="cashier-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Select Cashier on Shift</div>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Select the cashier currently working this shift:</p>
+                <div class="cashier-list" id="cashier-list">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancel-cashier">Cancel</button>
+                <button class="btn btn-primary" id="confirm-cashier" disabled>Confirm Selection</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // API Base URL
         const API_BASE_URL = 'https://citation-training-academy-backend.onrender.com';
@@ -1043,7 +1120,9 @@
             currentView: 'dashboard',
             selectedPaymentMethod: null,
             paymentType: null,
-            isScanning: false
+            isScanning: false,
+            cashiers: [],
+            currentCashier: null
         };
 
         // DOM Elements
@@ -1071,7 +1150,12 @@
             scannerViewport: document.getElementById('scanner-viewport'),
             cameraScanBtn: document.getElementById('camera-scan-btn'),
             stopScanBtn: document.getElementById('stop-scan-btn'),
-            manualInputBtn: document.getElementById('manual-input-btn')
+            manualInputBtn: document.getElementById('manual-input-btn'),
+            shiftInfo: document.getElementById('shift-info'),
+            cashierModal: document.getElementById('cashier-modal'),
+            cashierList: document.getElementById('cashier-list'),
+            confirmCashier: document.getElementById('confirm-cashier'),
+            cancelCashier: document.getElementById('cancel-cashier')
         };
 
         // Initialize the application
@@ -1097,10 +1181,25 @@
                 updateUserInfo();
             }
             
+            // Check if cashier is already selected for this shift
+            const currentCashier = localStorage.getItem('current_cashier');
+            const cashierTimestamp = localStorage.getItem('cashier_timestamp');
+            const now = new Date().getTime();
+            
+            // If cashier was selected within the last 8 hours, use it
+            if (currentCashier && cashierTimestamp && (now - parseInt(cashierTimestamp)) < 8 * 60 * 60 * 1000) {
+                state.currentCashier = JSON.parse(currentCashier);
+                updateShiftInfo();
+            } else {
+                // Otherwise, show cashier selection modal
+                showCashierModal();
+            }
+            
             // Load products from backend
             loadProducts();
             loadInventory();
             loadDashboardData();
+            loadCashiers();
         }
 
         // Set up event listeners
@@ -1178,6 +1277,124 @@
             // Success modal actions
             document.getElementById('print-receipt')?.addEventListener('click', printReceipt);
             document.getElementById('new-sale')?.addEventListener('click', startNewSale);
+            
+            // Cashier selection
+            elements.confirmCashier.addEventListener('click', confirmCashierSelection);
+            elements.cancelCashier.addEventListener('click', () => {
+                elements.cashierModal.classList.remove('active');
+            });
+            
+            // Shift info click to change cashier
+            elements.shiftInfo.addEventListener('click', showCashierModal);
+        }
+
+        // Load cashiers from backend
+        async function loadCashiers() {
+            try {
+                const authToken = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/cashiers`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const cashiers = await response.json();
+                state.cashiers = cashiers;
+                
+                // If we're showing the cashier modal, update the list
+                if (elements.cashierModal.classList.contains('active')) {
+                    renderCashierList();
+                }
+            } catch (error) {
+                console.error('Error loading cashiers:', error);
+                showNotification('Failed to load cashier data.', 'error');
+            }
+        }
+
+        // Show cashier selection modal
+        function showCashierModal() {
+            elements.cashierModal.classList.add('active');
+            renderCashierList();
+        }
+
+        // Render cashier list for selection
+        function renderCashierList() {
+            if (state.cashiers.length === 0) {
+                elements.cashierList.innerHTML = '<div class="spinner"></div>';
+                return;
+            }
+            
+            let cashierHTML = '';
+            state.cashiers.forEach(cashier => {
+                const isCurrent = state.currentCashier && state.currentCashier._id === cashier._id;
+                cashierHTML += `
+                    <div class="cashier-item" data-id="${cashier._id}">
+                        <div class="cashier-name">${cashier.name}</div>
+                        <div class="cashier-status ${isCurrent ? 'on-shift' : ''}">
+                            ${isCurrent ? 'On Shift' : 'Select'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            elements.cashierList.innerHTML = cashierHTML;
+            
+            // Add event listeners to cashier items
+            document.querySelectorAll('.cashier-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove selected class from all items
+                    document.querySelectorAll('.cashier-item').forEach(i => {
+                        i.style.backgroundColor = '';
+                    });
+                    
+                    // Add selected style to this item
+                    this.style.backgroundColor = '#f0f0f0';
+                    
+                    // Enable confirm button
+                    elements.confirmCashier.disabled = false;
+                    
+                    // Store selected cashier ID
+                    elements.confirmCashier.dataset.selectedId = this.dataset.id;
+                });
+            });
+        }
+
+        // Confirm cashier selection
+        function confirmCashierSelection() {
+            const selectedId = elements.confirmCashier.dataset.selectedId;
+            if (!selectedId) return;
+            
+            const selectedCashier = state.cashiers.find(c => c._id === selectedId);
+            if (selectedCashier) {
+                state.currentCashier = selectedCashier;
+                
+                // Store in localStorage with timestamp
+                localStorage.setItem('current_cashier', JSON.stringify(selectedCashier));
+                localStorage.setItem('cashier_timestamp', new Date().getTime().toString());
+                
+                updateShiftInfo();
+                elements.cashierModal.classList.remove('active');
+                showNotification(`Cashier ${selectedCashier.name} is now on shift`, 'success');
+            }
+        }
+
+        // Update shift information display
+        function updateShiftInfo() {
+            if (state.currentCashier) {
+                elements.shiftInfo.innerHTML = `
+                    <i class="fas fa-user-clock"></i>
+                    <span>Cashier: ${state.currentCashier.name}</span>
+                `;
+            } else {
+                elements.shiftInfo.innerHTML = `
+                    <i class="fas fa-user-clock"></i>
+                    <span>No cashier selected</span>
+                `;
+            }
         }
 
         // Switch between views
@@ -1351,7 +1568,7 @@
             
             // Update recent transactions
             if (data.recentTransactions.length === 0) {
-                elements.recentTransactions.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No recent transactions</td></tr>';
+                elements.recentTransactions.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No recent transactions</td></tr>';
                 return;
             }
             
@@ -1363,6 +1580,7 @@
                         <td style="padding: 10px;">${new Date(transaction.timestamp).toLocaleTimeString()}</td>
                         <td style="padding: 10px;">$${transaction.total.toFixed(2)}</td>
                         <td style="padding: 10px;">${transaction.paymentMethod}</td>
+                        <td style="padding: 10px;">${transaction.cashier || 'Unknown'}</td>
                         <td style="padding: 10px; color: green;">Completed</td>
                     </tr>
                 `;
@@ -1373,6 +1591,13 @@
 
         // Add product to cart
         function addToCart(product) {
+            // Check if cashier is selected
+            if (!state.currentCashier) {
+                showNotification('Please select a cashier first', 'warning');
+                showCashierModal();
+                return;
+            }
+            
             const existingItem = state.cart.find(item => item.productId === product._id);
             
             if (existingItem) {
@@ -1448,6 +1673,13 @@
                 return;
             }
             
+            // Check if cashier is selected
+            if (!state.currentCashier) {
+                showNotification('Please select a cashier first', 'warning');
+                showCashierModal();
+                return;
+            }
+            
             const product = state.products.find(p => p.sku === barcode);
             if (product) {
                 addToCart(product);
@@ -1460,6 +1692,13 @@
 
         // Start barcode scanning
         function startBarcodeScan() {
+            // Check if cashier is selected
+            if (!state.currentCashier) {
+                showNotification('Please select a cashier first', 'warning');
+                showCashierModal();
+                return;
+            }
+            
             if (state.isScanning) return;
             
             elements.scannerCamera.style.display = 'block';
@@ -1579,6 +1818,13 @@
 
         // Show payment modal
         function showPaymentModal() {
+            // Check if cashier is selected
+            if (!state.currentCashier) {
+                showNotification('Please select a cashier first', 'warning');
+                showCashierModal();
+                return;
+            }
+            
             const total = calculateCartTotal();
             elements.paymentTotal.textContent = `$${total.toFixed(2)}`;
             elements.paymentModal.classList.add('active');
@@ -1662,7 +1908,9 @@
                     body: JSON.stringify({
                         phoneNumber,
                         amount: total,
-                        cart: state.cart
+                        cart: state.cart,
+                        cashierId: state.currentCashier._id,
+                        cashierName: state.currentCashier.name
                     })
                 });
                 
@@ -1715,7 +1963,9 @@
                         cvv,
                         amount: total,
                         cart: state.cart,
-                        cardType: state.paymentType
+                        cardType: state.paymentType,
+                        cashierId: state.currentCashier._id,
+                        cashierName: state.currentCashier.name
                     })
                 });
                 
@@ -1766,7 +2016,9 @@
                         amount: total,
                         cashReceived,
                         change,
-                        cart: state.cart
+                        cart: state.cart,
+                        cashierId: state.currentCashier._id,
+                        cashierName: state.currentCashier.name
                     })
                 });
                 
@@ -1920,6 +2172,8 @@
             
             localStorage.removeItem('authToken');
             localStorage.removeItem('pos_user');
+            localStorage.removeItem('current_cashier');
+            localStorage.removeItem('cashier_timestamp');
             window.location.href = 'login.html';
         }
     </script>
