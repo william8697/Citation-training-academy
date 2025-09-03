@@ -391,7 +391,7 @@
                     localStorage.setItem('pos_user', JSON.stringify(data.user));
                     
                     // Redirect to POS system
-                    window.location.href = 'pos.html';
+                    window.location.href = 'index.html';
                 } else {
                     showNotification('Google authentication failed: ' + data.message, 'error');
                 }
@@ -493,7 +493,7 @@
                     
                     // Redirect to POS system
                     setTimeout(() => {
-                        window.location.href = 'pos.html';
+                        window.location.href = 'index.html';
                     }, 1000);
                 } else {
                     showNotification('Login failed: ' + data.message, 'error');
@@ -566,7 +566,7 @@
                 .then(response => {
                     if (response.ok) {
                         // Token is valid, redirect to POS
-                        window.location.href = 'pos.html';
+                        window.location.href = 'index.html';
                     }
                 })
                 .catch(error => {
