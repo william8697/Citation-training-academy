@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algracia Cosmetics - Enterprise POS</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHN0eWxlPi5zdDB7ZmlsbDojOWMyN2IwO30uc3Qxe2ZpbGw6I2ZmNDA4MTt9PC9zdHlsZT4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjUiIGZpbGw9IiNmMWYxZjEiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTI1IDNDMjMuMDIgMyAyMS4xNiAzLjQ4IDE5LjUgNC4zNUMxNS45NSA2LjEgMTMuNSA5Ljg2IDEzLjUgMTRDMTMuNSAxOC4xNCAxNS45NSAyMS45IDE5LjUgMjMuNjVDMjEuMTYgMjQuNTIgMjMuMDIgMjUgMjUgMjVDMjYuOTggMjUgMjguODQgMjQuNTIgMzAuNSAyMy42NUMzNC4wNSAyMS45IDM2LjUgMTguMTQgMzYuNSAxNEMzNi41IDkuODYgMzQuMDUgNi4xIDMwLjUgNC4zNUMyOC44NCAzLjQ4IDI2Ljk4IDMgMjUgM1oiLz4KPHBhdGggY2xhc3M9InN0MSIgZD0iTTMxLjUgMzEuNUwxOC41IDMxLjVMMTguNSAxOC41TDMxLjUgMTguNUwzMS41IDMxLjVaIi8+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik0yOCAzNEgyMkMyMC4zNCAzNCAxOSAzMi42NiAxOSAzMUwxOSAyMEMxOSAxOC4zNCAyMC4zNCAxNyAyMiAxN0wyOCAxN0MyOS42NiAxNyAzMSAxOC4zNCAzMSAyMEwzMSAzMUMzMSAzMi42NiAyOS42NiAzNCAyOCAzNFoiLz4KPC9zdmc+">
     <style>
         :root {
             --primary: #9c27b0;
@@ -107,6 +106,7 @@
             font-size: 0.9rem;
             display: flex;
             align-items: center;
+            cursor: pointer;
         }
 
         .shift-info i {
@@ -735,7 +735,7 @@
                 </div>
                 <div class="user-info">
                     <div class="user-avatar" id="user-avatar">JD</div>
-                    <div id="user-info-text">John Doe (Cashier)</div>
+                    <div id="user-info-text">Loading user data...</div>
                 </div>
                 <div id="current-time">10:45 AM | Nov 12, 2023</div>
             </div>
@@ -1157,7 +1157,9 @@
             cashierModal: document.getElementById('cashier-modal'),
             cashierList: document.getElementById('cashier-list'),
             confirmCashier: document.getElementById('confirm-cashier'),
-            cancelCashier: document.getElementById('cancel-cashier')
+            cancelCashier: document.getElementById('cancel-cashier'),
+            userInfoText: document.getElementById('user-info-text'),
+            userAvatar: document.getElementById('user-avatar')
         };
 
         // Initialize the application
@@ -1177,11 +1179,8 @@
                 return;
             }
             
-            const userData = localStorage.getItem('pos_user');
-            if (userData) {
-                state.user = JSON.parse(userData);
-                updateUserInfo();
-            }
+            // Load user data from backend
+            loadUserData();
             
             // Check if cashier is already selected for this shift
             const currentCashier = localStorage.getItem('current_cashier');
@@ -1202,6 +1201,40 @@
             loadInventory();
             loadDashboardData();
             loadCashiers();
+        }
+
+        // Load user data from backend
+        async function loadUserData() {
+            try {
+                const authToken = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/user`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const userData = await response.json();
+                state.user = userData;
+                
+                // Store user data in localStorage
+                localStorage.setItem('pos_user', JSON.stringify(userData));
+                
+                updateUserInfo();
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                // Fallback to localStorage data if available
+                const storedUser = localStorage.getItem('pos_user');
+                if (storedUser) {
+                    state.user = JSON.parse(storedUser);
+                    updateUserInfo();
+                } else {
+                    elements.userInfoText.textContent = 'User (Role)';
+                }
+            }
         }
 
         // Set up event listeners
@@ -1576,16 +1609,13 @@
             
             let transactionsHTML = '';
             data.recentTransactions.forEach(transaction => {
-                // FIXED: Use transaction.cashierName instead of undefined cashier variable
-                const cashierName = transaction.cashierName || transaction.cashier || 'Unknown';
-                
                 transactionsHTML += `
                     <tr style="border-bottom: 1px solid #eee;">
                         <td style="padding: 10px;">${transaction._id}</td>
                         <td style="padding: 10px;">${new Date(transaction.timestamp).toLocaleTimeString()}</td>
                         <td style="padding: 10px;">$${transaction.total.toFixed(2)}</td>
                         <td style="padding: 10px;">${transaction.paymentMethod}</td>
-                        <td style="padding: 10px;">${cashierName}</td>
+                        <td style="padding: 10px;">${transaction.cashier || 'Unknown'}</td>
                         <td style="padding: 10px; color: green;">Completed</td>
                     </tr>
                 `;
@@ -1778,7 +1808,7 @@
             } catch (error) {
                 console.error('Error playing beep sound:', error);
                 // Fallback to HTML5 audio if Web Audio API is not supported
-                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbVtfdJivrJBhNjVgodDbq2EcBj+a2/LDci0FLIHO+9qPOAoQZrzu8sVAgC5wr/LwzFEmDzV7t/Lz0mEtEzJwtfLz2mgyGzRrtfLz4nE3HzVptfLz6nU9IzVntfLz8nlDJzVmtfLz+n1HKzVltfLzAoBLMDVktfLzCoJOMjVjtfLzEoRRNTVjtfLzGoZUNzVjtfLzIohXOjVjtfLzKoxaPTVjtfLzMo5dQDVjtfLzOpBgQzVjtfLzQpJiRTVjtfLzSpRkSDVjtfLzUpZmSzVjtfLzWphqTTVjtfLzYppuUDVjtfLzaptxUjVjtfLzcp10VTVjtfLzep93WDVjtfLzgpF6WzVjtfLzipN9XjVjtfLzkpWBYTVjtfLzmpiEZTVjtfLzopqHazVjtfLzqpyKcDVjtfLzsp6NdTVjtfLzuqCQejVjtfLzwqKTfTVjtfLzyqSWgDVjtfLz0qaZgzVjtfLz2qichTVjtfLz4qqfjDVjtfLz6qyikTVjtfLz8q6llTVjtfLz+rComDVjtfLzArKunDVjtfLzCrS0ojVjtfLzEra3qDVjtfLzGri6rTVjtfLzIry9szVjtfLzKr7AuDVjtfLzMrDDvTVjtfLzOsHGwjVjtfLzQsTJyzVjtfLzSsbM0TVjtfLzUsnQ1zVjtfLzWsvW3DVjtfLzYs3Z4jVjtfLzatDc7DVjtfLzctLh8zVjtfLzetTk+TVjtfLzgtbo/TVjtfLzitjsAjVjtfLzktrxBjVjtfLzmtz2DDVjtfLzot74EzVjtfLzqtD9GjVjtfLzstMAHzVjtfLzutUDJTVjtfLzxtcGKzVjtfLzytoJMTVjtfLz0twNOTVjtfLz2t4QQDVjtfLz4uEURzVjtfLz6uMYSDVjtfLz8uQeUjVjtfLz+uYhWzVjtfLwAuolfTVjtfLwCuopgTVjtfLwEuo1jT');
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbVtfdJivrJBhNjVgodDbq2EcBj+a2/LDci0FLIHO+9qPOAoQZrzu8sVAgC5wr/LwzFEmDzV7t/Lz0mEtEzJwtfLz2mgyGzRrtfLz4nE3HzVptfLz6nU9IzVntfLz8nlDJzVmtfLz+n1HKzVltfLzAoBLMDVktfLzCoJOMjVjtfLzEoRRNTVjtfLzGoZUNzVjtfLzIohXOjVjtfLzKoxaPTVjtfLzMo5dQDVjtfLzOpBgQzVjtfLzQpJiRTVjtfLzSpRkSDVjtfLzUpZmSzVjtfLzWphqTTVjtfLzYppuUDVjtfLzaptxUjVjtfLzcp10VTVjtfLzep93WDVjtfLzgpF6WzVjtfLzipN9XjVjtfLzkpWBYTVjtfLzmpiEZTVjtfLzopqHazVjtfLzqpyKcDVjtfLzsp6NdTVjtfLzuqCQejVjtfLzwqKTfTVjtfLzyqSWgDVjtfLz0qaZgzVjtfLz2qichTVjtfLz4qqfjDVjtfLz6qyikTVjtfLz8q6llTVjtfLz+rComDVjtfLzArKunDVjtfLzCrS0ojVjtfLzEra3qDVjtfLzGri6rTVjtfLzIry9szVjtfLzKr7AuDVjtfLzMrDDvTVjtfLzOsHGwjVjtfLzQsTJyzVjtfLzSsbM0TVjtfLzUsnQ1zVjtfLzWsvW3DVjtfLzYs3Z4jVjtfLzatDc7DVjtfLzctLh8zVjtfLzetTk+TVjtfLzgtbo/TVjtfLzitjsAjVjtfLzktrxBjVjtfLzmtz2DDVjtfLzot74EzVjtfLzqtD9GjVjtfLzstMAHzVjtfLzutUDJTVjtfLzwtcGKzVjtfLzytoJMTVjtfLz0twNOTVjtfLz2t4QQDVjtfLz4uEURzVjtfLz6uMYSDVjtfLz8uQeUjVjtfLz+uYhWzVjtfLwAuolfTVjtfLwCuopgTVjtfLwEuo1jT');
                 audio.play().catch(e => console.error('Audio play failed:', e));
             }
         }
@@ -1867,7 +1897,7 @@
             
             // Show appropriate payment form
             document.getElementById('mpesa-payment').style.display = method === 'mpesa' ? 'block' : 'none';
-            document.getElementById('card-payment').style.display = method === 'card' ? 'block' : 'none';
+            document.getElementById('card-payment').style.display = method === 'card' => 'block' : 'none';
             document.getElementById('cash-payment').style.display = method === 'cash' ? 'block' : 'none';
             
             // Reset cash received input
@@ -2163,8 +2193,15 @@
         // Update user info display
         function updateUserInfo() {
             if (state.user) {
-                document.getElementById('user-avatar').textContent = state.user.initials;
-                document.getElementById('user-info-text').textContent = `${state.user.name} (${state.user.role})`;
+                // Generate initials from user name
+                const initials = state.user.name
+                    .split(' ')
+                    .map(word => word[0])
+                    .join('')
+                    .toUpperCase();
+                
+                elements.userAvatar.textContent = initials;
+                elements.userInfoText.textContent = `${state.user.name} (${state.user.role})`;
             }
         }
 
