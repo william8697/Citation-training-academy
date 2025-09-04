@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algracia Cosmetics - Enterprise POS</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
@@ -106,7 +105,6 @@
             font-size: 0.9rem;
             display: flex;
             align-items: center;
-            cursor: pointer;
         }
 
         .shift-info i {
@@ -735,7 +733,7 @@
                 </div>
                 <div class="user-info">
                     <div class="user-avatar" id="user-avatar">JD</div>
-                    <div id="user-info-text">Loading user data...</div>
+                    <div id="user-info-text">John Doe (Cashier)</div>
                 </div>
                 <div id="current-time">10:45 AM | Nov 12, 2023</div>
             </div>
@@ -1157,9 +1155,7 @@
             cashierModal: document.getElementById('cashier-modal'),
             cashierList: document.getElementById('cashier-list'),
             confirmCashier: document.getElementById('confirm-cashier'),
-            cancelCashier: document.getElementById('cancel-cashier'),
-            userInfoText: document.getElementById('user-info-text'),
-            userAvatar: document.getElementById('user-avatar')
+            cancelCashier: document.getElementById('cancel-cashier')
         };
 
         // Initialize the application
@@ -1179,8 +1175,11 @@
                 return;
             }
             
-            // Load user data from backend
-            loadUserData();
+            const userData = localStorage.getItem('pos_user');
+            if (userData) {
+                state.user = JSON.parse(userData);
+                updateUserInfo();
+            }
             
             // Check if cashier is already selected for this shift
             const currentCashier = localStorage.getItem('current_cashier');
@@ -1201,40 +1200,6 @@
             loadInventory();
             loadDashboardData();
             loadCashiers();
-        }
-
-        // Load user data from backend
-        async function loadUserData() {
-            try {
-                const authToken = localStorage.getItem('authToken');
-                const response = await fetch(`${API_BASE_URL}/api/user`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const userData = await response.json();
-                state.user = userData;
-                
-                // Store user data in localStorage
-                localStorage.setItem('pos_user', JSON.stringify(userData));
-                
-                updateUserInfo();
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                // Fallback to localStorage data if available
-                const storedUser = localStorage.getItem('pos_user');
-                if (storedUser) {
-                    state.user = JSON.parse(storedUser);
-                    updateUserInfo();
-                } else {
-                    elements.userInfoText.textContent = 'User (Role)';
-                }
-            }
         }
 
         // Set up event listeners
@@ -1897,7 +1862,7 @@
             
             // Show appropriate payment form
             document.getElementById('mpesa-payment').style.display = method === 'mpesa' ? 'block' : 'none';
-            document.getElementById('card-payment').style.display = method === 'card' => 'block' : 'none';
+            document.getElementById('card-payment').style.display = method === 'card' ? 'block' : 'none';
             document.getElementById('cash-payment').style.display = method === 'cash' ? 'block' : 'none';
             
             // Reset cash received input
@@ -2193,15 +2158,8 @@
         // Update user info display
         function updateUserInfo() {
             if (state.user) {
-                // Generate initials from user name
-                const initials = state.user.name
-                    .split(' ')
-                    .map(word => word[0])
-                    .join('')
-                    .toUpperCase();
-                
-                elements.userAvatar.textContent = initials;
-                elements.userInfoText.textContent = `${state.user.name} (${state.user.role})`;
+                document.getElementById('user-avatar').textContent = state.user.initials;
+                document.getElementById('user-info-text').textContent = `${state.user.name} (${state.user.role})`;
             }
         }
 
