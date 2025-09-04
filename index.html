@@ -65,6 +65,7 @@
             z-index: 100;
             position: sticky;
             top: 0;
+            min-width: 0; /* Prevent overflow */
         }
 
         .logo {
@@ -72,11 +73,15 @@
             align-items: center;
             font-weight: 700;
             font-size: 1.2rem;
+            white-space: nowrap;
+            min-width: 0;
+            overflow: hidden;
         }
 
         .logo i {
             margin-right: 8px;
             font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
         .header-actions {
@@ -85,12 +90,15 @@
             gap: 15px;
             flex-wrap: wrap;
             justify-content: flex-end;
+            min-width: 0; /* Prevent overflow */
         }
 
         .user-info {
             display: flex;
             align-items: center;
             gap: 8px;
+            white-space: nowrap;
+            min-width: 0;
         }
 
         .user-avatar {
@@ -103,6 +111,7 @@
             justify-content: center;
             font-weight: bold;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
         /* Cashier Shift Info */
@@ -114,10 +123,13 @@
             display: flex;
             align-items: center;
             cursor: pointer;
+            white-space: nowrap;
+            min-width: 0;
         }
 
         .shift-info i {
             margin-right: 4px;
+            flex-shrink: 0;
         }
 
         /* Sidebar Styles */
@@ -153,9 +165,9 @@
             text-align: center;
         }
 
-        /* Mobile menu toggle */
+        /* Mobile menu toggle - FIXED */
         .menu-toggle {
-            display: none;
+            display: none; /* Hidden by default */
             position: fixed;
             top: 15px;
             left: 15px;
@@ -165,10 +177,10 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: var(--shadow);
+            cursor: pointer;
         }
 
         /* Main Content Styles */
@@ -397,7 +409,7 @@
             text-align: center;
         }
 
-        /* Responsive Design */
+        /* Responsive Design - FIXED for mobile toggle */
         @media (max-width: 992px) {
             :root {
                 --sidebar-width: 0px;
@@ -421,7 +433,7 @@
             }
             
             .menu-toggle {
-                display: flex;
+                display: flex; /* Only show on mobile */
             }
             
             header {
@@ -437,19 +449,40 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .header-actions {
+                flex-wrap: nowrap;
+                overflow: hidden;
+            }
+            
+            .user-info {
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .shift-info {
+                max-width: 120px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
         @media (max-width: 576px) {
             .header-actions {
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 5px;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
             }
             
             .user-info {
                 order: 2;
+                max-width: 100px;
             }
             
             .shift-info {
                 order: 1;
+                max-width: 100px;
             }
             
             .dashboard-grid {
@@ -1312,7 +1345,9 @@
             confirmCashier: document.getElementById('confirm-cashier'),
             cancelCashier: document.getElementById('cancel-cashier'),
             menuToggle: document.getElementById('menu-toggle'),
-            sidebar: document.getElementById('sidebar')
+            sidebar: document.getElementById('sidebar'),
+            userAvatar: document.getElementById('user-avatar'),
+            userInfoText: document.getElementById('user-info-text')
         };
 
         // Initialize the application
@@ -1356,11 +1391,11 @@
             loadCashiers();
         }
 
-        // Fetch user data from API
+        // Fetch user data from API - FIXED to use cashier endpoint
         async function fetchUserData() {
             try {
                 const authToken = localStorage.getItem('authToken');
-                const response = await fetch(`${API_BASE_URL}/api/user`, {
+                const response = await fetch(`${API_BASE_URL}/api/cashiers`, {
                     headers: {
                         'Authorization': `Bearer ${authToken}`
                     }
@@ -1370,26 +1405,36 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const userData = await response.json();
-                state.user = userData;
+                const cashiers = await response.json();
                 
-                // Format user initials for avatar
-                const names = userData.name.split(' ');
-                const initials = names.length > 1 
-                    ? `${names[0][0]}${names[names.length-1][0]}` 
-                    : names[0].substring(0, 2);
-                
-                state.user.initials = initials.toUpperCase();
-                
-                updateUserInfo();
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                // Fallback to stored data if available
-                const userData = localStorage.getItem('pos_user');
-                if (userData) {
-                    state.user = JSON.parse(userData);
+                // Check if we have cashiers and use the first one as default
+                if (cashiers && cashiers.length > 0) {
+                    const cashier = cashiers[0];
+                    state.user = {
+                        name: cashier.name,
+                        role: cashier.position || 'Cashier',
+                        initials: cashier.name.split(' ').map(n => n[0]).join('').toUpperCase()
+                    };
+                    
+                    updateUserInfo();
+                } else {
+                    // Fallback if no cashiers found
+                    state.user = {
+                        name: 'Cashier User',
+                        role: 'Cashier',
+                        initials: 'CU'
+                    };
                     updateUserInfo();
                 }
+            } catch (error) {
+                console.error('Error fetching cashier data:', error);
+                // Fallback to default user data
+                state.user = {
+                    name: 'Cashier User',
+                    role: 'Cashier',
+                    initials: 'CU'
+                };
+                updateUserInfo();
             }
         }
 
@@ -1402,8 +1447,9 @@
                 }
             });
             
-            // Mobile menu toggle
-            elements.menuToggle.addEventListener('click', () => {
+            // Mobile menu toggle - FIXED
+            elements.menuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
                 elements.sidebar.classList.toggle('active');
             });
             
@@ -1984,7 +2030,7 @@
             } catch (error) {
                 console.error('Error playing beep sound:', error);
                 // Fallback to HTML5 audio if Web Audio API is not supported
-                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbVtfdJivrJBhNjVgodDbq2EcBj+a2/LDci0FLIHO+9qPOAoQZrzu8sVAgC5wr/LwzFEmDzV7t/Lz0mEtEzJwtfLz2mgyGzRrtfLz4nE3HzVptfLz6nU9IzVntfLz8nlDJzVmtfLz+n1HKzVltfLzAoBLMDVktfLzCoJOMjVjtfLzEoRRNTVjtfLzGoZUNzVjtfLzIohXOjVjtfLzKoxaPTVjtfLzMo5dQDVjtfLzOpBgQzVjtfLzQpJiRTVjtfLzSpRkSDVjtfLzUpZmSzVjtfLzWphqTTVjtfLzYppuUDVjtfLzaptxUjVjtfLzcp10VTVjtfLzep93WDVjtfLzgpF6WzVjtfLzipN9XjVjtfLzkpWBYTVjtfLzmpiEZTVjtfLzopqHazVjtfLzqpyKcDVjtfLzsp6NdTVjtfLzuqCQejVjtfLzwqKTfTVjtfLzyqSWgDVjtfLz0qaZgzVjtfLz2qichTVjtfLz4qqfjDVjtfLz6qyikTVjtfLz8q6llTVjtfLz+rComDVjtfLzArKunDVjtfLzCrS0ojVjtfLzEra3qDVjtfLzGri6rTVjtfLzIry9szVjtfLzKr7AuDVjtfLzMrDDvTVjtfLzOsHGwjVjtfLzQsTJyzVjtfLzSsbM0TVjtfLzUsnQ1zVjtfLzWsvW3DVjtfLzYs3Z4jVjtfLzatDc7DVjtfLzctLh8zVjtfLzetTk+TVjtfLzgtbo/TVjtfLzitjsAjVjtfLzktrxBjVjtfLzmtz2DDVjtfLzot74EzVjtfLzqtD9GjVjtfLzstMAHzVjtfLzutUDJTVjtfLzwtcGKzVjtfLzytoJMTVjtfLz0twNOTVjtfLz2t4QQDVjtfLz4uEURzVjtfLz6uMYSDVjtfLz8uQeUjVjtfLz+uYhWzVjtfLwAuolfTVjtfLwCuopgTVjtfLwEuo1jT');
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbVtfdJivrJBhNjVgodDbq2EcBj+a2/LDci0FLIHO+9qPOAoQZrzu8sVAgC5wr/LwzFEmDzV7t/Lz0mEtEzJwtfLz2mgyGzRrtfLz4nE3HzVptfLz6nU9IzVntfLz8nlDJzVmtfLz+n1HKzVltfLzAoBLMDVktfLzCoJOMjVjtfLzEoRRNTVjtfLzGoZUNzVjtfLzIohXOjVjtfLzKoxaPTVjtfLzMo5dQDVjtfLzOpBgQzVjtfLzQpJiRTVjtfLzSpRkSDVjtfLzUpZmSzVjtfLzWphqTTVjtfLzYppuUDVjtfLzapdxUjVjtfLzcp10VTVjtfLzep93WDVjtfLzgpF6WzVjtfLzipN9XjVjtfLzkpWBYTVjtfLzmpiEZTVjtfLzopqHazVjtfLzqpyKcDVjtfLzsp6NdTVjtfLzuqCQejVjtfLzwqKTfTVjtfLzyqSWgDVjtfLz0qaZgzVjtfLz2qichTVjtfLz4qqfjDVjtfLz6qyikTVjtfLz8q6llTVjtfLz+rComDVjtfLzArKunDVjtfLzCrS0ojVjtfLzEra3qDVjtfLzGri6rTVjtfLzIry9szVjtfLzKr7AuDVjtfLzMrDDvTVjtfLzOsHGwjVjtfLzQsTJyzVjtfLzSsbM0TVjtfLzUsnQ1zVjtfLzWsvW3DVjtfLzYs3Z4jVjtfLzatDc7DVjtfLzctLh8zVjtfLzetTk+TVjtfLzgtbo/TVjtfLzitjsAjVjtfLzktrxBjVjtfLzmtz2DDVjtfLzot74EzVjtfLzqtD9GjVjtfLzstMAHzVjtfLzutUDJTVjtfLzwtcGKzVjtfLzytoJMTVjtfLz0twNOTVjtfLz2t4QQDVjtfLz4uEURzVjtfLz6uMYSDVjtfLz8uQeUjVjtfLz+uYhWzVjtfLwAuolfTVjtfLwCuopgTVjtfLwEuo1jT');
                 audio.play().catch(e => console.error('Audio play failed:', e));
             }
         }
@@ -2366,11 +2412,15 @@
             document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', options);
         }
 
-        // Update user info display
+        // Update user info display - FIXED to prevent undefined
         function updateUserInfo() {
             if (state.user) {
-                document.getElementById('user-avatar').textContent = state.user.initials;
-                document.getElementById('user-info-text').textContent = `${state.user.name} (${state.user.role})`;
+                elements.userAvatar.textContent = state.user.initials || 'CU';
+                elements.userInfoText.textContent = `${state.user.name || 'Cashier User'} (${state.user.role || 'Cashier'})`;
+            } else {
+                // Fallback values
+                elements.userAvatar.textContent = 'CU';
+                elements.userInfoText.textContent = 'Cashier User (Cashier)';
             }
         }
 
