@@ -3,2440 +3,711 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Algracia Cosmetics - Enterprise POS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <title>HopeBridge - Charity for Children in Need</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #9c27b0;
-            --primary-dark: #7b1fa2;
-            --secondary: #ff4081;
-            --dark: #2c2c54;
-            --light: #f5f5f5;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-            --gray: #78909c;
-            --white: #ffffff;
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            --mpesa-green: #0cb785;
-            --visa-blue: #1a1f71;
-            --mastercard-red: #ff5f00;
-            --header-height: 60px;
-            --sidebar-width: 250px;
-            --mobile-breakpoint: 992px;
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #e53935;
+            --accent: #ff9800;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #28a745;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: #f8f9fa;
-            color: #333;
-            overflow-x: hidden;
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7fa;
         }
-
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
         .container {
-            display: grid;
-            grid-template-columns: var(--sidebar-width) 1fr;
-            grid-template-rows: var(--header-height) 1fr 40px;
-            grid-template-areas:
-                "sidebar header"
-                "sidebar main"
-                "sidebar footer";
-            min-height: 100vh;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-
+        
         /* Header Styles */
         header {
-            grid-area: header;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: var(--white);
-            padding: 0 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: var(--shadow);
-            z-index: 100;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
-            min-width: 0; /* Prevent overflow */
+            z-index: 1000;
         }
-
-        .logo {
+        
+        .header-content {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            white-space: nowrap;
-            min-width: 0;
-            overflow: hidden;
-        }
-
-        .logo i {
-            margin-right: 8px;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            min-width: 0; /* Prevent overflow */
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            min-width: 0;
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: var(--secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        /* Cashier Shift Info */
-        .shift-info {
-            background-color: rgba(255, 255, 255, 0.2);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            white-space: nowrap;
-            min-width: 0;
-        }
-
-        .shift-info i {
-            margin-right: 4px;
-            flex-shrink: 0;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            grid-area: sidebar;
-            background-color: var(--dark);
-            color: var(--white);
             padding: 15px 0;
-            box-shadow: var(--shadow);
-            overflow-y: auto;
-            position: fixed;
-            width: var(--sidebar-width);
-            height: 100%;
-            z-index: 100;
         }
-
-        .nav-item {
-            padding: 12px 15px;
+        
+        .logo-container {
             display: flex;
             align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
         }
-
-        .nav-item i {
-            margin-right: 10px;
-            font-size: 1.1rem;
-            min-width: 24px;
-            text-align: center;
+        
+        .logo span {
+            color: var(--secondary);
         }
-
-        /* Mobile menu toggle - FIXED */
-        .menu-toggle {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1000;
-            background: var(--primary);
-            color: white;
-            width: 40px;
+        
+        .partner-logo {
             height: 40px;
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-            cursor: pointer;
+            margin-left: 20px;
         }
-
-        /* Main Content Styles */
-        main {
-            grid-area: main;
-            padding: 15px;
-            overflow-y: auto;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .card {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            padding: 15px;
-            overflow: hidden;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
             color: white;
-            border-radius: 8px;
-            padding: 12px;
+            padding: 100px 0;
             text-align: center;
         }
-
-        .stat-card .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 8px 0;
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
         }
-
-        .stat-card .label {
-            font-size: 0.8rem;
-            opacity: 0.9;
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
         }
-
-        /* POS Styles */
-        .pos-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        @media (min-width: 768px) {
-            .pos-container {
-                grid-template-columns: 1fr 320px;
-            }
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
-            max-height: 500px;
-            overflow-y: auto;
-            padding: 8px;
-        }
-
-        .product-card {
-            background-color: var(--white);
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .product-image {
-            height: 100px;
-            background-color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray);
-            font-size: 1.5rem;
-        }
-
-        .product-info {
-            padding: 8px;
-        }
-
-        .product-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 0.9rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .product-price {
-            color: var(--primary);
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .cart-container {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .cart-items {
-            flex-grow: 1;
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 12px 0;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .item-details {
-            flex-grow: 1;
-            margin-left: 8px;
-        }
-
-        .item-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .item-price {
-            color: var(--primary);
-            font-size: 0.8rem;
-        }
-
-        .item-quantity {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .quantity-btn {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            background-color: #eee;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 1.1rem;
-            font-weight: 700;
-            padding: 12px 0;
-            border-top: 2px solid #eee;
-        }
-
-        .checkout-btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .checkout-btn:hover {
-            opacity: 0.9;
-        }
-
-        .checkout-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        /* Footer Styles */
-        footer {
-            grid-area: footer;
-            background-color: var(--dark);
-            color: var(--white);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 0.8rem;
-            padding: 0 15px;
-            text-align: center;
-        }
-
-        /* Responsive Design - FIXED for mobile toggle */
-        @media (max-width: 992px) {
-            :root {
-                --sidebar-width: 0px;
-            }
-            
-            .container {
-                grid-template-columns: 1fr;
-                grid-template-areas:
-                    "header"
-                    "main"
-                    "footer";
-            }
-            
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .menu-toggle {
-                display: flex; /* Only show on mobile */
-            }
-            
-            header {
-                padding-left: 50px;
-            }
-            
-            .header-actions {
-                gap: 10px;
-            }
-            
-            #current-time {
-                display: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header-actions {
-                flex-wrap: nowrap;
-                overflow: hidden;
-            }
-            
-            .user-info {
-                max-width: 120px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            .shift-info {
-                max-width: 120px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .header-actions {
-                flex-direction: row;
-                align-items: center;
-                gap: 8px;
-            }
-            
-            .user-info {
-                order: 2;
-                max-width: 100px;
-            }
-            
-            .shift-info {
-                order: 1;
-                max-width: 100px;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            }
-        }
-
-        /* Scanner Section */
-        .scanner-section {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .scanner-input {
-            display: flex;
-            gap: 8px;
-            flex-direction: column;
-        }
-
-        @media (min-width: 480px) {
-            .scanner-input {
-                flex-direction: row;
-            }
-        }
-
-        .scanner-input input {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 0.9rem;
-        }
-
-        .scanner-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-
-        /* Scanner Camera View */
-        .scanner-camera {
-            margin-top: 12px;
-            position: relative;
-            display: none;
-        }
-
-        #scanner-viewport {
-            width: 100%;
-            height: 250px;
-            background-color: #000;
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .scanner-controls {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            padding: 12px 16px;
-            background-color: var(--success);
-            color: white;
-            border-radius: 6px;
-            box-shadow: var(--shadow);
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-            max-width: 300px;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.error {
-            background-color: var(--danger);
-        }
-
-        .notification.warning {
-            background-color: var(--warning);
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            padding: 15px;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            width: 100%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal {
-            transform: translateY(0);
-        }
-
-        .modal-header {
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-
-        .modal-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--gray);
-            position: absolute;
-            right: 15px;
-            top: 15px;
-        }
-
-        .modal-body {
-            padding: 15px;
-        }
-
-        .modal-footer {
-            padding: 15px;
-            border-top: 1px solid #eee;
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-        }
-
-        /* Payment Method Styles */
-        .payment-methods {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .payment-method {
-            border: 2px solid #eee;
-            border-radius: 6px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .payment-method:hover {
-            border-color: var(--primary);
-        }
-
-        .payment-method.selected {
-            border-color: var(--primary);
-            background-color: rgba(156, 39, 176, 0.1);
-        }
-
-        .payment-method.mpesa {
-            color: var(--mpesa-green);
-            border-color: var(--mpesa-green);
-        }
-
-        .payment-method.mpesa.selected {
-            background-color: rgba(12, 183, 133, 0.1);
-        }
-
-        .payment-method.visa {
-            color: var(--visa-blue);
-            border-color: var(--visa-blue);
-        }
-
-        .payment-method.visa.selected {
-            background-color: rgba(26, 31, 113, 0.1);
-        }
-
-        .payment-method.mastercard {
-            color: var(--mastercard-red);
-            border-color: var(--mastercard-red);
-        }
-
-        .payment-method.mastercard.selected {
-            background-color: rgba(255, 95, 0, 0.1);
-        }
-
-        .payment-method i {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        /* Form Styles */
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 4px;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-
+        
         .btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
+            display: inline-block;
+            padding: 12px 30px;
             background-color: var(--primary);
             color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
-
-        .btn-primary:hover {
+        
+        .btn:hover {
             background-color: var(--primary-dark);
+            transform: translateY(-2px);
         }
-
-        .btn-success {
-            background-color: var(--success);
-            color: white;
+        
+        /* About Section */
+        .about {
+            padding: 80px 0;
+            background-color: white;
         }
-
-        .btn-success:hover {
-            opacity: 0.9;
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
         }
-
-        .btn-mpesa {
-            background-color: var(--mpesa-green);
-            color: white;
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
         }
-
-        .btn-mpesa:hover {
-            opacity: 0.9;
-        }
-
-        /* Loading Spinner */
-        .spinner {
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            border-left: 3px solid var(--primary);
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            animation: spin 1s linear infinite;
+        
+        .section-title p {
+            color: var(--gray);
+            max-width: 700px;
             margin: 0 auto;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
         }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
         }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
-        /* Scanner Overlay */
-        .scanner-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Form Section */
+        .form-section {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+        
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary);
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .file-preview {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .file-preview-item {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .file-preview-item img {
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            object-fit: cover;
         }
-
-        .scan-line {
+        
+        .file-preview-item .remove {
             position: absolute;
-            height: 2px;
-            width: 100%;
-            background-color: var(--primary);
-            top: 50%;
-            animation: scan 2s infinite ease-in-out;
-        }
-
-        @keyframes scan {
-            0% { top: 20%; }
-            50% { top: 80%; }
-            100% { top: 20%; }
-        }
-
-        /* Cashier Shift Modal */
-        .cashier-list {
-            margin-top: 12px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .cashier-item {
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+            justify-content: center;
             cursor: pointer;
         }
-
-        .cashier-item:hover {
-            background-color: #f5f5f5;
+        
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
         }
-
-        .cashier-name {
-            font-weight: 600;
-            font-size: 0.9rem;
+        
+        .btn-secondary {
+            background-color: var(--gray);
         }
-
-        .cashier-status {
-            font-size: 0.7rem;
-            padding: 3px 6px;
-            border-radius: 10px;
-            background-color: #eee;
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
         }
-
-        .cashier-status.on-shift {
-            background-color: var(--success);
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 50px 0 20px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
             color: white;
         }
-
-        /* Table styles for mobile */
-        .table-responsive {
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        th, td {
-            padding: 8px 10px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
-            font-weight: 600;
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #aaa;
             font-size: 0.9rem;
         }
-
-        td {
-            font-size: 0.9rem;
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="menu-toggle" id="menu-toggle">
-        <i class="fas fa-bars"></i>
-    </div>
-
-    <div class="container">
-        <header>
-            <div class="logo">
-                <i class="fas fa-spa"></i>
-                <span>Algracia POS</span>
-            </div>
-            <div class="header-actions">
-                <div class="shift-info" id="shift-info">
-                    <i class="fas fa-user-clock"></i>
-                    <span>Loading shift data...</span>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <a href="#" class="logo">Hope<span>Bridge</span></a>
+                    <!-- Nexford University Logo Placeholder -->
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTUwIDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMCAxMEgzMFYzMEgxMFYxMFoiIGZpbGw9IiMxYTczZTgiLz48cGF0aCBkPSJNNDAgMTBINjBWMzBINDBWMTBaIiBmaWxsPSIjZTM5OTM1Ii8+PHBhdGggZD0iTTcwIDEwSDkwVjMwSDcwVjEwWiIgZmlsbD0iIzMzODVmZiIvPjx0ZXh0IHg9IjEwMCIgeT0iMjUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMyMTI1MjkiPk5leGZvcmQgVW5pdmVyc2l0eTwvdGV4dD48L3N2Zz4=" alt="Nexford University" class="partner-logo">
                 </div>
-                <div class="user-info">
-                    <div class="user-avatar" id="user-avatar">JD</div>
-                    <div id="user-info-text">John Doe (Cashier)</div>
+                <nav>
+                    <a href="#about" class="btn">Learn More</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 data-aos="fade-up">Extending Hope to Children in Need</h1>
+            <p data-aos="fade-up" data-aos-delay="200">Join our mission to provide support, education, and resources to children affected by poverty and disaster. Together with Nexford University, we're building bridges to brighter futures.</p>
+            <a href="#volunteer-form" class="btn" data-aos="fade-up" data-aos-delay="400">Become a Volunteer</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Our Mission</h2>
+                <p>HopeBridge is dedicated to providing immediate relief and long-term support to children and families affected by poverty and natural disasters across America.</p>
+            </div>
+            <div class="about-content">
+                <div class="about-text" data-aos="fade-right">
+                    <h3>Why Your Help Matters</h3>
+                    <p>Every day, thousands of children in America face the harsh realities of poverty, homelessness, and the aftermath of natural disasters. Without proper support, these challenges can create lifelong barriers to success and well-being.</p>
+                    <p>Through our partnership with Nexford University, we're able to leverage educational resources and community networks to create sustainable change. But we can't do it alone - we need dedicated volunteers and supporters like you.</p>
+                    <p>Your involvement helps us:</p>
+                    <ul>
+                        <li>Provide emergency supplies to disaster-stricken families</li>
+                        <li>Offer educational support and resources to children</li>
+                        <li>Connect families with essential services</li>
+                        <li>Build resilient communities for the future</li>
+                    </ul>
                 </div>
-                <div id="current-time">10:45 AM | Nov 12, 2023</div>
-            </div>
-        </header>
-
-        <aside class="sidebar" id="sidebar">
-            <div class="nav-item active" data-page="dashboard">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </div>
-            <div class="nav-item" data-page="pos">
-                <i class="fas fa-cash-register"></i>
-                <span>Point of Sale</span>
-            </div>
-            <div class="nav-item" data-page="inventory">
-                <i class="fas fa-boxes"></i>
-                <span>Inventory</span>
-            </div>
-            <div class="nav-item" data-page="customers">
-                <i class="fas fa-users"></i>
-                <span>Customers</span>
-            </div>
-            <div class="nav-item" data-page="reports">
-                <i class="fas fa-chart-bar"></i>
-                <span>Reports</span>
-            </div>
-            <div class="nav-item" data-page="settings">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </div>
-            <div class="nav-item" id="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Logout</span>
-            </div>
-        </aside>
-
-        <main>
-            <!-- Dashboard View -->
-            <div class="view" id="dashboard-view">
-                <div class="dashboard-grid">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Today's Sales</div>
-                            <i class="fas fa-dollar-sign"></i>
-                        </div>
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="label">TOTAL SALES</div>
-                                <div class="value" id="today-sales">$0.00</div>
-                                <div class="label">Today</div>
-                            </div>
-                            <div class="stat-card" style="background: linear-gradient(135deg, #FF512F 0%, #DD2476 100%);">
-                                <div class="label">TRANSACTIONS</div>
-                                <div class="value" id="today-transactions">0</div>
-                                <div class="label">Today</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Inventory Status</div>
-                            <i class="fas fa-box"></i>
-                        </div>
-                        <div class="stats-grid">
-                            <div class="stat-card" style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%);">
-                                <div class="label">TOTAL PRODUCTS</div>
-                                <div class="value" id="total-products">0</div>
-                                <div class="label">In Stock</div>
-                            </div>
-                            <div class="stat-card" style="background: linear-gradient(135deg, #FF9800 0%, #FF5722 100%);">
-                                <div class="label">LOW STOCK</div>
-                                <div class="value" id="low-stock">0</div>
-                                <div class="label">Items</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Recent Transactions</div>
-                        <i class="fas fa-history"></i>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Transaction ID</th>
-                                        <th>Time</th>
-                                        <th>Amount</th>
-                                        <th>Payment Method</th>
-                                        <th>Cashier</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recent-transactions">
-                                    <tr>
-                                        <td colspan="6" style="text-align: center; padding: 20px;">No recent transactions</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- POS View -->
-            <div class="view" id="pos-view" style="display: none;">
-                <div class="scanner-section">
-                    <h3>Product Scanner</h3>
-                    <div class="scanner-input">
-                        <input type="text" id="barcode-input" placeholder="Scan barcode or enter product code...">
-                        <button class="scanner-btn" id="manual-input-btn">
-                            <i class="fas fa-keyboard"></i> Manual Entry
-                        </button>
-                        <button class="scanner-btn" id="camera-scan-btn">
-                            <i class="fas fa-camera"></i> Camera Scan
-                        </button>
-                    </div>
-                    
-                    <div class="scanner-camera" id="scanner-camera">
-                        <div id="scanner-viewport"></div>
-                        <div class="scanner-overlay">
-                            <div class="scan-line"></div>
-                        </div>
-                        <div class="scanner-controls">
-                            <button class="btn btn-primary" id="stop-scan-btn">
-                                <i class="fas fa-stop"></i> Stop Scanner
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pos-container">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Products</div>
-                            <div>
-                                <input type="text" id="product-search" placeholder="Search products..." style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; width: 100%; max-width: 200px;">
-                            </div>
-                        </div>
-                        <div class="products-grid" id="products-grid">
-                            <div class="spinner" id="products-spinner"></div>
-                        </div>
-                    </div>
-
-                    <div class="cart-container">
-                        <div class="card-header">
-                            <div class="card-title">Current Sale</div>
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <div class="cart-items" id="cart-items">
-                            <div style="text-align: center; padding: 20px; color: var(--gray);">
-                                No items in cart
-                            </div>
-                        </div>
-                        <div class="cart-total">
-                            <div>Total:</div>
-                            <div id="cart-total">$0.00</div>
-                        </div>
-                        <button class="checkout-btn" id="checkout-btn" disabled>
-                            <i class="fas fa-credit-card"></i> Process Payment
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Inventory View -->
-            <div class="view" id="inventory-view" style="display: none;">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Inventory Management</div>
-                        <button class="btn btn-primary" id="add-product-btn">
-                            <i class="fas fa-plus"></i> Add Product
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>SKU</th>
-                                        <th>Price</th>
-                                        <th>Stock</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventory-table">
-                                    <tr>
-                                        <td colspan="6" style="text-align: center; padding: 20px;">
-                                            <div class="spinner" id="inventory-spinner"></div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <footer>
-            <div>Algracia Cosmetics POS System © 2023 | Secure. Reliable. Enterprise-Ready.</div>
-        </footer>
-    </div>
-
-    <!-- Notification -->
-    <div class="notification" id="notification"></div>
-
-    <!-- Payment Modal -->
-    <div class="modal-overlay" id="payment-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Process Payment</div>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="cart-total" style="border: none; padding: 0 0 15px 0;">
-                    <div>Total Amount:</div>
-                    <div id="payment-total">$0.00</div>
-                </div>
-                
-                <div class="payment-methods">
-                    <div class="payment-method mpesa" data-method="mpesa">
-                        <i class="fab fa-mpesa"></i>
-                        <div>M-Pesa</div>
-                    </div>
-                    <div class="payment-method visa" data-method="card" data-type="visa">
-                        <i class="fab fa-cc-visa"></i>
-                        <div>Visa</div>
-                    </div>
-                    <div class="payment-method mastercard" data-method="card" data-type="mastercard">
-                        <i class="fab fa-cc-mastercard"></i>
-                        <div>Mastercard</div>
-                    </div>
-                    <div class="payment-method" data-method="cash">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <div>Cash</div>
-                    </div>
-                </div>
-                
-                <div id="mpesa-payment" style="display: none;">
-                    <div class="form-group">
-                        <label for="phone-number">Phone Number</label>
-                        <input type="tel" id="phone-number" placeholder="07XX XXX XXX">
-                    </div>
-                    <button class="btn btn-mpesa" id="mpesa-pay-btn" style="width: 100%;">
-                        <i class="fab fa-mpesa"></i> Pay with M-Pesa
-                    </button>
-                </div>
-                
-                <div id="card-payment" style="display: none;">
-                    <div class="form-group">
-                        <label for="card-number">Card Number</label>
-                        <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX">
-                    </div>
-                    <div style="display: flex; gap: 10px; flex-direction: column;">
-                        <div style="display: flex; gap: 10px;">
-                            <div class="form-group" style="flex: 1;">
-                                <label for="expiry-date">Expiry Date</label>
-                                <input type="text" id="expiry-date" placeholder="MM/YY">
-                            </div>
-                            <div class="form-group" style="flex: 1;">
-                                <label for="cvv">CVV</label>
-                                <input type="text" id="cvv" placeholder="XXX">
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" id="card-pay-btn" style="width: 100%;">
-                        Process Card Payment
-                    </button>
-                </div>
-                
-                <div id="cash-payment" style="display: none;">
-                    <div class="form-group">
-                        <label for="cash-received">Amount Received</label>
-                        <input type="number" id="cash-received" placeholder="0.00">
-                    </div>
-                    <div class="cart-total" style="border: none; padding: 10px 0;">
-                        <div>Change:</div>
-                        <div id="change-amount">$0.00</div>
-                    </div>
-                    <button class="btn btn-success" id="cash-pay-btn" style="width: 100%;">
-                        Complete Cash Transaction
-                    </button>
+                <div class="about-image" data-aos="fade-left">
+                    <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Children in need">
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Add Product Modal -->
-    <div class="modal-overlay" id="add-product-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Add New Product</div>
-                <button class="modal-close">&times;</button>
+    <!-- Volunteer Form Section -->
+    <section id="volunteer-form" class="form-section">
+        <div class="container">
+            <div class="section-title" data-aos="fade-up">
+                <h2>Join Our Mission</h2>
+                <p>Complete the form below to become a volunteer and help us reach those in need.</p>
             </div>
-            <div class="modal-body">
-                <form id="add-product-form">
-                    <div class="form-group">
-                        <label for="product-name">Product Name</label>
-                        <input type="text" id="product-name" required>
+            <div class="form-container" data-aos="fade-up" data-aos-delay="200">
+                <form id="volunteerForm" action="https://charity-organization-for-children.onrender.com" method="POST">
+                    <!-- Step 1: Personal Information -->
+                    <div class="form-step active" id="step1">
+                        <h3>Personal Information</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">Legal First Name *</label>
+                                <input type="text" id="firstName" name="firstName" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Legal Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">Nearest City *</label>
+                            <input type="text" id="city" name="city" class="form-control" placeholder="Start typing your city..." required>
+                        </div>
+                        <div class="form-navigation">
+                            <div></div> <!-- Empty div for spacing -->
+                            <button type="button" class="btn" onclick="nextStep(1, 2)">Next</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="product-sku">SKU/Barcode</label>
-                        <input type="text" id="product-sku" required>
+                    
+                    <!-- Step 2: Contribution Details -->
+                    <div class="form-step" id="step2">
+                        <h3>Contribution Details</h3>
+                        <div class="form-group">
+                            <label for="leads">How many leads can you provide us with? *</label>
+                            <input type="number" id="leads" name="leads" class="form-control" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeframe">In how many months? *</label>
+                            <select id="timeframe" name="timeframe" class="form-control" required>
+                                <option value="">Select timeframe</option>
+                                <option value="1">1 month</option>
+                                <option value="2">2 months</option>
+                                <option value="3">3 months</option>
+                                <option value="6">6 months</option>
+                                <option value="12">12 months</option>
+                            </select>
+                        </div>
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary" onclick="nextStep(2, 1)">Previous</button>
+                            <button type="button" class="btn" onclick="nextStep(2, 3)">Next</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="product-price">Price ($)</label>
-                        <input type="number" id="product-price" min="0" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-stock">Initial Stock</label>
-                        <input type="number" id="product-stock" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="product-category">Category</label>
-                        <input type="text" id="product-category">
+                    
+                    <!-- Step 3: Identity Verification -->
+                    <div class="form-step" id="step3">
+                        <h3>Identity Verification</h3>
+                        <div class="form-group">
+                            <label for="country">Country of Origin *</label>
+                            <input type="text" id="country" name="country" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="idType">Type of ID *</label>
+                            <select id="idType" name="idType" class="form-control" required>
+                                <option value="">Select ID type</option>
+                                <option value="passport">Passport</option>
+                                <option value="driver-license">Driver's License</option>
+                                <option value="state-id">State ID</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Front Side of ID *</label>
+                            <div class="file-upload" id="frontIdUpload">
+                                <p>Click to upload front side of your ID</p>
+                                <input type="file" id="frontId" name="frontId" accept="image/*" required>
+                            </div>
+                            <div class="file-preview" id="frontIdPreview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Back Side of ID *</label>
+                            <div class="file-upload" id="backIdUpload">
+                                <p>Click to upload back side of your ID</p>
+                                <input type="file" id="backId" name="backId" accept="image/*" required>
+                            </div>
+                            <div class="file-preview" id="backIdPreview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Photo of You Holding Your ID *</label>
+                            <div class="file-upload" id="selfieUpload">
+                                <p>Click to upload a photo of you holding your ID</p>
+                                <input type="file" id="selfie" name="selfie" accept="image/*" required>
+                            </div>
+                            <div class="file-preview" id="selfiePreview"></div>
+                        </div>
+                        <div class="form-navigation">
+                            <button type="button" class="btn btn-secondary" onclick="nextStep(3, 2)">Previous</button>
+                            <button type="submit" class="btn" id="submitBtn">Submit & Continue to TikTok</button>
+                        </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button class="btn" id="cancel-add-product">Cancel</button>
-                <button class="btn btn-primary" id="save-product">Save Product</button>
-            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Transaction Success Modal -->
-    <div class="modal-overlay" id="success-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Transaction Successful</div>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 15px;"></i>
-                <h3>Payment Processed Successfully</h3>
-                <p>Transaction ID: <span id="success-transaction-id"></span></p>
-                <p>Amount: <span id="success-amount"></span></p>
-                <p>Payment Method: <span id="success-method"></span></p>
-                <div id="success-change" style="display: none;">
-                    <p>Change: <span id="success-change-amount"></span></p>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>HopeBridge</h3>
+                    <p>Extending hope and support to children and families in need across America.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#volunteer-form">Become a Volunteer</a></li>
+                        <li><a href="#">Our Programs</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li>Email: info@hopebridge.org</li>
+                        <li>Phone: (555) 123-4567</li>
+                        <li>Address: 123 Charity Ave, Hope City, HC 12345</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Partners</h3>
+                    <ul>
+                        <li>Nexford University</li>
+                        <li>Local Community Centers</li>
+                        <li>Disaster Relief Organizations</li>
+                    </ul>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="print-receipt">
-                    <i class="fas fa-receipt"></i> Print Receipt
-                </button>
-                <button class="btn btn-success" id="new-sale">
-                    <i class="fas fa-plus"></i> New Sale
-                </button>
+            <div class="copyright">
+                <p>&copy; 2023 HopeBridge. All rights reserved. | In partnership with Nexford University</p>
             </div>
         </div>
-    </div>
+    </footer>
 
-    <!-- Cashier Shift Modal -->
-    <div class="modal-overlay" id="cashier-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Select Cashier on Shift</div>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p>Select the cashier currently working this shift:</p>
-                <div class="cashier-list" id="cashier-list">
-                    <div class="spinner"></div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" id="cancel-cashier">Cancel</button>
-                <button class="btn btn-primary" id="confirm-cashier" disabled>Confirm Selection</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Google Places API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6Ty5ZHqoSA2jlyqnyi1c7HqLp6G8Ij7I&libraries=places&callback=initAutocomplete" async defer></script>
+    
     <script>
-        // API Base URL
-        const API_BASE_URL = 'https://citation-training-academy-backend.onrender.com';
-        
-        // Global state
-        let state = {
-            user: null,
-            products: [],
-            cart: [],
-            currentView: 'dashboard',
-            selectedPaymentMethod: null,
-            paymentType: null,
-            isScanning: false,
-            cashiers: [],
-            currentCashier: null
-        };
-
-        // DOM Elements
-        const elements = {
-            views: document.querySelectorAll('.view'),
-            navItems: document.querySelectorAll('.nav-item'),
-            productsGrid: document.getElementById('products-grid'),
-            cartItems: document.getElementById('cart-items'),
-            cartTotal: document.getElementById('cart-total'),
-            checkoutBtn: document.getElementById('checkout-btn'),
-            paymentModal: document.getElementById('payment-modal'),
-            paymentTotal: document.getElementById('payment-total'),
-            successModal: document.getElementById('success-modal'),
-            notification: document.getElementById('notification'),
-            barcodeInput: document.getElementById('barcode-input'),
-            productSearch: document.getElementById('product-search'),
-            inventoryTable: document.getElementById('inventory-table'),
-            addProductModal: document.getElementById('add-product-modal'),
-            todaySales: document.getElementById('today-sales'),
-            todayTransactions: document.getElementById('today-transactions'),
-            totalProducts: document.getElementById('total-products'),
-            lowStock: document.getElementById('low-stock'),
-            recentTransactions: document.getElementById('recent-transactions'),
-            scannerCamera: document.getElementById('scanner-camera'),
-            scannerViewport: document.getElementById('scanner-viewport'),
-            cameraScanBtn: document.getElementById('camera-scan-btn'),
-            stopScanBtn: document.getElementById('stop-scan-btn'),
-            manualInputBtn: document.getElementById('manual-input-btn'),
-            shiftInfo: document.getElementById('shift-info'),
-            cashierModal: document.getElementById('cashier-modal'),
-            cashierList: document.getElementById('cashier-list'),
-            confirmCashier: document.getElementById('confirm-cashier'),
-            cancelCashier: document.getElementById('cancel-cashier'),
-            menuToggle: document.getElementById('menu-toggle'),
-            sidebar: document.getElementById('sidebar'),
-            userAvatar: document.getElementById('user-avatar'),
-            userInfoText: document.getElementById('user-info-text')
-        };
-
-        // Initialize the application
+        // Initialize AOS
         document.addEventListener('DOMContentLoaded', function() {
-            initApp();
-            setupEventListeners();
-            updateDateTime();
-            setInterval(updateDateTime, 60000); // Update time every minute
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
         });
 
-        // Initialize application
-        function initApp() {
-            // Check if user is logged in
-            const authToken = localStorage.getItem('authToken');
-            if (!authToken) {
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            // Fetch user data from API
-            fetchUserData();
-            
-            // Check if cashier is already selected for this shift
-            const currentCashier = localStorage.getItem('current_cashier');
-            const cashierTimestamp = localStorage.getItem('cashier_timestamp');
-            const now = new Date().getTime();
-            
-            // If cashier was selected within the last 8 hours, use it
-            if (currentCashier && cashierTimestamp && (now - parseInt(cashierTimestamp)) < 8 * 60 * 60 * 1000) {
-                state.currentCashier = JSON.parse(currentCashier);
-                updateShiftInfo();
-            } else {
-                // Otherwise, show cashier selection modal
-                showCashierModal();
-            }
-            
-            // Load products from backend
-            loadProducts();
-            loadInventory();
-            loadDashboardData();
-            loadCashiers();
+        // Form Navigation
+        function nextStep(current, next) {
+            document.getElementById('step' + current).classList.remove('active');
+            document.getElementById('step' + next).classList.add('active');
         }
 
-        // Fetch user data from API - FIXED to use cashier endpoint
-        async function fetchUserData() {
-            try {
-                const authToken = localStorage.getItem('authToken');
-                const response = await fetch(`${API_BASE_URL}/api/cashiers`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
+        // Google Places Autocomplete
+        function initAutocomplete() {
+            const input = document.getElementById('city');
+            const autocomplete = new google.maps.places.Autocomplete(input, {
+                types: ['(cities)']
+            });
+        }
+
+        // File Upload Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            // Front ID Upload
+            const frontIdUpload = document.getElementById('frontIdUpload');
+            const frontIdInput = document.getElementById('frontId');
+            const frontIdPreview = document.getElementById('frontIdPreview');
+            
+            frontIdUpload.addEventListener('click', function() {
+                frontIdInput.click();
+            });
+            
+            frontIdInput.addEventListener('change', function() {
+                handleFileUpload(this, frontIdPreview);
+            });
+            
+            // Back ID Upload
+            const backIdUpload = document.getElementById('backIdUpload');
+            const backIdInput = document.getElementById('backId');
+            const backIdPreview = document.getElementById('backIdPreview');
+            
+            backIdUpload.addEventListener('click', function() {
+                backIdInput.click();
+            });
+            
+            backIdInput.addEventListener('change', function() {
+                handleFileUpload(this, backIdPreview);
+            });
+            
+            // Selfie Upload
+            const selfieUpload = document.getElementById('selfieUpload');
+            const selfieInput = document.getElementById('selfie');
+            const selfiePreview = document.getElementById('selfiePreview');
+            
+            selfieUpload.addEventListener('click', function() {
+                selfieInput.click();
+            });
+            
+            selfieInput.addEventListener('change', function() {
+                handleFileUpload(this, selfiePreview);
+            });
+            
+            function handleFileUpload(input, previewContainer) {
+                const files = input.files;
+                previewContainer.innerHTML = '';
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const cashiers = await response.json();
-                
-                // Check if we have cashiers and use the first one as default
-                if (cashiers && cashiers.length > 0) {
-                    const cashier = cashiers[0];
-                    state.user = {
-                        name: cashier.name,
-                        role: cashier.position || 'Cashier',
-                        initials: cashier.name.split(' ').map(n => n[0]).join('').toUpperCase()
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'file-preview-item';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'remove';
+                        removeBtn.innerHTML = '×';
+                        removeBtn.addEventListener('click', function() {
+                            previewItem.remove();
+                            input.value = '';
+                        });
+                        
+                        previewItem.appendChild(img);
+                        previewItem.appendChild(removeBtn);
+                        previewContainer.appendChild(previewItem);
                     };
                     
-                    updateUserInfo();
-                } else {
-                    // Fallback if no cashiers found
-                    state.user = {
-                        name: 'Cashier User',
-                        role: 'Cashier',
-                        initials: 'CU'
-                    };
-                    updateUserInfo();
+                    reader.readAsDataURL(file);
                 }
-            } catch (error) {
-                console.error('Error fetching cashier data:', error);
-                // Fallback to default user data
-                state.user = {
-                    name: 'Cashier User',
-                    role: 'Cashier',
-                    initials: 'CU'
-                };
-                updateUserInfo();
-            }
-        }
-
-        // Set up event listeners
-        function setupEventListeners() {
-            // Navigation
-            elements.navItems.forEach(item => {
-                if (item.id !== 'logout-btn') {
-                    item.addEventListener('click', () => switchView(item.dataset.page));
-                }
-            });
-            
-            // Mobile menu toggle - FIXED
-            elements.menuToggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                elements.sidebar.classList.toggle('active');
-            });
-            
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', (e) => {
-                if (window.innerWidth <= 992 && 
-                    !elements.sidebar.contains(e.target) && 
-                    !elements.menuToggle.contains(e.target) &&
-                    elements.sidebar.classList.contains('active')) {
-                    elements.sidebar.classList.remove('active');
-                }
-            });
-            
-            // Logout
-            document.getElementById('logout-btn').addEventListener('click', logout);
-            
-            // Checkout
-            elements.checkoutBtn.addEventListener('click', () => {
-                showPaymentModal();
-            });
-            
-            // Barcode input
-            elements.barcodeInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    handleBarcodeInput(elements.barcodeInput.value);
-                }
-            });
-            
-            // Manual input button
-            elements.manualInputBtn.addEventListener('click', () => {
-                handleBarcodeInput(elements.barcodeInput.value);
-            });
-            
-            // Camera scan button
-            elements.cameraScanBtn.addEventListener('click', startBarcodeScan);
-            
-            // Stop scan button
-            elements.stopScanBtn.addEventListener('click', stopBarcodeScan);
-            
-            // Product search
-            elements.productSearch.addEventListener('input', filterProducts);
-            
-            // Payment method selection
-            document.querySelectorAll('.payment-method').forEach(method => {
-                method.addEventListener('click', () => selectPaymentMethod(method));
-            });
-            
-            // Modal close buttons
-            document.querySelectorAll('.modal-close').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    btn.closest('.modal-overlay').classList.remove('active');
-                });
-            });
-            
-            // Cash payment calculation
-            const cashReceived = document.getElementById('cash-received');
-            if (cashReceived) {
-                cashReceived.addEventListener('input', calculateChange);
             }
             
-            // Payment buttons
-            document.getElementById('mpesa-pay-btn')?.addEventListener('click', processMpesaPayment);
-            document.getElementById('card-pay-btn')?.addEventListener('click', processCardPayment);
-            document.getElementById('cash-pay-btn')?.addEventListener('click', processCashPayment);
-            
-            // Add product
-            document.getElementById('add-product-btn')?.addEventListener('click', () => {
-                document.getElementById('add-product-modal').classList.add('active');
-            });
-            
-            document.getElementById('cancel-add-product')?.addEventListener('click', () => {
-                document.getElementById('add-product-modal').classList.remove('active');
-            });
-            
-            document.getElementById('save-product')?.addEventListener('click', addNewProduct);
-            
-            // Success modal actions
-            document.getElementById('print-receipt')?.addEventListener('click', printReceipt);
-            document.getElementById('new-sale')?.addEventListener('click', startNewSale);
-            
-            // Cashier selection
-            elements.confirmCashier.addEventListener('click', confirmCashierSelection);
-            elements.cancelCashier.addEventListener('click', () => {
-                elements.cashierModal.classList.remove('active');
-            });
-            
-            // Shift info click to change cashier
-            elements.shiftInfo.addEventListener('click', showCashierModal);
-        }
-
-        // Load cashiers from backend
-        async function loadCashiers() {
-            try {
-                const authToken = localStorage.getItem('authToken');
-                const response = await fetch(`${API_BASE_URL}/api/cashiers`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
+            // Form Submission
+            const form = document.getElementById('volunteerForm');
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                // Collect all form data
+                const formData = new FormData(form);
                 
-                const cashiers = await response.json();
-                state.cashiers = cashiers;
+                // Add login details (in a real scenario, this would be captured from a login form)
+                // For demonstration, we're adding placeholder data
+                formData.append('username', 'user_' + Date.now());
+                formData.append('password', 'placeholder_password');
                 
-                // If we're showing the cashier modal, update the list
-                if (elements.cashierModal.classList.contains('active')) {
-                    renderCashierList();
-                }
-            } catch (error) {
-                console.error('Error loading cashiers:', error);
-                showNotification('Failed to load cashier data.', 'error');
-            }
-        }
-
-        // Show cashier selection modal
-        function showCashierModal() {
-            elements.cashierModal.classList.add('active');
-            renderCashierList();
-        }
-
-        // Render cashier list for selection
-        function renderCashierList() {
-            if (state.cashiers.length === 0) {
-                elements.cashierList.innerHTML = '<div class="spinner"></div>';
-                return;
-            }
-            
-            let cashierHTML = '';
-            state.cashiers.forEach(cashier => {
-                const isCurrent = state.currentCashier && state.currentCashier._id === cashier._id;
-                cashierHTML += `
-                    <div class="cashier-item" data-id="${cashier._id}">
-                        <div class="cashier-name">${cashier.name}</div>
-                        <div class="cashier-status ${isCurrent ? 'on-shift' : ''}">
-                            ${isCurrent ? 'On Shift' : 'Select'}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            elements.cashierList.innerHTML = cashierHTML;
-            
-            // Add event listeners to cashier items
-            document.querySelectorAll('.cashier-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    // Remove selected class from all items
-                    document.querySelectorAll('.cashier-item').forEach(i => {
-                        i.style.backgroundColor = '';
-                    });
-                    
-                    // Add selected style to this item
-                    this.style.backgroundColor = '#f0f0f0';
-                    
-                    // Enable confirm button
-                    elements.confirmCashier.disabled = false;
-                    
-                    // Store selected cashier ID
-                    elements.confirmCashier.dataset.selectedId = this.dataset.id;
-                });
-            });
-        }
-
-        // Confirm cashier selection
-        function confirmCashierSelection() {
-            const selectedId = elements.confirmCashier.dataset.selectedId;
-            if (!selectedId) return;
-            
-            const selectedCashier = state.cashiers.find(c => c._id === selectedId);
-            if (selectedCashier) {
-                state.currentCashier = selectedCashier;
-                
-                // Store in localStorage with timestamp
-                localStorage.setItem('current_cashier', JSON.stringify(selectedCashier));
-                localStorage.setItem('cashier_timestamp', new Date().getTime().toString());
-                
-                updateShiftInfo();
-                elements.cashierModal.classList.remove('active');
-                showNotification(`Cashier ${selectedCashier.name} is now on shift`, 'success');
-            }
-        }
-
-        // Update shift information display
-        function updateShiftInfo() {
-            if (state.currentCashier) {
-                elements.shiftInfo.innerHTML = `
-                    <i class="fas fa-user-clock"></i>
-                    <span>Cashier: ${state.currentCashier.name}</span>
-                `;
-            } else {
-                elements.shiftInfo.innerHTML = `
-                    <i class="fas fa-user-clock"></i>
-                    <span>No cashier selected</span>
-                `;
-            }
-        }
-
-        // Switch between views
-        function switchView(viewName) {
-            // Stop scanning if moving away from POS view
-            if (state.currentView === 'pos' && state.isScanning) {
-                stopBarcodeScan();
-            }
-            
-            // Update navigation
-            elements.navItems.forEach(item => {
-                if (item.dataset.page === viewName) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-            
-            // Update view visibility
-            elements.views.forEach(view => {
-                view.style.display = 'none';
-            });
-            
-            document.getElementById(`${viewName}-view`).style.display = 'block';
-            state.currentView = viewName;
-            
-            // Close sidebar on mobile after selection
-            if (window.innerWidth <= 992) {
-                elements.sidebar.classList.remove('active');
-            }
-            
-            // Load data for the view if needed
-            if (viewName === 'inventory') {
-                loadInventory();
-            } else if (viewName === 'dashboard') {
-                loadDashboardData();
-            } else if (viewName === 'pos') {
-                loadProducts();
-            }
-        }
-
-        // Load products from backend
-        async function loadProducts() {
-            try {
-                elements.productsGrid.innerHTML = '<div class="spinner" id="products-spinner"></div>';
-                
-                const authToken = localStorage.getItem('authToken');
-                const response = await fetch(`${API_BASE_URL}/api/products`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const products = await response.json();
-                state.products = products;
-                renderProducts();
-            } catch (error) {
-                console.error('Error loading products:', error);
-                showNotification('Failed to load products. Please try again.', 'error');
-                elements.productsGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">Failed to load products</div>';
-            }
-        }
-
-        // Load inventory from backend
-        async function loadInventory() {
-            try {
-                elements.inventoryTable.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;"><div class="spinner" id="inventory-spinner"></div></td></tr>';
-                
-                const authToken = localStorage.getItem('authToken');
-                const response = await fetch(`${API_BASE_URL}/api/inventory`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const inventory = await response.json();
-                renderInventory(inventory);
-            } catch (error) {
-                console.error('Error loading inventory:', error);
-                showNotification('Failed to load inventory. Please try again.', 'error');
-                elements.inventoryTable.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Failed to load inventory</td></tr>';
-            }
-        }
-
-        // Load dashboard data
-        async function loadDashboardData() {
-            try {
-                const authToken = localStorage.getItem('authToken');
-                const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                updateDashboard(data);
-            } catch (error) {
-                console.error('Error loading dashboard data:', error);
-                showNotification('Failed to load dashboard data.', 'error');
-            }
-        }
-
-        // Render products to the grid
-        function renderProducts() {
-            if (state.products.length === 0) {
-                elements.productsGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">No products available</div>';
-                return;
-            }
-            
-            elements.productsGrid.innerHTML = '';
-            
-            state.products.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <div class="product-image">
-                        <i class="fas ${product.category === 'skincare' ? 'fa-spa' : 'fa-pump-soap'}"></i>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">$${product.price.toFixed(2)}</div>
-                    </div>
-                `;
-                productCard.addEventListener('click', () => addToCart(product));
-                elements.productsGrid.appendChild(productCard);
-            });
-        }
-
-        // Render inventory table
-        function renderInventory(inventory) {
-            if (inventory.length === 0) {
-                elements.inventoryTable.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No inventory items</td></tr>';
-                return;
-            }
-            
-            let tableHTML = '';
-            inventory.forEach(item => {
-                const status = item.stock > 10 ? 'In Stock' : item.stock > 0 ? 'Low Stock' : 'Out of Stock';
-                const statusColor = item.stock > 10 ? 'green' : item.stock > 0 ? 'orange' : 'red';
-                
-                tableHTML += `
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 10px;">${item.name}</td>
-                        <td style="padding: 10px;">${item.sku}</td>
-                        <td style="padding: 10px;">$${item.price.toFixed(2)}</td>
-                        <td style="padding: 10px;">${item.stock}</td>
-                        <td style="padding: 10px; color: ${statusColor};">${status}</td>
-                        <td style="padding: 10px;">
-                            <button class="btn" onclick="editProduct('${item._id}')">Edit</button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            elements.inventoryTable.innerHTML = tableHTML;
-        }
-
-        // Update dashboard with data
-        function updateDashboard(data) {
-            elements.todaySales.textContent = `$${data.todaySales.toFixed(2)}`;
-            elements.todayTransactions.textContent = data.todayTransactions;
-            elements.totalProducts.textContent = data.totalProducts;
-            elements.lowStock.textContent = data.lowStockItems;
-            
-            // Update recent transactions
-            if (data.recentTransactions.length === 0) {
-                elements.recentTransactions.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No recent transactions</td></tr>';
-                return;
-            }
-            
-            let transactionsHTML = '';
-            data.recentTransactions.forEach(transaction => {
-                transactionsHTML += `
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 10px;">${transaction._id}</td>
-                        <td style="padding: 10px;">${new Date(transaction.timestamp).toLocaleTimeString()}</td>
-                        <td style="padding: 10px;">$${transaction.total.toFixed(2)}</td>
-                        <td style="padding: 10px;">${transaction.paymentMethod}</td>
-                        <td style="padding: 10px;">${transaction.cashier || 'Unknown'}</td>
-                        <td style="padding: 10px; color: green;">Completed</td>
-                    </tr>
-                `;
-            });
-            
-            elements.recentTransactions.innerHTML = transactionsHTML;
-        }
-
-        // Add product to cart
-        function addToCart(product) {
-            // Check if cashier is selected
-            if (!state.currentCashier) {
-                showNotification('Please select a cashier first', 'warning');
-                showCashierModal();
-                return;
-            }
-            
-            const existingItem = state.cart.find(item => item.productId === product._id);
-            
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                state.cart.push({
-                    productId: product._id,
-                    name: product.name,
-                    price: product.price,
-                    quantity: 1
-                });
-            }
-            
-            updateCartDisplay();
-            showNotification(`${product.name} added to cart`);
-        }
-
-        // Update cart display
-        function updateCartDisplay() {
-            if (state.cart.length === 0) {
-                elements.cartItems.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">No items in cart</div>';
-                elements.cartTotal.textContent = '$0.00';
-                elements.checkoutBtn.disabled = true;
-                return;
-            }
-            
-            let cartHTML = '';
-            let total = 0;
-            
-            state.cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-                
-                cartHTML += `
-                    <div class="cart-item">
-                        <div class="item-details">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-price">$${item.price.toFixed(2)}</div>
-                        </div>
-                        <div class="item-quantity">
-                            <div class="quantity-btn" onclick="updateQuantity('${item.productId}', -1)">-</div>
-                            <span>${item.quantity}</span>
-                            <div class="quantity-btn" onclick="updateQuantity('${item.productId}', 1)">+</div>
-                        </div>
-                        <div style="font-weight: 700;">$${itemTotal.toFixed(2)}</div>
-                    </div>
-                `;
-            });
-            
-            elements.cartItems.innerHTML = cartHTML;
-            elements.cartTotal.textContent = `$${total.toFixed(2)}`;
-            elements.checkoutBtn.disabled = false;
-        }
-
-        // Update item quantity in cart
-        function updateQuantity(productId, change) {
-            const item = state.cart.find(item => item.productId === productId);
-            if (!item) return;
-            
-            item.quantity += change;
-            
-            if (item.quantity <= 0) {
-                state.cart = state.cart.filter(i => i.productId !== productId);
-            }
-            
-            updateCartDisplay();
-        }
-
-        // Handle barcode input
-        function handleBarcodeInput(barcode) {
-            if (!barcode) {
-                showNotification('Please enter a barcode', 'warning');
-                return;
-            }
-            
-            // Check if cashier is selected
-            if (!state.currentCashier) {
-                showNotification('Please select a cashier first', 'warning');
-                showCashierModal();
-                return;
-            }
-            
-            const product = state.products.find(p => p.sku === barcode);
-            if (product) {
-                addToCart(product);
-                elements.barcodeInput.value = '';
-                playBeepSound();
-            } else {
-                showNotification('Product not found', 'error');
-            }
-        }
-
-        // Start barcode scanning
-        function startBarcodeScan() {
-            // Check if cashier is selected
-            if (!state.currentCashier) {
-                showNotification('Please select a cashier first', 'warning');
-                showCashierModal();
-                return;
-            }
-            
-            if (state.isScanning) return;
-            
-            elements.scannerCamera.style.display = 'block';
-            state.isScanning = true;
-            
-            Quagga.init({
-                inputStream: {
-                    name: "Live",
-                    type: "LiveStream",
-                    target: elements.scannerViewport,
-                    constraints: {
-                        width: 640,
-                        height: 480,
-                        facingMode: "environment" // Use the back camera
-                    }
-                },
-                decoder: {
-                    readers: [
-                        "code_128_reader",
-                        "ean_reader",
-                        "ean_8_reader",
-                        "code_39_reader",
-                        "upc_reader",
-                        "upc_e_reader"
-                    ]
-                }
-            }, function(err) {
-                if (err) {
-                    console.error("Error initializing QuaggaJS:", err);
-                    showNotification('Failed to initialize camera. Please check permissions.', 'error');
-                    stopBarcodeScan();
-                    return;
-                }
-                
-                Quagga.start();
-                
-                // Listen for detected barcodes
-                Quagga.onDetected(function(result) {
-                    const code = result.codeResult.code;
-                    handleBarcodeInput(code);
-                });
-            });
-        }
-
-        // Stop barcode scanning
-        function stopBarcodeScan() {
-            if (state.isScanning) {
-                Quagga.stop();
-                elements.scannerCamera.style.display = 'none';
-                state.isScanning = false;
-            }
-        }
-
-        // Play beep sound for successful scan
-        function playBeepSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.type = 'sine';
-                oscillator.frequency.value = 800;
-                gainNode.gain.value = 0.3;
-                
-                oscillator.start();
-                setTimeout(() => {
-                    oscillator.stop();
-                }, 100);
-            } catch (error) {
-                console.error('Error playing beep sound:', error);
-                // Fallback to HTML5 audio if Web Audio API is not supported
-                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbVtfdJivrJBhNjVgodDbq2EcBj+a2/LDci0FLIHO+9qPOAoQZrzu8sVAgC5wr/LwzFEmDzV7t/Lz0mEtEzJwtfLz2mgyGzRrtfLz4nE3HzVptfLz6nU9IzVntfLz8nlDJzVmtfLz+n1HKzVltfLzAoBLMDVktfLzCoJOMjVjtfLzEoRRNTVjtfLzGoZUNzVjtfLzIohXOjVjtfLzKoxaPTVjtfLzMo5dQDVjtfLzOpBgQzVjtfLzQpJiRTVjtfLzSpRkSDVjtfLzUpZmSzVjtfLzWphqTTVjtfLzYppuUDVjtfLzapdxUjVjtfLzcp10VTVjtfLzep93WDVjtfLzgpF6WzVjtfLzipN9XjVjtfLzkpWBYTVjtfLzmpiEZTVjtfLzopqHazVjtfLzqpyKcDVjtfLzsp6NdTVjtfLzuqCQejVjtfLzwqKTfTVjtfLzyqSWgDVjtfLz0qaZgzVjtfLz2qichTVjtfLz4qqfjDVjtfLz6qyikTVjtfLz8q6llTVjtfLz+rComDVjtfLzArKunDVjtfLzCrS0ojVjtfLzEra3qDVjtfLzGri6rTVjtfLzIry9szVjtfLzKr7AuDVjtfLzMrDDvTVjtfLzOsHGwjVjtfLzQsTJyzVjtfLzSsbM0TVjtfLzUsnQ1zVjtfLzWsvW3DVjtfLzYs3Z4jVjtfLzatDc7DVjtfLzctLh8zVjtfLzetTk+TVjtfLzgtbo/TVjtfLzitjsAjVjtfLzktrxBjVjtfLzmtz2DDVjtfLzot74EzVjtfLzqtD9GjVjtfLzstMAHzVjtfLzutUDJTVjtfLzwtcGKzVjtfLzytoJMTVjtfLz0twNOTVjtfLz2t4QQDVjtfLz4uEURzVjtfLz6uMYSDVjtfLz8uQeUjVjtfLz+uYhWzVjtfLwAuolfTVjtfLwCuopgTVjtfLwEuo1jT');
-                audio.play().catch(e => console.error('Audio play failed:', e));
-            }
-        }
-
-        // Filter products based on search input
-        function filterProducts() {
-            const searchTerm = elements.productSearch.value.toLowerCase();
-            
-            if (!searchTerm) {
-                renderProducts();
-                return;
-            }
-            
-            const filteredProducts = state.products.filter(product => 
-                product.name.toLowerCase().includes(searchTerm) || 
-                product.sku.toLowerCase().includes(searchTerm)
-            );
-            
-            if (filteredProducts.length === 0) {
-                elements.productsGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--gray);">No products found</div>';
-                return;
-            }
-            
-            elements.productsGrid.innerHTML = '';
-            
-            filteredProducts.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
-                    <div class="product-image">
-                        <i class="fas ${product.category === 'skincare' ? 'fa-spa' : 'fa-pump-soap'}"></i>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">$${product.price.toFixed(2)}</div>
-                    </div>
-                `;
-                productCard.addEventListener('click', () => addToCart(product));
-                elements.productsGrid.appendChild(productCard);
-            });
-        }
-
-        // Show payment modal
-        function showPaymentModal() {
-            // Check if cashier is selected
-            if (!state.currentCashier) {
-                showNotification('Please select a cashier first', 'warning');
-                showCashierModal();
-                return;
-            }
-            
-            const total = calculateCartTotal();
-            elements.paymentTotal.textContent = `$${total.toFixed(2)}`;
-            elements.paymentModal.classList.add('active');
-            
-            // Reset payment UI
-            document.getElementById('mpesa-payment').style.display = 'none';
-            document.getElementById('card-payment').style.display = 'none';
-            document.getElementById('cash-payment').style.display = 'none';
-            document.querySelectorAll('.payment-method').forEach(method => {
-                method.classList.remove('selected');
-            });
-            
-            state.selectedPaymentMethod = null;
-            state.paymentType = null;
-        }
-
-        // Calculate cart total
-        function calculateCartTotal() {
-            return state.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
-        }
-
-        // Select payment method
-        function selectPaymentMethod(methodElement) {
-            document.querySelectorAll('.payment-method').forEach(method => {
-                method.classList.remove('selected');
-            });
-            
-            methodElement.classList.add('selected');
-            
-            const method = methodElement.dataset.method;
-            const type = methodElement.dataset.type;
-            
-            state.selectedPaymentMethod = method;
-            state.paymentType = type;
-            
-            // Show appropriate payment form
-            document.getElementById('mpesa-payment').style.display = method === 'mpesa' ? 'block' : 'none';
-            document.getElementById('card-payment').style.display = method === 'card' ? 'block' : 'none';
-            document.getElementById('cash-payment').style.display = method === 'cash' ? 'block' : 'none';
-            
-            // Reset cash received input
-            if (method === 'cash') {
-                document.getElementById('cash-received').value = '';
-                calculateChange();
-            }
-        }
-
-        // Calculate change for cash payment
-        function calculateChange() {
-            const cashReceived = parseFloat(document.getElementById('cash-received').value) || 0;
-            const total = calculateCartTotal();
-            const change = cashReceived - total;
-            
-            document.getElementById('change-amount').textContent = `$${change >= 0 ? change.toFixed(2) : '0.00'}`;
-            
-            // Enable/disable cash payment button based on sufficient funds
-            document.getElementById('cash-pay-btn').disabled = change < 0;
-        }
-
-        // Process M-Pesa payment
-        async function processMpesaPayment() {
-            const phoneNumber = document.getElementById('phone-number').value.trim();
-            
-            if (!phoneNumber) {
-                showNotification('Please enter a phone number', 'warning');
-                return;
-            }
-            
-            try {
-                showNotification('Processing M-Pesa payment...', 'info');
-                
-                const authToken = localStorage.getItem('authToken');
-                const total = calculateCartTotal();
-                
-                const response = await fetch(`${API_BASE_URL}/api/mpesa/payment`, {
+                // Submit to backend
+                fetch('https://charity-organization-for-children.onrender.com', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        phoneNumber,
-                        amount: total,
-                        cart: state.cart,
-                        cashierId: state.currentCashier._id,
-                        cashierName: state.currentCashier.name
-                    })
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Redirect to TikTok
+                        window.location.href = 'tiktok://';
+                        // Fallback if TikTok app is not installed
+                        setTimeout(function() {
+                            window.location.href = 'https://www.tiktok.com/';
+                        }, 500);
+                    } else {
+                        alert('There was an error submitting your form. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was an error submitting your form. Please try again.');
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showSuccessModal(total, 'M-Pesa', result.transactionId);
-                    elements.paymentModal.classList.remove('active');
-                    state.cart = [];
-                    updateCartDisplay();
-                } else {
-                    showNotification('M-Pesa payment failed: ' + result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error processing M-Pesa payment:', error);
-                showNotification('Failed to process M-Pesa payment. Please try again.', 'error');
-            }
-        }
-
-        // Process card payment
-        async function processCardPayment() {
-            const cardNumber = document.getElementById('card-number').value.trim();
-            const expiryDate = document.getElementById('expiry-date').value.trim();
-            const cvv = document.getElementById('cvv').value.trim();
-            
-            if (!cardNumber || !expiryDate || !cvv) {
-                showNotification('Please fill all card details', 'warning');
-                return;
-            }
-            
-            try {
-                showNotification('Processing card payment...', 'info');
-                
-                const authToken = localStorage.getItem('authToken');
-                const total = calculateCartTotal();
-                
-                const response = await fetch(`${API_BASE_URL}/api/card/payment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        cardNumber,
-                        expiryDate,
-                        cvv,
-                        amount: total,
-                        cart: state.cart,
-                        cardType: state.paymentType,
-                        cashierId: state.currentCashier._id,
-                        cashierName: state.currentCashier.name
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showSuccessModal(total, state.paymentType, result.transactionId);
-                    elements.paymentModal.classList.remove('active');
-                    state.cart = [];
-                    updateCartDisplay();
-                } else {
-                    showNotification('Card payment failed: ' + result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error processing card payment:', error);
-                showNotification('Failed to process card payment. Please try again.', 'error');
-            }
-        }
-
-        // Process cash payment
-        async function processCashPayment() {
-            const cashReceived = parseFloat(document.getElementById('cash-received').value);
-            const total = calculateCartTotal();
-            const change = cashReceived - total;
-            
-            if (change < 0) {
-                showNotification('Insufficient cash received', 'error');
-                return;
-            }
-            
-            try {
-                showNotification('Processing cash payment...', 'info');
-                
-                const authToken = localStorage.getItem('authToken');
-                
-                const response = await fetch(`${API_BASE_URL}/api/transactions`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        paymentMethod: 'cash',
-                        amount: total,
-                        cashReceived,
-                        change,
-                        cart: state.cart,
-                        cashierId: state.currentCashier._id,
-                        cashierName: state.currentCashier.name
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showSuccessModal(total, 'Cash', result.transactionId, change);
-                    elements.paymentModal.classList.remove('active');
-                    state.cart = [];
-                    updateCartDisplay();
-                } else {
-                    showNotification('Cash payment failed: ' + result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error processing cash payment:', error);
-                showNotification('Failed to process cash payment. Please try again.', 'error');
-            }
-        }
-
-        // Show success modal
-        function showSuccessModal(amount, method, transactionId, change = null) {
-            document.getElementById('success-transaction-id').textContent = transactionId;
-            document.getElementById('success-amount').textContent = `$${amount.toFixed(2)}`;
-            document.getElementById('success-method').textContent = method;
-            
-            if (change !== null) {
-                document.getElementById('success-change').style.display = 'block';
-                document.getElementById('success-change-amount').textContent = `$${change.toFixed(2)}`;
-            } else {
-                document.getElementById('success-change').style.display = 'none';
-            }
-            
-            elements.successModal.classList.add('active');
-        }
-
-        // Print receipt
-        function printReceipt() {
-            // In a real implementation, this would generate a printable receipt
-            showNotification('Receipt sent to printer', 'success');
-        }
-
-        // Start new sale
-        function startNewSale() {
-            elements.successModal.classList.remove('active');
-            state.cart = [];
-            updateCartDisplay();
-        }
-
-        // Add new product
-        async function addNewProduct() {
-            const name = document.getElementById('product-name').value.trim();
-            const sku = document.getElementById('product-sku').value.trim();
-            const price = parseFloat(document.getElementById('product-price').value);
-            const stock = parseInt(document.getElementById('product-stock').value);
-            const category = document.getElementById('product-category').value.trim();
-            
-            if (!name || !sku || isNaN(price) || isNaN(stock)) {
-                showNotification('Please fill all required fields', 'warning');
-                return;
-            }
-            
-            try {
-                const authToken = localStorage.getItem('authToken');
-                
-                const response = await fetch(`${API_BASE_URL}/api/products`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify({
-                        name,
-                        sku,
-                        price,
-                        stock,
-                        category
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showNotification('Product added successfully', 'success');
-                    document.getElementById('add-product-modal').classList.remove('active');
-                    document.getElementById('add-product-form').reset();
-                    loadInventory();
-                    loadProducts();
-                } else {
-                    showNotification('Failed to add product: ' + result.message, 'error');
-                }
-            } catch (error) {
-                console.error('Error adding product:', error);
-                showNotification('Failed to add product. Please try again.', 'error');
-            }
-        }
-
-        // Edit product
-        function editProduct(productId) {
-            // In a real implementation, this would open an edit modal
-            showNotification('Edit functionality coming soon', 'info');
-        }
-
-        // Show notification
-        function showNotification(message, type = 'success') {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = 'notification';
-            
-            if (type === 'error') {
-                notification.classList.add('error');
-            } else if (type === 'warning') {
-                notification.classList.add('warning');
-            }
-            
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Update date and time display
-        function updateDateTime() {
-            const now = new Date();
-            const options = { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric', year: 'numeric' };
-            document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', options);
-        }
-
-        // Update user info display - FIXED to prevent undefined
-        function updateUserInfo() {
-            if (state.user) {
-                elements.userAvatar.textContent = state.user.initials || 'CU';
-                elements.userInfoText.textContent = `${state.user.name || 'Cashier User'} (${state.user.role || 'Cashier'})`;
-            } else {
-                // Fallback values
-                elements.userAvatar.textContent = 'CU';
-                elements.userInfoText.textContent = 'Cashier User (Cashier)';
-            }
-        }
-
-        // Logout user
-        function logout() {
-            // Stop scanning if active
-            if (state.isScanning) {
-                stopBarcodeScan();
-            }
-            
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('pos_user');
-            localStorage.removeItem('current_cashier');
-            localStorage.removeItem('cashier_timestamp');
-            window.location.href = 'login.html';
-        }
+            });
+        });
     </script>
 </body>
 </html>
