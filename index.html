@@ -50,7 +50,7 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-        
+
         /* Notification System */
         .notification-container {
             position: fixed;
@@ -455,22 +455,6 @@
             color: var(--accent);
         }
         
-        .stat-trend {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 8px;
-            font-size: 14px;
-        }
-        
-        .trend-up {
-            color: var(--success);
-        }
-        
-        .trend-down {
-            color: var(--danger);
-        }
-        
         .dashboard-tabs {
             display: flex;
             gap: 10px;
@@ -817,10 +801,10 @@
     <!-- Enhanced Header -->
     <header id="main-header">
         <div class="container header-container">
-            <div class="logo" onclick="window.location.href='index.html'">
+            <div class="logo">
                 <img src="https://www.dropbox.com/scl/fi/1dq16nex1borvvknpcwox/circular_dark_background.png?rlkey=sq2ujl2oxxk9vyvg1j7oz0cdb&raw=1" alt="BitHash Logo">
                 <span class="logo-text">
-                    <span class="bitcoin-animation">₿</span>itHash
+                    <span class="bitcoin-animation">₿</span>itHash Capital Admin
                 </span>
             </div>
             
@@ -828,7 +812,6 @@
                 <div class="user-profile" id="user-profile">
                     <div class="user-avatar" id="user-avatar">A</div>
                     <span id="user-name">Admin</span>
-                    <i class="fas fa-chevron-down"></i>
                 </div>
             </div>
             
@@ -864,7 +847,7 @@
     <!-- Admin Dashboard -->
     <div class="admin-dashboard" id="admin-dashboard">
         <div class="dashboard-header">
-            <h1>Email Management</h1>
+            <h1>Email Management Dashboard</h1>
             <p>Send emails to investors and track engagement</p>
         </div>
         
@@ -872,34 +855,18 @@
             <div class="stat-card">
                 <h3>Total Investors</h3>
                 <div class="stat-value" id="total-investors">0</div>
-                <div class="stat-trend trend-up">
-                    <i class="fas fa-arrow-up"></i>
-                    <span id="investor-trend">0%</span>
-                </div>
             </div>
             <div class="stat-card">
                 <h3>Emails Sent</h3>
                 <div class="stat-value" id="emails-sent">0</div>
-                <div class="stat-trend trend-up">
-                    <i class="fas fa-arrow-up"></i>
-                    <span id="email-trend">0%</span>
-                </div>
             </div>
             <div class="stat-card">
                 <h3>Open Rate</h3>
                 <div class="stat-value" id="open-rate">0%</div>
-                <div class="stat-trend trend-down">
-                    <i class="fas fa-arrow-down"></i>
-                    <span id="open-trend">0%</span>
-                </div>
             </div>
             <div class="stat-card">
                 <h3>Last Activity</h3>
                 <div class="stat-value" id="last-activity">-</div>
-                <div class="stat-trend">
-                    <i class="fas fa-clock"></i>
-                    <span id="activity-time">Just now</span>
-                </div>
             </div>
         </div>
         
@@ -916,47 +883,38 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">Compose Email</h3>
-                    <button class="btn btn-secondary" id="load-template-btn">
-                        <i class="fas fa-file-alt"></i> Load Template
-                    </button>
+                    <div>
+                        <button class="btn btn-secondary" id="load-template-btn">
+                            <i class="fas fa-file-alt"></i> Load Template
+                        </button>
+                        <button class="btn btn-info" id="predefined-templates-btn">
+                            <i class="fas fa-magic"></i> Predefined Templates
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="recipient-type">Send To</label>
                     <select id="recipient-type" class="form-control">
-                        <option value="single">Single Investor</option>
                         <option value="all">All Investors</option>
-                        <option value="segment">Segment</option>
-                        <option value="excel">Upload Excel Sheet</option>
+                        <option value="selected">Selected Investors</option>
+                        <option value="manual">Manual Email Addresses</option>
                     </select>
                 </div>
                 
-                <div id="single-recipient" class="recipient-section">
+                <div id="selected-recipients" class="recipient-section" style="display: none;">
                     <div class="form-group">
-                        <label for="investor-select">Select Investor</label>
-                        <select id="investor-select" class="form-control">
-                            <option value="">-- Select Investor --</option>
-                        </select>
+                        <label>Select Investors</label>
+                        <div id="investor-checklist" class="investor-list">
+                            <!-- Investors will be populated here -->
+                        </div>
                     </div>
                 </div>
                 
-                <div id="segment-recipient" class="recipient-section" style="display: none;">
+                <div id="manual-recipients" class="recipient-section" style="display: none;">
                     <div class="form-group">
-                        <label for="segment-select">Select Segment</label>
-                        <select id="segment-select" class="form-control">
-                            <option value="">-- Select Segment --</option>
-                            <option value="active">Active Investors</option>
-                            <option value="inactive">Inactive Investors</option>
-                            <option value="high-value">High Value Investors</option>
-                            <option value="new">New Investors</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div id="excel-upload" class="recipient-section" style="display: none;">
-                    <div class="form-group">
-                        <label for="excel-file">Upload Excel File</label>
-                        <input type="file" id="excel-file" class="form-control" accept=".xlsx, .xls">
+                        <label for="manual-emails">Email Addresses (one per line or comma separated)</label>
+                        <textarea id="manual-emails" class="form-control" rows="4" placeholder="Enter email addresses..."></textarea>
                     </div>
                 </div>
                 
@@ -967,7 +925,7 @@
                 
                 <div class="form-group">
                     <label for="email-content">Email Content</label>
-                    <textarea id="email-content" class="form-control" rows="10" placeholder="Compose your email here..."></textarea>
+                    <textarea id="email-content" class="form-control" rows="12" placeholder="Compose your email here..."></textarea>
                 </div>
                 
                 <div class="form-row">
@@ -977,21 +935,9 @@
                         </label>
                     </div>
                     <div class="form-group">
-                        <label for="schedule-enabled">
-                            <input type="checkbox" id="schedule-enabled"> Schedule Email
-                        </label>
-                    </div>
-                    <div class="form-group">
                         <label for="save-template">
                             <input type="checkbox" id="save-template"> Save as Template
                         </label>
-                    </div>
-                </div>
-                
-                <div id="schedule-section" style="display: none;">
-                    <div class="form-group">
-                        <label for="schedule-date">Schedule Date & Time</label>
-                        <input type="datetime-local" id="schedule-date" class="form-control">
                     </div>
                 </div>
                 
@@ -1011,10 +957,7 @@
                 
                 <div style="margin-top: 20px; display: flex; gap: 10px;">
                     <button class="btn btn-primary" id="send-email-btn">
-                        <i class="fas fa-paper-plane"></i> Send Email
-                    </button>
-                    <button class="btn btn-secondary" id="save-draft-btn">
-                        <i class="fas fa-save"></i> Save Draft
+                        <i class="fas fa-paper-plane"></i> Send Email Now
                     </button>
                     <button class="btn btn-info" id="preview-email-btn">
                         <i class="fas fa-eye"></i> Preview
@@ -1027,7 +970,7 @@
         <div class="tab-content" id="investors">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Investor List</h3>
+                    <h3 class="card-title">Investor Management</h3>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn btn-secondary" id="refresh-investors">
                             <i class="fas fa-sync-alt"></i> Refresh
@@ -1055,8 +998,22 @@
                     </div>
                 </div>
                 
-                <div class="investor-list" id="investor-list">
-                    <!-- Investor items will be populated here -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Country</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="investor-table">
+                            <!-- Investor data will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
                 
                 <div class="pagination" id="investor-pagination">
@@ -1071,9 +1028,6 @@
                 <div class="card-header">
                     <h3 class="card-title">Email History</h3>
                     <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-secondary" id="filter-emails">
-                            <i class="fas fa-filter"></i> Filter
-                        </button>
                         <button class="btn btn-info" id="export-emails">
                             <i class="fas fa-download"></i> Export
                         </button>
@@ -1088,8 +1042,6 @@
                         <select id="email-filter" class="form-control">
                             <option value="">All Status</option>
                             <option value="sent">Sent</option>
-                            <option value="delivered">Delivered</option>
-                            <option value="opened">Opened</option>
                             <option value="failed">Failed</option>
                         </select>
                     </div>
@@ -1104,7 +1056,6 @@
                                 <th>Sent Date</th>
                                 <th>Open Rate</th>
                                 <th>Status</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="email-history-table">
@@ -1139,6 +1090,7 @@
                             <tr>
                                 <th>Template Name</th>
                                 <th>Subject</th>
+                                <th>Type</th>
                                 <th>Last Modified</th>
                                 <th>Used</th>
                                 <th>Actions</th>
@@ -1164,13 +1116,9 @@
                     <div style="display: flex; gap: 10px;">
                         <select id="analytics-period" class="form-control" style="width: auto;">
                             <option value="7">Last 7 days</option>
-                            <option value="30">Last 30 days</option>
+                            <option value="30" selected>Last 30 days</option>
                             <option value="90">Last 90 days</option>
-                            <option value="365">Last year</option>
                         </select>
-                        <button class="btn btn-info" id="export-analytics">
-                            <i class="fas fa-download"></i> Export
-                        </button>
                     </div>
                 </div>
                 
@@ -1178,43 +1126,18 @@
                     <div class="stat-card">
                         <h3>Delivery Rate</h3>
                         <div class="stat-value" id="delivery-rate">0%</div>
-                        <div class="stat-trend trend-up">
-                            <i class="fas fa-arrow-up"></i>
-                            <span id="delivery-trend">0%</span>
-                        </div>
                     </div>
                     <div class="stat-card">
                         <h3>Open Rate</h3>
                         <div class="stat-value" id="analytics-open-rate">0%</div>
-                        <div class="stat-trend trend-down">
-                            <i class="fas fa-arrow-down"></i>
-                            <span id="analytics-open-trend">0%</span>
-                        </div>
                     </div>
                     <div class="stat-card">
-                        <h3>Click Rate</h3>
-                        <div class="stat-value" id="click-rate">0%</div>
-                        <div class="stat-trend trend-up">
-                            <i class="fas fa-arrow-up"></i>
-                            <span id="click-trend">0%</span>
-                        </div>
+                        <h3>Total Sent</h3>
+                        <div class="stat-value" id="total-sent">0</div>
                     </div>
                     <div class="stat-card">
-                        <h3>Unsubscribe Rate</h3>
-                        <div class="stat-value" id="unsubscribe-rate">0%</div>
-                        <div class="stat-trend trend-down">
-                            <i class="fas fa-arrow-down"></i>
-                            <span id="unsubscribe-trend">0%</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card" style="margin-top: 20px;">
-                    <div class="card-header">
-                        <h3 class="card-title">Engagement Over Time</h3>
-                    </div>
-                    <div id="engagement-chart" style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
-                        Chart visualization would appear here with a proper charting library
+                        <h3>Total Opens</h3>
+                        <div class="stat-value" id="total-opens">0</div>
                     </div>
                 </div>
             </div>
@@ -1272,6 +1195,60 @@
         </div>
     </div>
 
+    <!-- Predefined Templates Modal -->
+    <div class="modal-overlay" id="predefined-templates-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Predefined Templates</h3>
+                <button class="modal-close" id="close-predefined-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="template-list" id="predefined-template-list">
+                    <!-- Predefined templates will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="close-predefined-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Investor Modal -->
+    <div class="modal-overlay" id="add-investor-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Investor</h3>
+                <button class="modal-close" id="close-investor-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="investor-name">Full Name</label>
+                    <input type="text" id="investor-name" class="form-control" placeholder="Enter investor name">
+                </div>
+                <div class="form-group">
+                    <label for="investor-email">Email Address</label>
+                    <input type="email" id="investor-email" class="form-control" placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label for="investor-phone">Phone (Optional)</label>
+                    <input type="text" id="investor-phone" class="form-control" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label for="investor-country">Country (Optional)</label>
+                    <input type="text" id="investor-country" class="form-control" placeholder="Enter country">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-investor-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-investor-btn">Add Investor</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         // Initialize AOS
@@ -1286,7 +1263,6 @@
         let investors = [];
         let emailHistory = [];
         let templates = [];
-        let analyticsData = {};
         let currentInvestorPage = 1;
         let currentEmailPage = 1;
         let currentTemplatePage = 1;
@@ -1306,14 +1282,12 @@
         const recipientType = document.getElementById('recipient-type');
         const recipientSections = document.querySelectorAll('.recipient-section');
         const trackingEnabled = document.getElementById('tracking-enabled');
-        const scheduleEnabled = document.getElementById('schedule-enabled');
-        const scheduleSection = document.getElementById('schedule-section');
         const saveTemplate = document.getElementById('save-template');
         const templateSection = document.getElementById('template-section');
         const emailContent = document.getElementById('email-content');
         const emailPreview = document.getElementById('email-preview-content');
         const sendEmailBtn = document.getElementById('send-email-btn');
-        const investorList = document.getElementById('investor-list');
+        const investorTable = document.getElementById('investor-table');
         const investorPagination = document.getElementById('investor-pagination');
         const emailHistoryTable = document.getElementById('email-history-table');
         const emailPagination = document.getElementById('email-pagination');
@@ -1330,6 +1304,7 @@
         const templateSearch = document.getElementById('template-search');
         const createTemplateBtn = document.getElementById('create-template-btn');
         const loadTemplateBtn = document.getElementById('load-template-btn');
+        const predefinedTemplatesBtn = document.getElementById('predefined-templates-btn');
         const previewEmailBtn = document.getElementById('preview-email-btn');
         const emailPreviewModal = document.getElementById('email-preview-modal');
         const closePreviewModal = document.getElementById('close-preview-modal');
@@ -1344,8 +1319,17 @@
         const modalTemplateSubject = document.getElementById('modal-template-subject');
         const modalTemplateContent = document.getElementById('modal-template-content');
         const templateModalTitle = document.getElementById('template-modal-title');
+        const predefinedTemplatesModal = document.getElementById('predefined-templates-modal');
+        const closePredefinedModal = document.getElementById('close-predefined-modal');
+        const closePredefinedBtn = document.getElementById('close-predefined-btn');
+        const predefinedTemplateList = document.getElementById('predefined-template-list');
+        const addInvestorModal = document.getElementById('add-investor-modal');
+        const closeInvestorModal = document.getElementById('close-investor-modal');
+        const cancelInvestorBtn = document.getElementById('cancel-investor-btn');
+        const saveInvestorBtn = document.getElementById('save-investor-btn');
+        const investorChecklist = document.getElementById('investor-checklist');
+        const manualEmails = document.getElementById('manual-emails');
         const analyticsPeriod = document.getElementById('analytics-period');
-        const exportAnalyticsBtn = document.getElementById('export-analytics');
         
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
@@ -1391,18 +1375,12 @@
                     section.style.display = 'none';
                 });
                 
-                if (value === 'single') {
-                    document.getElementById('single-recipient').style.display = 'block';
-                } else if (value === 'segment') {
-                    document.getElementById('segment-recipient').style.display = 'block';
-                } else if (value === 'excel') {
-                    document.getElementById('excel-upload').style.display = 'block';
+                if (value === 'selected') {
+                    document.getElementById('selected-recipients').style.display = 'block';
+                    loadInvestorChecklist();
+                } else if (value === 'manual') {
+                    document.getElementById('manual-recipients').style.display = 'block';
                 }
-            });
-            
-            // Schedule toggle
-            scheduleEnabled.addEventListener('change', function() {
-                scheduleSection.style.display = this.checked ? 'block' : 'none';
             });
             
             // Save template toggle
@@ -1448,6 +1426,9 @@
             // Load template
             loadTemplateBtn.addEventListener('click', showLoadTemplateModal);
             
+            // Predefined templates
+            predefinedTemplatesBtn.addEventListener('click', showPredefinedTemplatesModal);
+            
             // Preview email
             previewEmailBtn.addEventListener('click', showEmailPreview);
             
@@ -1465,11 +1446,19 @@
             // Save template
             saveTemplateBtn.addEventListener('click', saveTemplateHandler);
             
+            // Close predefined templates modal
+            closePredefinedModal.addEventListener('click', hidePredefinedTemplatesModal);
+            closePredefinedBtn.addEventListener('click', hidePredefinedTemplatesModal);
+            
+            // Close investor modal
+            closeInvestorModal.addEventListener('click', hideAddInvestorModal);
+            cancelInvestorBtn.addEventListener('click', hideAddInvestorModal);
+            
+            // Save investor
+            saveInvestorBtn.addEventListener('click', saveInvestorHandler);
+            
             // Analytics period change
             analyticsPeriod.addEventListener('change', fetchAnalytics);
-            
-            // Export analytics
-            exportAnalyticsBtn.addEventListener('click', exportAnalytics);
         });
         
         // Utility Functions
@@ -1586,7 +1575,7 @@
             
             templates.forEach(template => {
                 const option = document.createElement('option');
-                option.value = template.id;
+                option.value = template._id;
                 option.textContent = template.name;
                 templateSelect.appendChild(option);
             });
@@ -1600,11 +1589,11 @@
             
             // Add event listener for template selection
             templateSelect.addEventListener('change', function() {
-                const selectedTemplate = templates.find(t => t.id === this.value);
+                const selectedTemplate = templates.find(t => t._id === this.value);
                 if (selectedTemplate) {
                     modalTemplateName.value = selectedTemplate.name;
                     modalTemplateSubject.value = selectedTemplate.subject;
-                    // In a real implementation, we would set the content too
+                    modalTemplateContent.value = selectedTemplate.content;
                 }
             });
             
@@ -1621,6 +1610,28 @@
                 <textarea id="modal-template-content" class="form-control" rows="10" placeholder="Enter template content"></textarea>
             `;
             modalTemplateContent = document.getElementById('modal-template-content');
+        }
+        
+        function showPredefinedTemplatesModal() {
+            fetchPredefinedTemplates();
+            predefinedTemplatesModal.classList.add('active');
+        }
+        
+        function hidePredefinedTemplatesModal() {
+            predefinedTemplatesModal.classList.remove('active');
+        }
+        
+        function showAddInvestorModal() {
+            addInvestorModal.classList.add('active');
+        }
+        
+        function hideAddInvestorModal() {
+            addInvestorModal.classList.remove('active');
+            // Clear form
+            document.getElementById('investor-name').value = '';
+            document.getElementById('investor-email').value = '';
+            document.getElementById('investor-phone').value = '';
+            document.getElementById('investor-country').value = '';
         }
         
         // API Functions
@@ -1664,6 +1675,7 @@
                     fetchDashboardStats();
                     fetchInvestors();
                     fetchEmailHistory();
+                    fetchTemplates();
                 } else {
                     const errorData = await response.json();
                     showNotification('error', 'Login Failed', errorData.message || 'Please check your credentials.');
@@ -1686,16 +1698,10 @@
                     const data = await response.json();
                     
                     // Update stats
-                    document.getElementById('total-investors').textContent = data.totalInvestors || 0;
-                    document.getElementById('emails-sent').textContent = data.emailsSent || 0;
-                    document.getElementById('open-rate').textContent = `${data.openRate || 0}%`;
-                    document.getElementById('last-activity').textContent = data.lastActivity || '-';
-                    
-                    // Update trends
-                    document.getElementById('investor-trend').textContent = `${data.investorTrend || 0}%`;
-                    document.getElementById('email-trend').textContent = `${data.emailTrend || 0}%`;
-                    document.getElementById('open-trend').textContent = `${data.openTrend || 0}%`;
-                    document.getElementById('activity-time').textContent = data.activityTime || 'Just now';
+                    document.getElementById('total-investors').textContent = data.data.totalInvestors || 0;
+                    document.getElementById('emails-sent').textContent = data.data.emailsSent || 0;
+                    document.getElementById('open-rate').textContent = `${data.data.openRate || 0}%`;
+                    document.getElementById('last-activity').textContent = data.data.lastActivity || '-';
                 }
             } catch (error) {
                 console.error('Error fetching stats:', error);
@@ -1720,21 +1726,10 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    investors = data.investors || [];
+                    investors = data.data.investors || [];
                     
-                    // Update investor list
-                    renderInvestorList();
-                    
-                    // Update investor select dropdown
-                    const investorSelect = document.getElementById('investor-select');
-                    investorSelect.innerHTML = '<option value="">-- Select Investor --</option>';
-                    
-                    investors.forEach(investor => {
-                        const option = document.createElement('option');
-                        option.value = investor.id;
-                        option.textContent = `${investor.name} (${investor.email})`;
-                        investorSelect.appendChild(option);
-                    });
+                    // Update investor table
+                    renderInvestorTable();
                 }
             } catch (error) {
                 console.error('Error fetching investors:', error);
@@ -1742,48 +1737,69 @@
             }
         }
         
-        function renderInvestorList() {
-            investorList.innerHTML = '';
+        function renderInvestorTable() {
+            investorTable.innerHTML = '';
             
             if (investors.length === 0) {
-                investorList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary)">No investors found</div>';
+                investorTable.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary)">
+                            No investors found
+                        </td>
+                    </tr>
+                `;
                 return;
             }
             
             investors.forEach(investor => {
-                const investorItem = document.createElement('div');
-                investorItem.className = 'investor-item';
+                const row = document.createElement('tr');
                 
-                let statusBadge = '';
-                if (investor.lastEmailStatus === 'sent') {
-                    statusBadge = '<span class="status-badge status-sent"><i class="fas fa-paper-plane"></i> Sent</span>';
-                } else if (investor.lastEmailStatus === 'opened') {
-                    statusBadge = '<span class="status-badge status-opened"><i class="fas fa-envelope-open"></i> Opened</span>';
-                } else if (investor.lastEmailStatus === 'failed') {
-                    statusBadge = '<span class="status-badge status-failed"><i class="fas fa-exclamation-circle"></i> Failed</span>';
-                }
-                
-                investorItem.innerHTML = `
-                    <div class="investor-info">
-                        <h4>${investor.name}</h4>
-                        <p>${investor.email} • Joined: ${investor.joinDate} • Tier: ${investor.tier || 'Standard'}</p>
-                    </div>
-                    <div class="investor-actions">
-                        ${statusBadge}
-                        <button class="btn btn-secondary" onclick="sendToInvestor('${investor.id}')">
+                row.innerHTML = `
+                    <td>${investor.name}</td>
+                    <td>${investor.email}</td>
+                    <td>${investor.country || '-'}</td>
+                    <td>${new Date(investor.joinDate).toLocaleDateString()}</td>
+                    <td>
+                        <span class="status-badge ${investor.status === 'active' ? 'status-sent' : investor.status === 'new' ? 'status-opened' : 'status-failed'}">
+                            ${investor.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="sendToInvestor('${investor._id}', '${investor.email}')">
                             <i class="fas fa-envelope"></i> Email
                         </button>
-                        <button class="btn btn-info" onclick="viewInvestorDetails('${investor.id}')">
-                            <i class="fas fa-eye"></i> View
-                        </button>
-                    </div>
+                    </td>
                 `;
                 
-                investorList.appendChild(investorItem);
+                investorTable.appendChild(row);
             });
             
             // Render pagination
             renderPagination(investorPagination, currentInvestorPage, Math.ceil((data?.totalCount || 0) / itemsPerPage), 'investor');
+        }
+        
+        function loadInvestorChecklist() {
+            investorChecklist.innerHTML = '';
+            
+            if (investors.length === 0) {
+                investorChecklist.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary)">No investors found</div>';
+                return;
+            }
+            
+            investors.forEach(investor => {
+                const checklistItem = document.createElement('div');
+                checklistItem.className = 'investor-item';
+                checklistItem.innerHTML = `
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; width: 100%;">
+                        <input type="checkbox" value="${investor._id}" data-email="${investor.email}">
+                        <div>
+                            <strong>${investor.name}</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-secondary)">${investor.email}</div>
+                        </div>
+                    </label>
+                `;
+                investorChecklist.appendChild(checklistItem);
+            });
         }
         
         async function fetchEmailHistory() {
@@ -1803,7 +1819,7 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    emailHistory = data.emails || [];
+                    emailHistory = data.data.emails || [];
                     
                     // Update email history table
                     renderEmailHistory();
@@ -1820,7 +1836,7 @@
             if (emailHistory.length === 0) {
                 emailHistoryTable.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary)">
+                        <td colspan="5" style="text-align: center; padding: 20px; color: var(--text-secondary)">
                             No email history found
                         </td>
                     </tr>
@@ -1831,36 +1847,21 @@
             emailHistory.forEach(email => {
                 const row = document.createElement('tr');
                 
-                let openRate = '0%';
-                if (email.recipientCount > 0) {
-                    openRate = `${Math.round((email.openCount / email.recipientCount) * 100)}%`;
-                }
-                
                 let statusBadge = '';
                 if (email.status === 'sent') {
                     statusBadge = '<span class="status-badge status-sent">Sent</span>';
-                } else if (email.status === 'delivered') {
-                    statusBadge = '<span class="status-badge status-opened">Delivered</span>';
-                } else if (email.status === 'opened') {
-                    statusBadge = '<span class="status-badge status-opened">Opened</span>';
                 } else if (email.status === 'failed') {
                     statusBadge = '<span class="status-badge status-failed">Failed</span>';
+                } else {
+                    statusBadge = `<span class="status-badge status-opened">${email.status}</span>`;
                 }
                 
                 row.innerHTML = `
                     <td>${email.subject}</td>
                     <td>${email.recipientCount}</td>
-                    <td>${email.sentDate}</td>
-                    <td>${openRate}</td>
+                    <td>${new Date(email.sentDate).toLocaleString()}</td>
+                    <td>${email.openRate}%</td>
                     <td>${statusBadge}</td>
-                    <td>
-                        <button class="btn btn-secondary" onclick="viewEmailDetails('${email.id}')">
-                            <i class="fas fa-eye"></i> Details
-                        </button>
-                        <button class="btn btn-info" onclick="resendEmail('${email.id}')">
-                            <i class="fas fa-redo"></i> Resend
-                        </button>
-                    </td>
                 `;
                 
                 emailHistoryTable.appendChild(row);
@@ -1885,7 +1886,7 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    templates = data.templates || [];
+                    templates = data.data.templates || [];
                     
                     // Update template table
                     renderTemplates();
@@ -1896,13 +1897,65 @@
             }
         }
         
+        async function fetchPredefinedTemplates() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/templates/predefined`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    renderPredefinedTemplates(data.data.templates || []);
+                }
+            } catch (error) {
+                console.error('Error fetching predefined templates:', error);
+                showNotification('error', 'Data Error', 'Failed to load predefined templates.');
+            }
+        }
+        
+        function renderPredefinedTemplates(predefinedTemplates) {
+            predefinedTemplateList.innerHTML = '';
+            
+            if (predefinedTemplates.length === 0) {
+                predefinedTemplateList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary)">No predefined templates available</div>';
+                return;
+            }
+            
+            predefinedTemplates.forEach(template => {
+                const templateCard = document.createElement('div');
+                templateCard.className = 'card';
+                templateCard.style.marginBottom = '15px';
+                templateCard.innerHTML = `
+                    <h4 style="margin-bottom: 10px; color: var(--accent)">${template.name}</h4>
+                    <p><strong>Subject:</strong> ${template.subject}</p>
+                    <div style="max-height: 150px; overflow-y: auto; margin: 10px 0; padding: 10px; background: var(--primary); border-radius: var(--radius);">
+                        ${template.content}
+                    </div>
+                    <button class="btn btn-primary" onclick="loadPredefinedTemplate('${template.name}', '${template.subject.replace(/'/g, "\\'")}', '${template.content.replace(/'/g, "\\'")}')">
+                        <i class="fas fa-check"></i> Use This Template
+                    </button>
+                `;
+                predefinedTemplateList.appendChild(templateCard);
+            });
+        }
+        
+        function loadPredefinedTemplate(name, subject, content) {
+            document.getElementById('email-subject').value = subject;
+            document.getElementById('email-content').value = content;
+            updateEmailPreview();
+            hidePredefinedTemplatesModal();
+            showNotification('success', 'Template Loaded', `"${name}" template has been loaded.`);
+        }
+        
         function renderTemplates() {
             templateTable.innerHTML = '';
             
             if (templates.length === 0) {
                 templateTable.innerHTML = `
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px; color: var(--text-secondary)">
+                        <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary)">
                             No templates found
                         </td>
                     </tr>
@@ -1916,16 +1969,18 @@
                 row.innerHTML = `
                     <td>${template.name}</td>
                     <td>${template.subject}</td>
-                    <td>${template.lastModified}</td>
+                    <td>
+                        <span class="status-badge ${template.templateType === 'custom' ? 'status-sent' : 'status-opened'}">
+                            ${template.templateType}
+                        </span>
+                    </td>
+                    <td>${new Date(template.updatedAt).toLocaleDateString()}</td>
                     <td>${template.usedCount || 0}</td>
                     <td>
-                        <button class="btn btn-secondary" onclick="loadTemplate('${template.id}')">
+                        <button class="btn btn-secondary" onclick="loadTemplateContent('${template._id}')">
                             <i class="fas fa-edit"></i> Load
                         </button>
-                        <button class="btn btn-info" onclick="editTemplate('${template.id}')">
-                            <i class="fas fa-pencil-alt"></i> Edit
-                        </button>
-                        <button class="btn btn-danger" onclick="deleteTemplate('${template.id}')">
+                        <button class="btn btn-danger" onclick="deleteTemplate('${template._id}')">
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </td>
@@ -1950,19 +2005,12 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    analyticsData = data;
                     
                     // Update analytics stats
-                    document.getElementById('delivery-rate').textContent = `${data.deliveryRate || 0}%`;
-                    document.getElementById('analytics-open-rate').textContent = `${data.openRate || 0}%`;
-                    document.getElementById('click-rate').textContent = `${data.clickRate || 0}%`;
-                    document.getElementById('unsubscribe-rate').textContent = `${data.unsubscribeRate || 0}%`;
-                    
-                    // Update trends
-                    document.getElementById('delivery-trend').textContent = `${data.deliveryTrend || 0}%`;
-                    document.getElementById('analytics-open-trend').textContent = `${data.openTrend || 0}%`;
-                    document.getElementById('click-trend').textContent = `${data.clickTrend || 0}%`;
-                    document.getElementById('unsubscribe-trend').textContent = `${data.unsubscribeTrend || 0}%`;
+                    document.getElementById('delivery-rate').textContent = `${data.data.deliveryRate || 0}%`;
+                    document.getElementById('analytics-open-rate').textContent = `${data.data.openRate || 0}%`;
+                    document.getElementById('total-sent').textContent = data.data.totalSent || 0;
+                    document.getElementById('total-opens').textContent = data.data.totalOpens || 0;
                 }
             } catch (error) {
                 console.error('Error fetching analytics:', error);
@@ -2052,8 +2100,6 @@
             const subject = document.getElementById('email-subject').value;
             const content = emailContent.value;
             const enableTracking = trackingEnabled.checked;
-            const scheduleEmail = scheduleEnabled.checked;
-            const scheduleDate = document.getElementById('schedule-date').value;
             const saveAsTemplate = saveTemplate.checked;
             const templateName = document.getElementById('template-name').value;
             
@@ -2068,67 +2114,74 @@
             }
             
             let recipients = [];
+            let endpoint = '/admin/send-email';
+            let requestBody = {
+                subject,
+                content,
+                enableTracking,
+                saveAsTemplate,
+                templateName: saveAsTemplate ? templateName : null
+            };
             
-            if (recipientTypeValue === 'single') {
-                const investorId = document.getElementById('investor-select').value;
-                if (!investorId) {
-                    showNotification('error', 'Missing Information', 'Please select an investor.');
+            if (recipientTypeValue === 'all') {
+                // Send to all investors
+                requestBody.recipients = [];
+            } else if (recipientTypeValue === 'selected') {
+                // Send to selected investors
+                const selectedInvestors = Array.from(document.querySelectorAll('#investor-checklist input[type="checkbox"]:checked'))
+                    .map(checkbox => checkbox.value);
+                
+                if (selectedInvestors.length === 0) {
+                    showNotification('error', 'Missing Information', 'Please select at least one investor.');
                     return;
                 }
-                recipients = [investorId];
-            } else if (recipientTypeValue === 'all') {
-                // Get all investor IDs
-                recipients = investors.map(inv => inv.id);
-            } else if (recipientTypeValue === 'segment') {
-                const segment = document.getElementById('segment-select').value;
-                if (!segment) {
-                    showNotification('error', 'Missing Information', 'Please select a segment.');
+                
+                requestBody.recipients = selectedInvestors;
+            } else if (recipientTypeValue === 'manual') {
+                // Send to manual email addresses
+                const emailText = manualEmails.value.trim();
+                if (!emailText) {
+                    showNotification('error', 'Missing Information', 'Please enter at least one email address.');
                     return;
                 }
-                // In a real implementation, you would filter investors by segment
-                recipients = investors.map(inv => inv.id);
-            } else if (recipientTypeValue === 'excel') {
-                // Handle Excel upload
-                const fileInput = document.getElementById('excel-file');
-                if (!fileInput.files.length) {
-                    showNotification('error', 'Missing Information', 'Please upload an Excel file.');
+                
+                // Parse email addresses (support both comma separated and new line separated)
+                const emailAddresses = emailText.split(/[\n,]/)
+                    .map(email => email.trim())
+                    .filter(email => email.length > 0);
+                
+                if (emailAddresses.length === 0) {
+                    showNotification('error', 'Invalid Emails', 'Please enter valid email addresses.');
                     return;
                 }
-                // In a real implementation, you would process the Excel file
-                showNotification('info', 'Excel Upload', 'Excel upload functionality would be implemented here.');
-                return;
+                
+                endpoint = '/admin/send-manual-email';
+                requestBody.emailAddresses = emailAddresses;
             }
             
             try {
                 showNotification('info', 'Sending Email', 'Please wait while we send your email...', 0);
                 
-                const emailData = {
-                    recipients,
-                    subject,
-                    content,
-                    enableTracking,
-                    scheduleEmail,
-                    scheduleDate: scheduleEmail ? scheduleDate : null,
-                    saveAsTemplate,
-                    templateName: saveAsTemplate ? templateName : null
-                };
-                
-                const response = await fetch(`${API_BASE_URL}/admin/send-email`, {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${authToken}`
                     },
-                    body: JSON.stringify(emailData)
+                    body: JSON.stringify(requestBody)
                 });
                 
                 if (response.ok) {
-                    showNotification('success', 'Email Sent', 'Your email has been sent successfully!');
+                    const data = await response.json();
+                    showNotification('success', 'Email Sent', data.message || 'Your email has been sent successfully!');
                     
                     // Reset form
                     document.getElementById('email-subject').value = '';
                     emailContent.value = '';
                     updateEmailPreview();
+                    saveTemplate.checked = false;
+                    templateSection.style.display = 'none';
+                    document.getElementById('template-name').value = '';
                     
                     // Refresh data
                     fetchDashboardStats();
@@ -2194,7 +2247,51 @@
             }
         }
         
-        function sendToInvestor(investorId) {
+        async function saveInvestorHandler() {
+            const name = document.getElementById('investor-name').value;
+            const email = document.getElementById('investor-email').value;
+            const phone = document.getElementById('investor-phone').value;
+            const country = document.getElementById('investor-country').value;
+            
+            if (!name || !email) {
+                showNotification('error', 'Missing Information', 'Please fill in name and email fields.');
+                return;
+            }
+            
+            try {
+                showNotification('info', 'Adding Investor', 'Please wait while we add the investor...', 0);
+                
+                const investorData = {
+                    name,
+                    email,
+                    phone,
+                    country
+                };
+                
+                const response = await fetch(`${API_BASE_URL}/admin/investors`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(investorData)
+                });
+                
+                if (response.ok) {
+                    showNotification('success', 'Investor Added', 'The investor has been added successfully!');
+                    hideAddInvestorModal();
+                    fetchInvestors();
+                } else {
+                    const errorData = await response.json();
+                    showNotification('error', 'Add Failed', errorData.message || 'Failed to add investor. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error adding investor:', error);
+                showNotification('error', 'Connection Error', 'An error occurred while adding the investor. Please try again.');
+            }
+        }
+        
+        function sendToInvestor(investorId, email) {
             // Switch to send email tab
             tabBtns.forEach(btn => btn.classList.remove('active'));
             document.querySelector('[data-tab="send-email"]').classList.add('active');
@@ -2202,105 +2299,36 @@
             tabContents.forEach(content => content.classList.remove('active'));
             document.getElementById('send-email').classList.add('active');
             
-            // Set recipient type to single and select the investor
-            recipientType.value = 'single';
-            document.getElementById('investor-select').value = investorId;
+            // Set recipient type to selected and select the investor
+            recipientType.value = 'selected';
+            document.getElementById('selected-recipients').style.display = 'block';
             
-            // Hide other recipient sections
-            recipientSections.forEach(section => {
-                section.style.display = 'none';
-            });
-            document.getElementById('single-recipient').style.display = 'block';
+            // Load checklist and check the investor
+            loadInvestorChecklist();
+            setTimeout(() => {
+                const checkbox = document.querySelector(`input[value="${investorId}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            }, 100);
+            
+            // Pre-fill subject
+            document.getElementById('email-subject').value = `Update from BitHash Capital`;
         }
         
-        function viewEmailDetails(emailId) {
-            // In a real implementation, this would show a modal with email details
-            showNotification('info', 'Email Details', `Viewing details for email ID: ${emailId}`);
-        }
-        
-        function resendEmail(emailId) {
-            // In a real implementation, this would resend the email
-            showNotification('info', 'Resend Email', `Resending email with ID: ${emailId}`);
-        }
-        
-        function viewInvestorDetails(investorId) {
-            // In a real implementation, this would show a modal with investor details
-            showNotification('info', 'Investor Details', `Viewing details for investor ID: ${investorId}`);
-        }
-        
-        function showAddInvestorModal() {
-            // In a real implementation, this would show a modal to add a new investor
-            showNotification('info', 'Add Investor', 'Add investor functionality would be implemented here.');
-        }
-        
-        function loadTemplate(templateId) {
-            const template = templates.find(t => t.id === templateId);
+        function loadTemplateContent(templateId) {
+            const template = templates.find(t => t._id === templateId);
             if (template) {
                 document.getElementById('email-subject').value = template.subject;
                 emailContent.value = template.content;
                 updateEmailPreview();
                 showNotification('success', 'Template Loaded', `Template "${template.name}" has been loaded.`);
-            }
-        }
-        
-        function editTemplate(templateId) {
-            const template = templates.find(t => t.id === templateId);
-            if (template) {
-                templateModalTitle.textContent = 'Edit Template';
-                modalTemplateName.value = template.name;
-                modalTemplateSubject.value = template.subject;
-                modalTemplateContent.value = template.content;
-                templateModal.classList.add('active');
                 
-                // Set up save button to update instead of create
-                saveTemplateBtn.onclick = function() {
-                    updateTemplate(templateId);
-                };
-            }
-        }
-        
-        async function updateTemplate(templateId) {
-            const name = modalTemplateName.value;
-            const subject = modalTemplateSubject.value;
-            const content = modalTemplateContent.value;
-            
-            if (!name || !subject || !content) {
-                showNotification('error', 'Missing Information', 'Please fill in all template fields.');
-                return;
-            }
-            
-            try {
-                showNotification('info', 'Updating Template', 'Please wait while we update your template...', 0);
-                
-                const templateData = {
-                    name,
-                    subject,
-                    content
-                };
-                
-                const response = await fetch(`${API_BASE_URL}/admin/templates/${templateId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify(templateData)
-                });
-                
-                if (response.ok) {
-                    showNotification('success', 'Template Updated', 'Your template has been updated successfully!');
-                    hideTemplateModal();
-                    fetchTemplates();
-                    
-                    // Reset save button functionality
-                    saveTemplateBtn.onclick = saveTemplateHandler;
-                } else {
-                    const errorData = await response.json();
-                    showNotification('error', 'Update Failed', errorData.message || 'Failed to update template. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error updating template:', error);
-                showNotification('error', 'Connection Error', 'An error occurred while updating the template. Please try again.');
+                // Switch to send email tab
+                tabBtns.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-tab="send-email"]').classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                document.getElementById('send-email').classList.add('active');
             }
         }
         
@@ -2391,39 +2419,6 @@
             } catch (error) {
                 console.error('Error exporting emails:', error);
                 showNotification('error', 'Connection Error', 'An error occurred while exporting email history. Please try again.');
-            }
-        }
-        
-        async function exportAnalytics() {
-            try {
-                showNotification('info', 'Exporting Analytics', 'Preparing your export file...', 0);
-                
-                const period = analyticsPeriod.value;
-                
-                const response = await fetch(`${API_BASE_URL}/admin/export/analytics?period=${period}`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'analytics.csv';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    
-                    showNotification('success', 'Export Complete', 'Analytics data has been exported successfully.');
-                } else {
-                    showNotification('error', 'Export Failed', 'Failed to export analytics data. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error exporting analytics:', error);
-                showNotification('error', 'Connection Error', 'An error occurred while exporting analytics data. Please try again.');
             }
         }
     </script>
