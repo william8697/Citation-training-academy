@@ -50,7 +50,7 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-
+        
         /* Notification System */
         .notification-container {
             position: fixed;
@@ -762,7 +762,7 @@
         /* Template Selection */
         .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
@@ -798,14 +798,45 @@
             margin-bottom: 10px;
         }
         
-        .template-preview {
-            background: var(--secondary);
-            padding: 15px;
-            border-radius: var(--radius);
-            font-size: 13px;
+        .template-category {
+            display: inline-block;
+            background: var(--border);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
             color: var(--text-secondary);
-            max-height: 100px;
-            overflow: hidden;
+        }
+        
+        /* Recipient Selection */
+        .recipient-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--primary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        
+        .recipient-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .recipient-tag {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .recipient-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
         }
         
         /* Responsive */
@@ -870,7 +901,7 @@
     <!-- Enhanced Header -->
     <header id="main-header">
         <div class="container header-container">
-            <div class="logo">
+            <div class="logo" onclick="window.location.href='index.html'">
                 <img src="https://www.dropbox.com/scl/fi/1dq16nex1borvvknpcwox/circular_dark_background.png?rlkey=sq2ujl2oxxk9vyvg1j7oz0cdb&raw=1" alt="BitHash Logo">
                 <span class="logo-text">
                     <span class="bitcoin-animation">₿</span>itHash Capital Admin
@@ -881,6 +912,7 @@
                 <div class="user-profile" id="user-profile">
                     <div class="user-avatar" id="user-avatar">A</div>
                     <span id="user-name">Admin</span>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
             </div>
             
@@ -916,8 +948,8 @@
     <!-- Admin Dashboard -->
     <div class="admin-dashboard" id="admin-dashboard">
         <div class="dashboard-header">
-            <h1>Email Management Dashboard</h1>
-            <p>Send professional emails to investors and track engagement</p>
+            <h1>Email Management</h1>
+            <p>Send emails to investors and track engagement</p>
         </div>
         
         <div class="stats-grid">
@@ -973,7 +1005,7 @@
                             <i class="fas fa-file-alt"></i> Load Template
                         </button>
                         <button class="btn btn-info" id="predefined-templates-btn">
-                            <i class="fas fa-bolt"></i> Predefined Templates
+                            <i class="fas fa-star"></i> Predefined Templates
                         </button>
                     </div>
                 </div>
@@ -981,19 +1013,26 @@
                 <div class="form-group">
                     <label for="recipient-type">Send To</label>
                     <select id="recipient-type" class="form-control">
-                        <option value="all">All Active Investors</option>
-                        <option value="single">Single Investor</option>
-                        <option value="segment">Segment</option>
+                        <option value="all">All Investors</option>
+                        <option value="selected">Selected Investors</option>
+                        <option value="manual">Manual Email Addresses</option>
                     </select>
                 </div>
                 
-                <div id="single-recipient" class="recipient-section" style="display: none;">
-                    <div class="form-group">
-                        <label for="investor-select">Select Investor</label>
-                        <select id="investor-select" class="form-control">
-                            <option value="">-- Select Investor --</option>
-                        </select>
-                    </div>
+                <!-- Selected Investors Section -->
+                <div id="selected-investors-section" class="recipient-section" style="display: none;">
+                    <label>Select Investors</label>
+                    <select id="investor-select" class="form-control" multiple style="height: 150px;">
+                        <option value="">Loading investors...</option>
+                    </select>
+                    <div class="recipient-tags" id="selected-investors-tags"></div>
+                </div>
+                
+                <!-- Manual Emails Section -->
+                <div id="manual-emails-section" class="recipient-section" style="display: none;">
+                    <label>Enter Email Addresses (one per line or comma separated)</label>
+                    <textarea id="manual-emails" class="form-control" rows="4" placeholder="Enter email addresses..."></textarea>
+                    <div class="recipient-tags" id="manual-emails-tags"></div>
                 </div>
                 
                 <div class="form-group">
@@ -1047,7 +1086,7 @@
                 
                 <div style="margin-top: 20px; display: flex; gap: 10px;">
                     <button class="btn btn-primary" id="send-email-btn">
-                        <i class="fas fa-paper-plane"></i> Send Email Now
+                        <i class="fas fa-paper-plane"></i> Send Email
                     </button>
                     <button class="btn btn-info" id="preview-email-btn">
                         <i class="fas fa-eye"></i> Preview
@@ -1060,7 +1099,7 @@
         <div class="tab-content" id="investors">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Investor Management</h3>
+                    <h3 class="card-title">Investor List</h3>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn btn-secondary" id="refresh-investors">
                             <i class="fas fa-sync-alt"></i> Refresh
@@ -1085,8 +1124,22 @@
                     </div>
                 </div>
                 
-                <div class="investor-list" id="investor-list">
-                    <!-- Investor items will be populated here -->
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Join Date</th>
+                                <th>Tier</th>
+                                <th>Status</th>
+                                <th>Total Invested</th>
+                            </tr>
+                        </thead>
+                        <tbody id="investor-table">
+                            <!-- Investor data will be populated here -->
+                        </tbody>
+                    </table>
                 </div>
                 
                 <div class="pagination" id="investor-pagination">
@@ -1099,8 +1152,11 @@
         <div class="tab-content" id="email-history">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Email Campaign History</h3>
+                    <h3 class="card-title">Email History</h3>
                     <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-secondary" id="refresh-emails">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
                         <button class="btn btn-info" id="export-emails">
                             <i class="fas fa-download"></i> Export
                         </button>
@@ -1130,6 +1186,7 @@
                                 <th>Sent Date</th>
                                 <th>Open Rate</th>
                                 <th>Status</th>
+                                <th>Sent By</th>
                             </tr>
                         </thead>
                         <tbody id="email-history-table">
@@ -1166,6 +1223,7 @@
                                 <th>Subject</th>
                                 <th>Category</th>
                                 <th>Last Modified</th>
+                                <th>Used</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -1191,6 +1249,7 @@
                             <option value="7">Last 7 days</option>
                             <option value="30">Last 30 days</option>
                             <option value="90">Last 90 days</option>
+                            <option value="365">Last year</option>
                         </select>
                     </div>
                 </div>
@@ -1210,6 +1269,22 @@
                         <div class="stat-trend trend-down">
                             <i class="fas fa-arrow-down"></i>
                             <span id="analytics-open-trend">0%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Sent</h3>
+                        <div class="stat-value" id="total-sent">0</div>
+                        <div class="stat-trend trend-up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="sent-trend">0%</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Unique Opens</h3>
+                        <div class="stat-value" id="unique-opens">0</div>
+                        <div class="stat-trend trend-up">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="opens-trend">0%</span>
                         </div>
                     </div>
                 </div>
@@ -1267,24 +1342,23 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Predefined Templates Modal -->
     <div class="modal-overlay" id="predefined-templates-modal">
         <div class="modal" style="max-width: 800px;">
             <div class="modal-header">
-                <h3 class="modal-title">Select Predefined Template</h3>
+                <h3 class="modal-title">Predefined Templates</h3>
                 <button class="modal-close" id="close-predefined-modal">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="template-grid" id="predefined-templates-grid">
-                    <!-- Predefined templates will be populated here -->
+                    <!-- Predefined templates will be loaded here -->
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" id="cancel-predefined-btn">Cancel</button>
-                <button class="btn btn-primary" id="load-selected-template-btn">Load Selected Template</button>
             </div>
         </div>
     </div>
@@ -1303,7 +1377,6 @@
         let investors = [];
         let emailHistory = [];
         let templates = [];
-        let predefinedTemplates = [];
         let analyticsData = {};
         let currentInvestorPage = 1;
         let currentEmailPage = 1;
@@ -1322,8 +1395,12 @@
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
         const recipientType = document.getElementById('recipient-type');
-        const singleRecipient = document.getElementById('single-recipient');
+        const selectedInvestorsSection = document.getElementById('selected-investors-section');
+        const manualEmailsSection = document.getElementById('manual-emails-section');
         const investorSelect = document.getElementById('investor-select');
+        const manualEmails = document.getElementById('manual-emails');
+        const selectedInvestorsTags = document.getElementById('selected-investors-tags');
+        const manualEmailsTags = document.getElementById('manual-emails-tags');
         const emailSubject = document.getElementById('email-subject');
         const emailContent = document.getElementById('email-content');
         const trackingEnabled = document.getElementById('tracking-enabled');
@@ -1337,26 +1414,14 @@
         const previewEmailBtn = document.getElementById('preview-email-btn');
         const loadTemplateBtn = document.getElementById('load-template-btn');
         const predefinedTemplatesBtn = document.getElementById('predefined-templates-btn');
-        const investorList = document.getElementById('investor-list');
-        const investorPagination = document.getElementById('investor-pagination');
-        const refreshInvestorsBtn = document.getElementById('refresh-investors');
-        const exportInvestorsBtn = document.getElementById('export-investors');
-        const investorSearch = document.getElementById('investor-search');
-        const investorFilter = document.getElementById('investor-filter');
-        const emailHistoryTable = document.getElementById('email-history-table');
-        const emailPagination = document.getElementById('email-pagination');
-        const emailSearch = document.getElementById('email-search');
-        const emailFilter = document.getElementById('email-filter');
-        const exportEmailsBtn = document.getElementById('export-emails');
-        const templateTable = document.getElementById('template-table');
-        const templatePagination = document.getElementById('template-pagination');
-        const templateSearch = document.getElementById('template-search');
-        const createTemplateBtn = document.getElementById('create-template-btn');
+        
+        // Modals
         const emailPreviewModal = document.getElementById('email-preview-modal');
         const closePreviewModal = document.getElementById('close-preview-modal');
         const closePreviewBtn = document.getElementById('close-preview-btn');
         const sendFromPreviewBtn = document.getElementById('send-from-preview-btn');
         const emailPreviewModalContent = document.getElementById('email-preview-modal-content');
+        
         const templateModal = document.getElementById('template-modal');
         const closeTemplateModal = document.getElementById('close-template-modal');
         const cancelTemplateBtn = document.getElementById('cancel-template-btn');
@@ -1365,12 +1430,11 @@
         const modalTemplateSubject = document.getElementById('modal-template-subject');
         const modalTemplateContent = document.getElementById('modal-template-content');
         const templateModalTitle = document.getElementById('template-modal-title');
+        
         const predefinedTemplatesModal = document.getElementById('predefined-templates-modal');
         const closePredefinedModal = document.getElementById('close-predefined-modal');
         const cancelPredefinedBtn = document.getElementById('cancel-predefined-btn');
-        const loadSelectedTemplateBtn = document.getElementById('load-selected-template-btn');
         const predefinedTemplatesGrid = document.getElementById('predefined-templates-grid');
-        const analyticsPeriod = document.getElementById('analytics-period');
         
         // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
@@ -1387,14 +1451,17 @@
                 btn.addEventListener('click', () => {
                     const tabId = btn.getAttribute('data-tab');
                     
+                    // Update active tab button
                     tabBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     
+                    // Update active tab content
                     tabContents.forEach(content => {
                         content.classList.remove('active');
                         if (content.id === tabId) {
                             content.classList.add('active');
                             
+                            // Load data for specific tabs when activated
                             if (tabId === 'investors') {
                                 fetchInvestors();
                             } else if (tabId === 'email-history') {
@@ -1412,7 +1479,26 @@
             // Recipient type change
             recipientType.addEventListener('change', function() {
                 const value = this.value;
-                singleRecipient.style.display = value === 'single' ? 'block' : 'none';
+                
+                selectedInvestorsSection.style.display = 'none';
+                manualEmailsSection.style.display = 'none';
+                
+                if (value === 'selected') {
+                    selectedInvestorsSection.style.display = 'block';
+                    fetchAllInvestors();
+                } else if (value === 'manual') {
+                    manualEmailsSection.style.display = 'block';
+                }
+            });
+            
+            // Investor selection
+            investorSelect.addEventListener('change', function() {
+                updateSelectedInvestorsTags();
+            });
+            
+            // Manual emails input
+            manualEmails.addEventListener('input', function() {
+                updateManualEmailsTags();
             });
             
             // Schedule toggle
@@ -1443,29 +1529,6 @@
             // Predefined templates
             predefinedTemplatesBtn.addEventListener('click', showPredefinedTemplatesModal);
             
-            // Refresh investors
-            refreshInvestorsBtn.addEventListener('click', fetchInvestors);
-            
-            // Export investors
-            exportInvestorsBtn.addEventListener('click', exportInvestors);
-            
-            // Investor search and filter
-            investorSearch.addEventListener('input', debounce(fetchInvestors, 300));
-            investorFilter.addEventListener('change', fetchInvestors);
-            
-            // Export emails
-            exportEmailsBtn.addEventListener('click', exportEmails);
-            
-            // Email search and filter
-            emailSearch.addEventListener('input', debounce(fetchEmailHistory, 300));
-            emailFilter.addEventListener('change', fetchEmailHistory);
-            
-            // Template search
-            templateSearch.addEventListener('input', debounce(fetchTemplates, 300));
-            
-            // Create template
-            createTemplateBtn.addEventListener('click', showCreateTemplateModal);
-            
             // Close preview modal
             closePreviewModal.addEventListener('click', hideEmailPreview);
             closePreviewBtn.addEventListener('click', hideEmailPreview);
@@ -1483,12 +1546,6 @@
             // Close predefined templates modal
             closePredefinedModal.addEventListener('click', hidePredefinedTemplatesModal);
             cancelPredefinedBtn.addEventListener('click', hidePredefinedTemplatesModal);
-            
-            // Load selected predefined template
-            loadSelectedTemplateBtn.addEventListener('click', loadSelectedPredefinedTemplate);
-            
-            // Analytics period change
-            analyticsPeriod.addEventListener('change', fetchAnalytics);
         });
         
         // Utility Functions
@@ -1529,10 +1586,12 @@
             
             notificationContainer.appendChild(notification);
             
+            // Show notification with animation
             setTimeout(() => {
                 notification.classList.add('show');
             }, 10);
             
+            // Close button event
             const closeBtn = notification.querySelector('.notification-close');
             closeBtn.addEventListener('click', () => {
                 notification.classList.remove('show');
@@ -1541,6 +1600,7 @@
                 }, 300);
             });
             
+            // Auto remove after duration
             if (duration > 0) {
                 setTimeout(() => {
                     if (notification.parentNode) {
@@ -1580,12 +1640,58 @@
             emailPreviewModal.classList.remove('active');
         }
         
-        function showCreateTemplateModal() {
-            templateModalTitle.textContent = 'Create Template';
-            modalTemplateName.value = '';
-            modalTemplateSubject.value = '';
-            modalTemplateContent.value = '';
-            templateModal.classList.add('active');
+        function updateSelectedInvestorsTags() {
+            selectedInvestorsTags.innerHTML = '';
+            const selectedOptions = Array.from(investorSelect.selectedOptions);
+            
+            selectedOptions.forEach(option => {
+                const tag = document.createElement('div');
+                tag.className = 'recipient-tag';
+                tag.innerHTML = `
+                    ${option.textContent}
+                    <span class="remove" data-value="${option.value}">&times;</span>
+                `;
+                selectedInvestorsTags.appendChild(tag);
+            });
+            
+            // Add remove functionality
+            selectedInvestorsTags.querySelectorAll('.remove').forEach(removeBtn => {
+                removeBtn.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const option = investorSelect.querySelector(`option[value="${value}"]`);
+                    if (option) {
+                        option.selected = false;
+                    }
+                    updateSelectedInvestorsTags();
+                });
+            });
+        }
+        
+        function updateManualEmailsTags() {
+            manualEmailsTags.innerHTML = '';
+            const emails = manualEmails.value.split(/[\n,]/).map(email => email.trim()).filter(email => email);
+            
+            emails.forEach(email => {
+                if (validator.isEmail(email)) {
+                    const tag = document.createElement('div');
+                    tag.className = 'recipient-tag';
+                    tag.innerHTML = `
+                        ${email}
+                        <span class="remove" data-email="${email}">&times;</span>
+                    `;
+                    manualEmailsTags.appendChild(tag);
+                }
+            });
+            
+            // Add remove functionality
+            manualEmailsTags.querySelectorAll('.remove').forEach(removeBtn => {
+                removeBtn.addEventListener('click', function() {
+                    const emailToRemove = this.getAttribute('data-email');
+                    const emails = manualEmails.value.split(/[\n,]/).map(email => email.trim()).filter(email => email && email !== emailToRemove);
+                    manualEmails.value = emails.join('\n');
+                    updateManualEmailsTags();
+                });
+            });
         }
         
         function showLoadTemplateModal() {
@@ -1594,6 +1700,7 @@
             modalTemplateSubject.value = '';
             modalTemplateContent.value = '';
             
+            // Populate template select
             const templateSelect = document.createElement('select');
             templateSelect.id = 'template-select';
             templateSelect.className = 'form-control';
@@ -1601,23 +1708,25 @@
             
             templates.forEach(template => {
                 const option = document.createElement('option');
-                option.value = template.id;
+                option.value = template._id;
                 option.textContent = template.name;
                 templateSelect.appendChild(option);
             });
             
+            // Replace content area with template select
             const contentArea = modalTemplateContent.parentNode;
             const label = contentArea.querySelector('label');
             contentArea.innerHTML = '';
             contentArea.appendChild(label);
             contentArea.appendChild(templateSelect);
             
+            // Add event listener for template selection
             templateSelect.addEventListener('change', function() {
-                const selectedTemplate = templates.find(t => t.id === this.value);
+                const selectedTemplate = templates.find(t => t._id === this.value);
                 if (selectedTemplate) {
                     modalTemplateName.value = selectedTemplate.name;
                     modalTemplateSubject.value = selectedTemplate.subject;
-                    modalTemplateContent.value = selectedTemplate.content;
+                    // In a real implementation, we would set the content too
                 }
             });
             
@@ -1627,6 +1736,7 @@
         function hideTemplateModal() {
             templateModal.classList.remove('active');
             
+            // Reset template modal content
             const contentArea = modalTemplateContent.parentNode;
             contentArea.innerHTML = `
                 <label for="modal-template-content">Content</label>
@@ -1667,21 +1777,23 @@
                     authToken = data.token;
                     currentUser = data.user;
                     
+                    // Update UI with user info
                     if (currentUser) {
                         userName.textContent = currentUser.name;
                         userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
                         headerActions.style.display = 'flex';
                     }
                     
+                    // Hide login modal and show dashboard
                     loginModal.style.display = 'none';
                     adminDashboard.style.display = 'block';
                     
+                    // Show success notification
                     showNotification('success', 'Login Successful', `Welcome back, ${currentUser?.name || 'Admin'}!`);
                     
+                    // Fetch initial data
                     fetchDashboardStats();
-                    fetchInvestors();
-                    fetchEmailHistory();
-                    fetchTemplates();
+                    fetchAllInvestors();
                 } else {
                     const errorData = await response.json();
                     showNotification('error', 'Login Failed', errorData.message || 'Please check your credentials.');
@@ -1703,15 +1815,17 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    document.getElementById('total-investors').textContent = data.totalInvestors || 0;
-                    document.getElementById('emails-sent').textContent = data.emailsSent || 0;
-                    document.getElementById('open-rate').textContent = `${data.openRate || 0}%`;
-                    document.getElementById('last-activity').textContent = data.lastActivity || '-';
+                    // Update stats
+                    document.getElementById('total-investors').textContent = data.data.totalInvestors || 0;
+                    document.getElementById('emails-sent').textContent = data.data.emailsSent || 0;
+                    document.getElementById('open-rate').textContent = `${data.data.openRate || 0}%`;
+                    document.getElementById('last-activity').textContent = data.data.lastActivity || '-';
                     
-                    document.getElementById('investor-trend').textContent = `${data.investorTrend || 0}%`;
-                    document.getElementById('email-trend').textContent = `${data.emailTrend || 0}%`;
-                    document.getElementById('open-trend').textContent = `${data.openTrend || 0}%`;
-                    document.getElementById('activity-time').textContent = data.activityTime || 'Just now';
+                    // Update trends
+                    document.getElementById('investor-trend').textContent = `${data.data.investorTrend || 0}%`;
+                    document.getElementById('email-trend').textContent = `${data.data.emailTrend || 0}%`;
+                    document.getElementById('open-trend').textContent = `${data.data.openTrend || 0}%`;
+                    document.getElementById('activity-time').textContent = data.data.activityTime || 'Just now';
                 }
             } catch (error) {
                 console.error('Error fetching stats:', error);
@@ -1719,10 +1833,37 @@
             }
         }
         
+        async function fetchAllInvestors() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/investors/all`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    investors = data.data || [];
+                    
+                    // Update investor select dropdown
+                    investorSelect.innerHTML = '';
+                    investors.forEach(investor => {
+                        const option = document.createElement('option');
+                        option.value = investor._id;
+                        option.textContent = `${investor.name} (${investor.email})`;
+                        investorSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching all investors:', error);
+                showNotification('error', 'Data Error', 'Failed to load investor data.');
+            }
+        }
+        
         async function fetchInvestors() {
             try {
-                const searchQuery = investorSearch.value;
-                const filterValue = investorFilter.value;
+                const searchQuery = document.getElementById('investor-search').value;
+                const filterValue = document.getElementById('investor-filter').value;
                 
                 let url = `${API_BASE_URL}/admin/investors?page=${currentInvestorPage}&limit=${itemsPerPage}`;
                 if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
@@ -1736,17 +1877,38 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    investors = data.investors || [];
+                    const investors = data.data.investors || [];
                     
-                    renderInvestorList();
+                    // Update investor table
+                    const investorTable = document.getElementById('investor-table');
+                    investorTable.innerHTML = '';
                     
-                    investorSelect.innerHTML = '<option value="">-- Select Investor --</option>';
+                    if (investors.length === 0) {
+                        investorTable.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary)">
+                                    No investors found
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
                     investors.forEach(investor => {
-                        const option = document.createElement('option');
-                        option.value = investor.id;
-                        option.textContent = `${investor.name} (${investor.email})`;
-                        investorSelect.appendChild(option);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${investor.name}</td>
+                            <td>${investor.email}</td>
+                            <td>${new Date(investor.joinDate).toLocaleDateString()}</td>
+                            <td>${investor.tier}</td>
+                            <td><span class="status-badge">${investor.status}</span></td>
+                            <td>$${investor.totalInvested}</td>
+                        `;
+                        investorTable.appendChild(row);
                     });
+                    
+                    // Render pagination
+                    renderPagination('investor-pagination', currentInvestorPage, data.data.totalPages, 'investor');
                 }
             } catch (error) {
                 console.error('Error fetching investors:', error);
@@ -1754,50 +1916,10 @@
             }
         }
         
-        function renderInvestorList() {
-            investorList.innerHTML = '';
-            
-            if (investors.length === 0) {
-                investorList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary)">No investors found</div>';
-                return;
-            }
-            
-            investors.forEach(investor => {
-                const investorItem = document.createElement('div');
-                investorItem.className = 'investor-item';
-                
-                let statusBadge = '';
-                if (investor.lastEmailStatus === 'sent') {
-                    statusBadge = '<span class="status-badge status-sent"><i class="fas fa-paper-plane"></i> Sent</span>';
-                } else if (investor.lastEmailStatus === 'opened') {
-                    statusBadge = '<span class="status-badge status-opened"><i class="fas fa-envelope-open"></i> Opened</span>';
-                } else if (investor.lastEmailStatus === 'failed') {
-                    statusBadge = '<span class="status-badge status-failed"><i class="fas fa-exclamation-circle"></i> Failed</span>';
-                }
-                
-                investorItem.innerHTML = `
-                    <div class="investor-info">
-                        <h4>${investor.name}</h4>
-                        <p>${investor.email} • Joined: ${investor.joinDate} • Tier: ${investor.tier || 'Standard'}</p>
-                    </div>
-                    <div class="investor-actions">
-                        ${statusBadge}
-                        <button class="btn btn-secondary" onclick="sendToInvestor('${investor.id}')">
-                            <i class="fas fa-envelope"></i> Email
-                        </button>
-                    </div>
-                `;
-                
-                investorList.appendChild(investorItem);
-            });
-            
-            renderPagination(investorPagination, currentInvestorPage, Math.ceil((data?.totalCount || 0) / itemsPerPage), 'investor');
-        }
-        
         async function fetchEmailHistory() {
             try {
-                const searchQuery = emailSearch.value;
-                const filterValue = emailFilter.value;
+                const searchQuery = document.getElementById('email-search').value;
+                const filterValue = document.getElementById('email-filter').value;
                 
                 let url = `${API_BASE_URL}/admin/emails?page=${currentEmailPage}&limit=${itemsPerPage}`;
                 if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
@@ -1811,8 +1933,38 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    emailHistory = data.emails || [];
-                    renderEmailHistory();
+                    emailHistory = data.data.emails || [];
+                    
+                    // Update email history table
+                    const emailHistoryTable = document.getElementById('email-history-table');
+                    emailHistoryTable.innerHTML = '';
+                    
+                    if (emailHistory.length === 0) {
+                        emailHistoryTable.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary)">
+                                    No email history found
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    emailHistory.forEach(email => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${email.subject}</td>
+                            <td>${email.recipientCount}</td>
+                            <td>${new Date(email.sentDate).toLocaleString()}</td>
+                            <td>${email.openRate}%</td>
+                            <td><span class="status-badge">${email.status}</span></td>
+                            <td>${email.sentBy}</td>
+                        `;
+                        emailHistoryTable.appendChild(row);
+                    });
+                    
+                    // Render pagination
+                    renderPagination('email-pagination', currentEmailPage, data.data.totalPages, 'email');
                 }
             } catch (error) {
                 console.error('Error fetching email history:', error);
@@ -1820,54 +1972,9 @@
             }
         }
         
-        function renderEmailHistory() {
-            emailHistoryTable.innerHTML = '';
-            
-            if (emailHistory.length === 0) {
-                emailHistoryTable.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px; color: var(--text-secondary)">
-                            No email history found
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            emailHistory.forEach(email => {
-                const row = document.createElement('tr');
-                
-                let openRate = '0%';
-                if (email.recipientCount > 0) {
-                    openRate = `${Math.round((email.openCount / email.recipientCount) * 100)}%`;
-                }
-                
-                let statusBadge = '';
-                if (email.status === 'sent') {
-                    statusBadge = '<span class="status-badge status-sent">Sent</span>';
-                } else if (email.status === 'scheduled') {
-                    statusBadge = '<span class="status-badge status-opened">Scheduled</span>';
-                } else if (email.status === 'failed') {
-                    statusBadge = '<span class="status-badge status-failed">Failed</span>';
-                }
-                
-                row.innerHTML = `
-                    <td>${email.subject}</td>
-                    <td>${email.recipientCount}</td>
-                    <td>${email.sentDate}</td>
-                    <td>${openRate}</td>
-                    <td>${statusBadge}</td>
-                `;
-                
-                emailHistoryTable.appendChild(row);
-            });
-            
-            renderPagination(emailPagination, currentEmailPage, Math.ceil((data?.totalCount || 0) / itemsPerPage), 'email');
-        }
-        
         async function fetchTemplates() {
             try {
-                const searchQuery = templateSearch.value;
+                const searchQuery = document.getElementById('template-search').value;
                 
                 let url = `${API_BASE_URL}/admin/templates?page=${currentTemplatePage}&limit=${itemsPerPage}`;
                 if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
@@ -1880,8 +1987,45 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    templates = data.templates || [];
-                    renderTemplates();
+                    templates = data.data.templates || [];
+                    
+                    // Update template table
+                    const templateTable = document.getElementById('template-table');
+                    templateTable.innerHTML = '';
+                    
+                    if (templates.length === 0) {
+                        templateTable.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-secondary)">
+                                    No templates found
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    templates.forEach(template => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${template.name}</td>
+                            <td>${template.subject}</td>
+                            <td>${template.category}</td>
+                            <td>${new Date(template.updatedAt).toLocaleDateString()}</td>
+                            <td>${template.usedCount || 0}</td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="loadTemplateIntoEditor('${template._id}')">
+                                    <i class="fas fa-edit"></i> Load
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteTemplate('${template._id}')">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        `;
+                        templateTable.appendChild(row);
+                    });
+                    
+                    // Render pagination
+                    renderPagination('template-pagination', currentTemplatePage, data.data.totalPages, 'template');
                 }
             } catch (error) {
                 console.error('Error fetching templates:', error);
@@ -1889,50 +2033,9 @@
             }
         }
         
-        function renderTemplates() {
-            templateTable.innerHTML = '';
-            
-            if (templates.length === 0) {
-                templateTable.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px; color: var(--text-secondary)">
-                            No templates found
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            templates.forEach(template => {
-                const row = document.createElement('tr');
-                
-                row.innerHTML = `
-                    <td>${template.name}</td>
-                    <td>${template.subject}</td>
-                    <td>${template.category}</td>
-                    <td>${template.lastModified}</td>
-                    <td>
-                        <button class="btn btn-secondary" onclick="loadTemplate('${template.id}')">
-                            <i class="fas fa-edit"></i> Load
-                        </button>
-                        <button class="btn btn-info" onclick="editTemplate('${template.id}')">
-                            <i class="fas fa-pencil-alt"></i> Edit
-                        </button>
-                        <button class="btn btn-danger" onclick="deleteTemplate('${template.id}')">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </td>
-                `;
-                
-                templateTable.appendChild(row);
-            });
-            
-            renderPagination(templatePagination, currentTemplatePage, Math.ceil((data?.totalCount || 0) / itemsPerPage), 'template');
-        }
-        
         async function fetchPredefinedTemplates() {
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/predefined-templates`, {
+                const response = await fetch(`${API_BASE_URL}/admin/templates/predefined`, {
                     headers: {
                         'Authorization': `Bearer ${authToken}`
                     }
@@ -1940,8 +2043,25 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    predefinedTemplates = data.templates || [];
-                    renderPredefinedTemplates();
+                    const predefinedTemplates = data.data.templates || [];
+                    
+                    predefinedTemplatesGrid.innerHTML = '';
+                    
+                    predefinedTemplates.forEach(template => {
+                        const templateCard = document.createElement('div');
+                        templateCard.className = 'template-card';
+                        templateCard.innerHTML = `
+                            <div class="template-name">${template.name}</div>
+                            <div class="template-subject">${template.subject}</div>
+                            <div class="template-category">${template.category}</div>
+                        `;
+                        
+                        templateCard.addEventListener('click', () => {
+                            loadPredefinedTemplate(template);
+                        });
+                        
+                        predefinedTemplatesGrid.appendChild(templateCard);
+                    });
                 }
             } catch (error) {
                 console.error('Error fetching predefined templates:', error);
@@ -1949,37 +2069,9 @@
             }
         }
         
-        function renderPredefinedTemplates() {
-            predefinedTemplatesGrid.innerHTML = '';
-            
-            if (predefinedTemplates.length === 0) {
-                predefinedTemplatesGrid.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary)">No predefined templates available</div>';
-                return;
-            }
-            
-            predefinedTemplates.forEach((template, index) => {
-                const templateCard = document.createElement('div');
-                templateCard.className = 'template-card';
-                templateCard.dataset.index = index;
-                
-                templateCard.innerHTML = `
-                    <div class="template-name">${template.name}</div>
-                    <div class="template-subject">${template.subject}</div>
-                    <div class="template-preview">${template.content.substring(0, 150)}...</div>
-                `;
-                
-                templateCard.addEventListener('click', function() {
-                    document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-                
-                predefinedTemplatesGrid.appendChild(templateCard);
-            });
-        }
-        
         async function fetchAnalytics() {
             try {
-                const period = analyticsPeriod.value;
+                const period = document.getElementById('analytics-period').value;
                 
                 const response = await fetch(`${API_BASE_URL}/admin/analytics?period=${period}`, {
                     headers: {
@@ -1989,13 +2081,15 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    analyticsData = data;
+                    analyticsData = data.data;
                     
-                    document.getElementById('delivery-rate').textContent = `${data.deliveryRate || 0}%`;
-                    document.getElementById('analytics-open-rate').textContent = `${data.openRate || 0}%`;
+                    // Update analytics stats
+                    document.getElementById('delivery-rate').textContent = `${analyticsData.deliveryRate || 0}%`;
+                    document.getElementById('analytics-open-rate').textContent = `${analyticsData.openRate || 0}%`;
                     
-                    document.getElementById('delivery-trend').textContent = `${data.deliveryTrend || 0}%`;
-                    document.getElementById('analytics-open-trend').textContent = `${data.openTrend || 0}%`;
+                    // Update trends
+                    document.getElementById('delivery-trend').textContent = `${analyticsData.deliveryTrend || 0}%`;
+                    document.getElementById('analytics-open-trend').textContent = `${analyticsData.openTrend || 0}%`;
                 }
             } catch (error) {
                 console.error('Error fetching analytics:', error);
@@ -2003,11 +2097,13 @@
             }
         }
         
-        function renderPagination(container, currentPage, totalPages, type) {
+        function renderPagination(containerId, currentPage, totalPages, type) {
+            const container = document.getElementById(containerId);
             container.innerHTML = '';
             
             if (totalPages <= 1) return;
             
+            // Previous button
             const prevBtn = document.createElement('div');
             prevBtn.className = 'page-btn';
             prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
@@ -2030,6 +2126,7 @@
             }
             container.appendChild(prevBtn);
             
+            // Page numbers
             const startPage = Math.max(1, currentPage - 2);
             const endPage = Math.min(totalPages, currentPage + 2);
             
@@ -2054,6 +2151,7 @@
                 container.appendChild(pageBtn);
             }
             
+            // Next button
             const nextBtn = document.createElement('div');
             nextBtn.className = 'page-btn';
             nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
@@ -2085,31 +2183,31 @@
             const scheduleEmail = scheduleEnabled.checked;
             const scheduleDate = document.getElementById('schedule-date').value;
             const saveAsTemplate = saveTemplate.checked;
-            const templateName = document.getElementById('template-name').value;
+            const templateNameValue = templateName.value;
             
             if (!subject || !content) {
                 showNotification('error', 'Missing Information', 'Please fill in both subject and content.');
                 return;
             }
             
-            if (saveAsTemplate && !templateName) {
+            if (saveAsTemplate && !templateNameValue) {
                 showNotification('error', 'Missing Information', 'Please enter a template name.');
                 return;
             }
             
             let recipients = [];
             
-            if (recipientTypeValue === 'single') {
-                const investorId = investorSelect.value;
-                if (!investorId) {
-                    showNotification('error', 'Missing Information', 'Please select an investor.');
-                    return;
-                }
-                recipients = [investorId];
-            } else if (recipientTypeValue === 'all') {
-                recipients = investors.map(inv => inv.id);
-            } else if (recipientTypeValue === 'segment') {
-                recipients = investors.map(inv => inv.id);
+            if (recipientTypeValue === 'all') {
+                // Send to all investors - empty array indicates all
+                recipients = [];
+            } else if (recipientTypeValue === 'selected') {
+                // Get selected investor IDs
+                const selectedOptions = Array.from(investorSelect.selectedOptions);
+                recipients = selectedOptions.map(option => option.value);
+            } else if (recipientTypeValue === 'manual') {
+                // Get manually entered emails
+                const emails = manualEmails.value.split(/[\n,]/).map(email => email.trim()).filter(email => email);
+                recipients = emails;
             }
             
             try {
@@ -2123,7 +2221,7 @@
                     scheduleEmail,
                     scheduleDate: scheduleEmail ? scheduleDate : null,
                     saveAsTemplate,
-                    templateName: saveAsTemplate ? templateName : null
+                    templateName: saveAsTemplate ? templateNameValue : null
                 };
                 
                 const response = await fetch(`${API_BASE_URL}/admin/send-email`, {
@@ -2138,10 +2236,12 @@
                 if (response.ok) {
                     showNotification('success', 'Email Sent', 'Your email has been sent successfully!');
                     
+                    // Reset form
                     emailSubject.value = '';
                     emailContent.value = '';
                     updateEmailPreview();
                     
+                    // Refresh data
                     fetchDashboardStats();
                     fetchEmailHistory();
                     
@@ -2205,38 +2305,15 @@
             }
         }
         
-        function loadSelectedPredefinedTemplate() {
-            const selectedCard = document.querySelector('.template-card.selected');
-            if (!selectedCard) {
-                showNotification('error', 'Selection Required', 'Please select a template first.');
-                return;
-            }
-            
-            const templateIndex = selectedCard.dataset.index;
-            const template = predefinedTemplates[templateIndex];
-            
-            if (template) {
-                emailSubject.value = template.subject;
-                emailContent.value = template.content;
-                updateEmailPreview();
-                showNotification('success', 'Template Loaded', `Template "${template.name}" has been loaded.`);
-                hidePredefinedTemplatesModal();
-            }
+        function loadPredefinedTemplate(template) {
+            emailSubject.value = template.subject;
+            emailContent.value = template.content;
+            updateEmailPreview();
+            hidePredefinedTemplatesModal();
+            showNotification('success', 'Template Loaded', `Template "${template.name}" has been loaded.`);
         }
         
-        function sendToInvestor(investorId) {
-            tabBtns.forEach(btn => btn.classList.remove('active'));
-            document.querySelector('[data-tab="send-email"]').classList.add('active');
-            
-            tabContents.forEach(content => content.classList.remove('active'));
-            document.getElementById('send-email').classList.add('active');
-            
-            recipientType.value = 'single';
-            investorSelect.value = investorId;
-            singleRecipient.style.display = 'block';
-        }
-        
-        async function loadTemplate(templateId) {
+        async function loadTemplateIntoEditor(templateId) {
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/templates/${templateId}`, {
                     headers: {
@@ -2246,92 +2323,19 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const template = data.template;
+                    const template = data.data.template;
                     
-                    if (template) {
-                        emailSubject.value = template.subject;
-                        emailContent.value = template.content;
-                        updateEmailPreview();
-                        showNotification('success', 'Template Loaded', `Template "${template.name}" has been loaded.`);
-                    }
+                    emailSubject.value = template.subject;
+                    emailContent.value = template.content;
+                    updateEmailPreview();
+                    
+                    showNotification('success', 'Template Loaded', `Template "${template.name}" has been loaded.`);
+                } else {
+                    throw new Error('Failed to load template');
                 }
             } catch (error) {
                 console.error('Error loading template:', error);
-                showNotification('error', 'Load Error', 'Failed to load template. Please try again.');
-            }
-        }
-        
-        async function editTemplate(templateId) {
-            try {
-                const response = await fetch(`${API_BASE_URL}/admin/templates/${templateId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    const template = data.template;
-                    
-                    if (template) {
-                        templateModalTitle.textContent = 'Edit Template';
-                        modalTemplateName.value = template.name;
-                        modalTemplateSubject.value = template.subject;
-                        modalTemplateContent.value = template.content;
-                        templateModal.classList.add('active');
-                        
-                        saveTemplateBtn.onclick = function() {
-                            updateTemplate(templateId);
-                        };
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading template for edit:', error);
-                showNotification('error', 'Load Error', 'Failed to load template for editing.');
-            }
-        }
-        
-        async function updateTemplate(templateId) {
-            const name = modalTemplateName.value;
-            const subject = modalTemplateSubject.value;
-            const content = modalTemplateContent.value;
-            
-            if (!name || !subject || !content) {
-                showNotification('error', 'Missing Information', 'Please fill in all template fields.');
-                return;
-            }
-            
-            try {
-                showNotification('info', 'Updating Template', 'Please wait while we update your template...', 0);
-                
-                const templateData = {
-                    name,
-                    subject,
-                    content
-                };
-                
-                const response = await fetch(`${API_BASE_URL}/admin/templates/${templateId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${authToken}`
-                    },
-                    body: JSON.stringify(templateData)
-                });
-                
-                if (response.ok) {
-                    showNotification('success', 'Template Updated', 'Your template has been updated successfully!');
-                    hideTemplateModal();
-                    fetchTemplates();
-                    
-                    saveTemplateBtn.onclick = saveTemplateHandler;
-                } else {
-                    const errorData = await response.json();
-                    showNotification('error', 'Update Failed', errorData.message || 'Failed to update template. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error updating template:', error);
-                showNotification('error', 'Connection Error', 'An error occurred while updating the template. Please try again.');
+                showNotification('error', 'Load Failed', 'Failed to load template. Please try again.');
             }
         }
         
@@ -2363,67 +2367,13 @@
             }
         }
         
-        async function exportInvestors() {
-            try {
-                showNotification('info', 'Exporting Investors', 'Preparing your export file...', 0);
-                
-                const response = await fetch(`${API_BASE_URL}/admin/export/investors`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'investors.csv';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    
-                    showNotification('success', 'Export Complete', 'Investor data has been exported successfully.');
-                } else {
-                    showNotification('error', 'Export Failed', 'Failed to export investor data. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error exporting investors:', error);
-                showNotification('error', 'Connection Error', 'An error occurred while exporting investor data. Please try again.');
+        // Email validation
+        const validator = {
+            isEmail: function(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
             }
-        }
-        
-        async function exportEmails() {
-            try {
-                showNotification('info', 'Exporting Emails', 'Preparing your export file...', 0);
-                
-                const response = await fetch(`${API_BASE_URL}/admin/export/emails`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'email-history.csv';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                    
-                    showNotification('success', 'Export Complete', 'Email history has been exported successfully.');
-                } else {
-                    showNotification('error', 'Export Failed', 'Failed to export email history. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error exporting emails:', error);
-                showNotification('error', 'Connection Error', 'An error occurred while exporting email history. Please try again.');
-            }
-        }
+        };
     </script>
 </body>
 </html>
