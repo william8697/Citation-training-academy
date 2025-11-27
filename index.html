@@ -5,26 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BitHash Capital - Admin Dashboard</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@300;400;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Favicon -->
     <link rel="icon" href="https://www.dropbox.com/scl/fi/1dq16nex1borvvknpcwox/circular_dark_background.png?rlkey=sq2ujl2oxxk9vyvg1j7oz0cdb&raw=1" type="image/png">
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- AOS Animation -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
         :root {
             --primary: #0f1419;
             --secondary: #1a2332;
-            --accent: #f7931a;
-            --accent-dark: #e68517;
+            --accent: #f0b90b;
+            --accent-dark: #d6a10a;
             --text: #ffffff;
             --text-secondary: #a0aec0;
             --success: #48bb78;
@@ -51,7 +45,6 @@
             overflow-x: hidden;
         }
         
-        /* Notification System */
         .notification-container {
             position: fixed;
             top: 20px;
@@ -123,7 +116,6 @@
             flex-shrink: 0;
         }
         
-        /* Loading Overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -147,7 +139,6 @@
         }
         
         .loading-text {
-            font-family: 'Manrope', sans-serif;
             font-weight: 600;
             color: var(--text-secondary);
             font-size: 16px;
@@ -159,7 +150,6 @@
             100% { transform: scale(1); }
         }
         
-        /* Security Badge */
         .security-badge {
             position: fixed;
             bottom: 20px;
@@ -179,7 +169,6 @@
             color: var(--accent);
         }
         
-        /* Header */
         #main-header {
             background: var(--secondary);
             padding: 15px 0;
@@ -211,7 +200,6 @@
         }
         
         .logo-text {
-            font-family: 'Rowdies', cursive;
             font-size: 24px;
             font-weight: 700;
             color: var(--text);
@@ -269,7 +257,6 @@
             cursor: pointer;
         }
         
-        /* Login Modal */
         .login-modal {
             position: fixed;
             top: 0;
@@ -299,7 +286,6 @@
         }
         
         .login-header h2 {
-            font-family: 'Manrope', sans-serif;
             font-weight: 700;
             font-size: 28px;
             margin-bottom: 10px;
@@ -335,7 +321,7 @@
         .form-control:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.1);
+            box-shadow: 0 0 0 3px rgba(240, 185, 11, 0.1);
         }
         
         .btn {
@@ -398,7 +384,6 @@
             background: #3182ce;
         }
         
-        /* Admin Dashboard */
         .admin-dashboard {
             display: none;
             max-width: 1200px;
@@ -411,7 +396,6 @@
         }
         
         .dashboard-header h1 {
-            font-family: 'Manrope', sans-serif;
             font-weight: 700;
             font-size: 32px;
             margin-bottom: 10px;
@@ -682,7 +666,6 @@
             color: var(--warning);
         }
         
-        /* Modal System */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -759,7 +742,6 @@
             gap: 10px;
         }
         
-        /* Template Selection */
         .template-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -783,7 +765,7 @@
         
         .template-card.selected {
             border-color: var(--accent);
-            background: rgba(247, 147, 26, 0.1);
+            background: rgba(240, 185, 11, 0.1);
         }
         
         .template-name {
@@ -807,7 +789,6 @@
             color: var(--text-secondary);
         }
         
-        /* Recipient Selection */
         .recipient-section {
             margin-bottom: 20px;
             padding: 15px;
@@ -839,7 +820,6 @@
             font-weight: bold;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
             .mobile-menu-toggle {
                 display: block;
@@ -883,22 +863,18 @@
     </style>
 </head>
 <body>
-    <!-- Notification Container -->
     <div class="notification-container" id="notification-container"></div>
     
-    <!-- Loading Overlay -->
     <div class="loading-overlay" id="loading-overlay">
         <img src="https://www.dropbox.com/scl/fi/1dq16nex1borvvknpcwox/circular_dark_background.png?rlkey=sq2ujl2oxxk9vyvg1j7oz0cdb&raw=1" alt="BitHash Logo" class="loading-logo">    
         <div class="loading-text">Establishing Secure Connection</div>
     </div>
 
-    <!-- Security Badge -->
     <div class="security-badge">
         <i class="fas fa-shield-alt"></i>
         <span>256-bit AES & TLS 1.3 Encrypted</span>
     </div>
     
-    <!-- Enhanced Header -->
     <header id="main-header">
         <div class="container header-container">
             <div class="logo" onclick="window.location.href='index.html'">
@@ -922,7 +898,6 @@
         </div>
     </header>
     
-    <!-- Login Modal -->
     <div class="login-modal" id="login-modal">
         <div class="login-container">
             <div class="login-header">
@@ -945,7 +920,6 @@
         </div>
     </div>
     
-    <!-- Admin Dashboard -->
     <div class="admin-dashboard" id="admin-dashboard">
         <div class="dashboard-header">
             <h1>Email Management</h1>
@@ -995,7 +969,6 @@
             <button class="tab-btn" data-tab="analytics">Analytics</button>
         </div>
         
-        <!-- Send Email Tab -->
         <div class="tab-content active" id="send-email">
             <div class="card">
                 <div class="card-header">
@@ -1019,7 +992,6 @@
                     </select>
                 </div>
                 
-                <!-- Selected Investors Section -->
                 <div id="selected-investors-section" class="recipient-section" style="display: none;">
                     <label>Select Investors</label>
                     <select id="investor-select" class="form-control" multiple style="height: 150px;">
@@ -1028,7 +1000,6 @@
                     <div class="recipient-tags" id="selected-investors-tags"></div>
                 </div>
                 
-                <!-- Manual Emails Section -->
                 <div id="manual-emails-section" class="recipient-section" style="display: none;">
                     <label>Enter Email Addresses (one per line or comma separated)</label>
                     <textarea id="manual-emails" class="form-control" rows="4" placeholder="Enter email addresses..."></textarea>
@@ -1095,7 +1066,6 @@
             </div>
         </div>
         
-        <!-- Investors Tab -->
         <div class="tab-content" id="investors">
             <div class="card">
                 <div class="card-header">
@@ -1137,18 +1107,15 @@
                             </tr>
                         </thead>
                         <tbody id="investor-table">
-                            <!-- Investor data will be populated here -->
                         </tbody>
                     </table>
                 </div>
                 
                 <div class="pagination" id="investor-pagination">
-                    <!-- Pagination will be populated here -->
                 </div>
             </div>
         </div>
         
-        <!-- Email History Tab -->
         <div class="tab-content" id="email-history">
             <div class="card">
                 <div class="card-header">
@@ -1190,18 +1157,15 @@
                             </tr>
                         </thead>
                         <tbody id="email-history-table">
-                            <!-- Email history will be populated here -->
                         </tbody>
                     </table>
                 </div>
                 
                 <div class="pagination" id="email-pagination">
-                    <!-- Pagination will be populated here -->
                 </div>
             </div>
         </div>
         
-        <!-- Templates Tab -->
         <div class="tab-content" id="templates">
             <div class="card">
                 <div class="card-header">
@@ -1228,18 +1192,15 @@
                             </tr>
                         </thead>
                         <tbody id="template-table">
-                            <!-- Templates will be populated here -->
                         </tbody>
                     </table>
                 </div>
                 
                 <div class="pagination" id="template-pagination">
-                    <!-- Pagination will be populated here -->
                 </div>
             </div>
         </div>
         
-        <!-- Analytics Tab -->
         <div class="tab-content" id="analytics">
             <div class="card">
                 <div class="card-header">
@@ -1292,7 +1253,6 @@
         </div>
     </div>
     
-    <!-- Email Preview Modal -->
     <div class="modal-overlay" id="email-preview-modal">
         <div class="modal">
             <div class="modal-header">
@@ -1313,7 +1273,6 @@
         </div>
     </div>
     
-    <!-- Template Modal -->
     <div class="modal-overlay" id="template-modal">
         <div class="modal">
             <div class="modal-header">
@@ -1343,7 +1302,6 @@
         </div>
     </div>
 
-    <!-- Predefined Templates Modal -->
     <div class="modal-overlay" id="predefined-templates-modal">
         <div class="modal" style="max-width: 800px;">
             <div class="modal-header">
@@ -1354,7 +1312,6 @@
             </div>
             <div class="modal-body">
                 <div class="template-grid" id="predefined-templates-grid">
-                    <!-- Predefined templates will be loaded here -->
                 </div>
             </div>
             <div class="modal-footer">
@@ -1363,15 +1320,9 @@
         </div>
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
-        AOS.init();
-        
-        // API Base URL
         const API_BASE_URL = 'https://tiktok-com-shop.onrender.com';
         
-        // Global variables
         let authToken = null;
         let currentUser = null;
         let investors = [];
@@ -1383,7 +1334,6 @@
         let currentTemplatePage = 1;
         const itemsPerPage = 10;
         
-        // DOM Elements
         const loadingOverlay = document.getElementById('loading-overlay');
         const loginModal = document.getElementById('login-modal');
         const adminDashboard = document.getElementById('admin-dashboard');
@@ -1415,7 +1365,6 @@
         const loadTemplateBtn = document.getElementById('load-template-btn');
         const predefinedTemplatesBtn = document.getElementById('predefined-templates-btn');
         
-        // Modals
         const emailPreviewModal = document.getElementById('email-preview-modal');
         const closePreviewModal = document.getElementById('close-preview-modal');
         const closePreviewBtn = document.getElementById('close-preview-btn');
@@ -1436,9 +1385,7 @@
         const cancelPredefinedBtn = document.getElementById('cancel-predefined-btn');
         const predefinedTemplatesGrid = document.getElementById('predefined-templates-grid');
         
-        // Event Listeners
         document.addEventListener('DOMContentLoaded', function() {
-            // Simulate loading
             setTimeout(() => {
                 loadingOverlay.style.opacity = '0';
                 setTimeout(() => {
@@ -1446,22 +1393,18 @@
                 }, 500);
             }, 1500);
             
-            // Tab switching
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const tabId = btn.getAttribute('data-tab');
                     
-                    // Update active tab button
                     tabBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     
-                    // Update active tab content
                     tabContents.forEach(content => {
                         content.classList.remove('active');
                         if (content.id === tabId) {
                             content.classList.add('active');
                             
-                            // Load data for specific tabs when activated
                             if (tabId === 'investors') {
                                 fetchInvestors();
                             } else if (tabId === 'email-history') {
@@ -1476,7 +1419,6 @@
                 });
             });
             
-            // Recipient type change
             recipientType.addEventListener('change', function() {
                 const value = this.value;
                 
@@ -1491,75 +1433,47 @@
                 }
             });
             
-            // Investor selection
             investorSelect.addEventListener('change', function() {
                 updateSelectedInvestorsTags();
             });
             
-            // Manual emails input
             manualEmails.addEventListener('input', function() {
                 updateManualEmailsTags();
             });
             
-            // Schedule toggle
             scheduleEnabled.addEventListener('change', function() {
                 scheduleSection.style.display = this.checked ? 'block' : 'none';
             });
             
-            // Save template toggle
             saveTemplate.addEventListener('change', function() {
                 templateSection.style.display = this.checked ? 'block' : 'none';
             });
             
-            // Email content preview
             emailContent.addEventListener('input', updateEmailPreview);
             
-            // Login form submission
             loginForm.addEventListener('submit', handleLogin);
             
-            // Send email
             sendEmailBtn.addEventListener('click', sendEmail);
             
-            // Preview email
             previewEmailBtn.addEventListener('click', showEmailPreview);
             
-            // Load template
             loadTemplateBtn.addEventListener('click', showLoadTemplateModal);
             
-            // Predefined templates
             predefinedTemplatesBtn.addEventListener('click', showPredefinedTemplatesModal);
             
-            // Close preview modal
             closePreviewModal.addEventListener('click', hideEmailPreview);
             closePreviewBtn.addEventListener('click', hideEmailPreview);
             
-            // Send from preview
             sendFromPreviewBtn.addEventListener('click', sendEmailFromPreview);
             
-            // Close template modal
             closeTemplateModal.addEventListener('click', hideTemplateModal);
             cancelTemplateBtn.addEventListener('click', hideTemplateModal);
             
-            // Save template
             saveTemplateBtn.addEventListener('click', saveTemplateHandler);
             
-            // Close predefined templates modal
             closePredefinedModal.addEventListener('click', hidePredefinedTemplatesModal);
             cancelPredefinedBtn.addEventListener('click', hidePredefinedTemplatesModal);
         });
-        
-        // Utility Functions
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
         
         function showNotification(type, title, message, duration = 5000) {
             const notificationContainer = document.getElementById('notification-container');
@@ -1586,12 +1500,10 @@
             
             notificationContainer.appendChild(notification);
             
-            // Show notification with animation
             setTimeout(() => {
                 notification.classList.add('show');
             }, 10);
             
-            // Close button event
             const closeBtn = notification.querySelector('.notification-close');
             closeBtn.addEventListener('click', () => {
                 notification.classList.remove('show');
@@ -1600,7 +1512,6 @@
                 }, 300);
             });
             
-            // Auto remove after duration
             if (duration > 0) {
                 setTimeout(() => {
                     if (notification.parentNode) {
@@ -1654,7 +1565,6 @@
                 selectedInvestorsTags.appendChild(tag);
             });
             
-            // Add remove functionality
             selectedInvestorsTags.querySelectorAll('.remove').forEach(removeBtn => {
                 removeBtn.addEventListener('click', function() {
                     const value = this.getAttribute('data-value');
@@ -1683,7 +1593,6 @@
                 }
             });
             
-            // Add remove functionality
             manualEmailsTags.querySelectorAll('.remove').forEach(removeBtn => {
                 removeBtn.addEventListener('click', function() {
                     const emailToRemove = this.getAttribute('data-email');
@@ -1700,7 +1609,6 @@
             modalTemplateSubject.value = '';
             modalTemplateContent.value = '';
             
-            // Populate template select
             const templateSelect = document.createElement('select');
             templateSelect.id = 'template-select';
             templateSelect.className = 'form-control';
@@ -1713,20 +1621,17 @@
                 templateSelect.appendChild(option);
             });
             
-            // Replace content area with template select
             const contentArea = modalTemplateContent.parentNode;
             const label = contentArea.querySelector('label');
             contentArea.innerHTML = '';
             contentArea.appendChild(label);
             contentArea.appendChild(templateSelect);
             
-            // Add event listener for template selection
             templateSelect.addEventListener('change', function() {
                 const selectedTemplate = templates.find(t => t._id === this.value);
                 if (selectedTemplate) {
                     modalTemplateName.value = selectedTemplate.name;
                     modalTemplateSubject.value = selectedTemplate.subject;
-                    // In a real implementation, we would set the content too
                 }
             });
             
@@ -1736,7 +1641,6 @@
         function hideTemplateModal() {
             templateModal.classList.remove('active');
             
-            // Reset template modal content
             const contentArea = modalTemplateContent.parentNode;
             contentArea.innerHTML = `
                 <label for="modal-template-content">Content</label>
@@ -1754,7 +1658,6 @@
             predefinedTemplatesModal.classList.remove('active');
         }
         
-        // API Functions
         async function handleLogin(e) {
             e.preventDefault();
             
@@ -1777,21 +1680,17 @@
                     authToken = data.token;
                     currentUser = data.user;
                     
-                    // Update UI with user info
                     if (currentUser) {
                         userName.textContent = currentUser.name;
                         userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
                         headerActions.style.display = 'flex';
                     }
                     
-                    // Hide login modal and show dashboard
                     loginModal.style.display = 'none';
                     adminDashboard.style.display = 'block';
                     
-                    // Show success notification
                     showNotification('success', 'Login Successful', `Welcome back, ${currentUser?.name || 'Admin'}!`);
                     
-                    // Fetch initial data
                     fetchDashboardStats();
                     fetchAllInvestors();
                 } else {
@@ -1815,17 +1714,10 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // Update stats
                     document.getElementById('total-investors').textContent = data.data.totalInvestors || 0;
                     document.getElementById('emails-sent').textContent = data.data.emailsSent || 0;
                     document.getElementById('open-rate').textContent = `${data.data.openRate || 0}%`;
                     document.getElementById('last-activity').textContent = data.data.lastActivity || '-';
-                    
-                    // Update trends
-                    document.getElementById('investor-trend').textContent = `${data.data.investorTrend || 0}%`;
-                    document.getElementById('email-trend').textContent = `${data.data.emailTrend || 0}%`;
-                    document.getElementById('open-trend').textContent = `${data.data.openTrend || 0}%`;
-                    document.getElementById('activity-time').textContent = data.data.activityTime || 'Just now';
                 }
             } catch (error) {
                 console.error('Error fetching stats:', error);
@@ -1845,7 +1737,6 @@
                     const data = await response.json();
                     investors = data.data || [];
                     
-                    // Update investor select dropdown
                     investorSelect.innerHTML = '';
                     investors.forEach(investor => {
                         const option = document.createElement('option');
@@ -1879,7 +1770,6 @@
                     const data = await response.json();
                     const investors = data.data.investors || [];
                     
-                    // Update investor table
                     const investorTable = document.getElementById('investor-table');
                     investorTable.innerHTML = '';
                     
@@ -1907,7 +1797,6 @@
                         investorTable.appendChild(row);
                     });
                     
-                    // Render pagination
                     renderPagination('investor-pagination', currentInvestorPage, data.data.totalPages, 'investor');
                 }
             } catch (error) {
@@ -1935,7 +1824,6 @@
                     const data = await response.json();
                     emailHistory = data.data.emails || [];
                     
-                    // Update email history table
                     const emailHistoryTable = document.getElementById('email-history-table');
                     emailHistoryTable.innerHTML = '';
                     
@@ -1963,7 +1851,6 @@
                         emailHistoryTable.appendChild(row);
                     });
                     
-                    // Render pagination
                     renderPagination('email-pagination', currentEmailPage, data.data.totalPages, 'email');
                 }
             } catch (error) {
@@ -1989,7 +1876,6 @@
                     const data = await response.json();
                     templates = data.data.templates || [];
                     
-                    // Update template table
                     const templateTable = document.getElementById('template-table');
                     templateTable.innerHTML = '';
                     
@@ -2024,7 +1910,6 @@
                         templateTable.appendChild(row);
                     });
                     
-                    // Render pagination
                     renderPagination('template-pagination', currentTemplatePage, data.data.totalPages, 'template');
                 }
             } catch (error) {
@@ -2083,13 +1968,8 @@
                     const data = await response.json();
                     analyticsData = data.data;
                     
-                    // Update analytics stats
                     document.getElementById('delivery-rate').textContent = `${analyticsData.deliveryRate || 0}%`;
                     document.getElementById('analytics-open-rate').textContent = `${analyticsData.openRate || 0}%`;
-                    
-                    // Update trends
-                    document.getElementById('delivery-trend').textContent = `${analyticsData.deliveryTrend || 0}%`;
-                    document.getElementById('analytics-open-trend').textContent = `${analyticsData.openTrend || 0}%`;
                 }
             } catch (error) {
                 console.error('Error fetching analytics:', error);
@@ -2103,7 +1983,6 @@
             
             if (totalPages <= 1) return;
             
-            // Previous button
             const prevBtn = document.createElement('div');
             prevBtn.className = 'page-btn';
             prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
@@ -2126,7 +2005,6 @@
             }
             container.appendChild(prevBtn);
             
-            // Page numbers
             const startPage = Math.max(1, currentPage - 2);
             const endPage = Math.min(totalPages, currentPage + 2);
             
@@ -2151,7 +2029,6 @@
                 container.appendChild(pageBtn);
             }
             
-            // Next button
             const nextBtn = document.createElement('div');
             nextBtn.className = 'page-btn';
             nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
@@ -2198,14 +2075,11 @@
             let recipients = [];
             
             if (recipientTypeValue === 'all') {
-                // Send to all investors - empty array indicates all
                 recipients = [];
             } else if (recipientTypeValue === 'selected') {
-                // Get selected investor IDs
                 const selectedOptions = Array.from(investorSelect.selectedOptions);
                 recipients = selectedOptions.map(option => option.value);
             } else if (recipientTypeValue === 'manual') {
-                // Get manually entered emails
                 const emails = manualEmails.value.split(/[\n,]/).map(email => email.trim()).filter(email => email);
                 recipients = emails;
             }
@@ -2236,12 +2110,10 @@
                 if (response.ok) {
                     showNotification('success', 'Email Sent', 'Your email has been sent successfully!');
                     
-                    // Reset form
                     emailSubject.value = '';
                     emailContent.value = '';
                     updateEmailPreview();
                     
-                    // Refresh data
                     fetchDashboardStats();
                     fetchEmailHistory();
                     
@@ -2367,7 +2239,6 @@
             }
         }
         
-        // Email validation
         const validator = {
             isEmail: function(email) {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
