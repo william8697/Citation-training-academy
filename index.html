@@ -1,1121 +1,473 @@
- <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hashvex Technologies | Bitcoin Miners Marketplace</title>
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⛏️</text></svg>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>BitHash Capital - Festive Season Email</title>
+    
+    <!-- Festive Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&family=Cinzel:wght@400;500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS Variables for Themes */
+        /* FESTIVE SEASON COLORS */
         :root {
-            --primary-color: #D4AF37; /* Golden */
-            --secondary-color: #1A1A1A; /* Black */
-            --accent-color: #10B981; /* Green */
-            --bg-color: #FFFFFF;
-            --text-color: #333333;
-            --card-bg: #F9FAFB;
-            --header-bg: #FFFFFF;
-            --border-color: #E5E7EB;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            --gradient: linear-gradient(135deg, #D4AF37 0%, #10B981 50%, #1A1A1A 100%);
+            --festive-gold: #D4AF37;
+            --festive-gold-light: #F4E4A6;
+            --festive-red: #B22222;
+            --festive-green: #0A5C36;
+            --festive-dark: #1A1A2E;
+            --festive-light: #FFF9F0;
+            --warm-gold: #FFD700;
+            --deep-red: #8B0000;
+            --forest-green: #228B22;
+            --cranberry: #9F1D35;
+            --ivory: #FFFFF0;
+            --holly-green: #006400;
+            --snow-white: #F8F8FF;
         }
         
-        [data-theme="dark"] {
-            --primary-color: #D4AF37;
-            --secondary-color: #E5E7EB;
-            --accent-color: #10B981;
-            --bg-color: #121212;
-            --text-color: #E5E7EB;
-            --card-bg: #1E1E1E;
-            --header-bg: #1A1A1A;
-            --border-color: #333333;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-            --gradient: linear-gradient(135deg, #D4AF37 0%, #10B981 50%, #000000 100%);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
+        /* EMAIL CONTAINER WITH FESTIVE DESIGN */
+        .festive-email-container {
+            max-width: 600px;
             margin: 0 auto;
-            padding: 0 20px;
+            background: linear-gradient(145deg, #ffffff 0%, var(--festive-light) 100%);
+            font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            overflow: hidden;
+            position: relative;
         }
         
-        /* Header & Navigation */
-        header {
-            background-color: var(--header-bg);
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        /* FESTIVE BORDER DECORATION */
+        .festive-border-top {
+            height: 8px;
+            background: linear-gradient(90deg, 
+                var(--festive-red) 0%, 
+                var(--festive-gold) 33%, 
+                var(--festive-green) 66%, 
+                var(--festive-red) 100%);
+            width: 100%;
         }
         
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
+        /* FESTIVE HEADER */
+        .festive-header {
+            background: linear-gradient(135deg, var(--festive-dark) 0%, #2D1B69 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .logo-icon {
-            background: var(--gradient);
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-        
-        .logo-text {
+        .festive-header::before {
+            content: "✦";
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            color: var(--festive-gold);
             font-size: 24px;
-            font-weight: 700;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            font-family: 'Cinzel', serif;
         }
         
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
+        .festive-header::after {
+            content: "✦";
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: var(--festive-gold);
+            font-size: 24px;
+            font-family: 'Cinzel', serif;
         }
         
-        nav a {
-            text-decoration: none;
-            color: var(--text-color);
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 6px;
-            transition: all 0.3s;
-        }
-        
-        nav a:hover, nav a.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-        
-        .theme-toggle:hover {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border-radius: 6px;
+        .festive-logo {
+            font-family: 'Cinzel', serif;
+            color: var(--festive-gold);
+            font-size: 32px;
             font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s;
-            text-decoration: none;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .festive-tagline {
+            color: var(--festive-gold-light);
+            font-size: 14px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+        
+        /* FESTIVE HERO SECTION */
+        .festive-hero {
+            background: linear-gradient(rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.9)),
+                        url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0icGF0dGVybiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBwYXR0ZXJuVHJhbnNmb3JtPSJyb3RhdGUoNDUpIj48cGF0aCBkPSJNIDAgMCBMIDAgNDAgTCA0MCA0MCBMIDQwIDBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNEIEFGIDM3IiBzdHJva2Utd2lkdGg9IjAuNSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .festive-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--festive-gold);
+            margin-bottom: 20px;
+            position: relative;
             display: inline-block;
         }
         
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #b8941f;
-        }
-        
-        .btn-outline {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-        }
-        
-        .btn-outline:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        /* Main Content */
-        .hero {
-            background: var(--gradient);
-            color: white;
-            padding: 80px 0;
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        
-        .hero p {
-            font-size: 20px;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            opacity: 0.9;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin: 40px 0 30px;
-            font-size: 32px;
-            position: relative;
-        }
-        
-        .section-title:after {
-            content: '';
+        .festive-hero h1::after {
+            content: "";
             position: absolute;
-            width: 80px;
-            height: 4px;
-            background: var(--gradient);
             bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--festive-gold), transparent);
         }
         
-        /* Product Cards */
-        .products-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-        
-        .product-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s;
-            border: 1px solid var(--border-color);
-        }
-        
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .product-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .in-stock {
-            background-color: var(--accent-color);
+        .festive-date {
+            background: var(--festive-red);
             color: white;
-        }
-        
-        .out-of-stock {
-            background-color: #EF4444;
-            color: white;
-        }
-        
-        .discount {
-            background-color: var(--primary-color);
-            color: white;
-            top: 45px;
-        }
-        
-        .product-image {
-            height: 200px;
-            background-color: #2D3748;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            display: inline-block;
             font-size: 14px;
-            position: relative;
-        }
-        
-        .product-content {
-            padding: 20px;
-        }
-        
-        .product-title {
-            font-size: 20px;
-            margin-bottom: 10px;
             font-weight: 600;
-        }
-        
-        .product-specs {
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-        
-        .product-specs div {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-        
-        .product-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        
-        .product-price .original {
-            font-size: 16px;
-            text-decoration: line-through;
-            color: #999;
-            margin-right: 10px;
-        }
-        
-        .product-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .product-actions .btn {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            font-size: 14px;
-        }
-        
-        /* Tabs for Buy/Rent */
-        .service-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .tab-btn {
-            padding: 15px 30px;
-            background: none;
-            border: none;
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-color);
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s;
-        }
-        
-        .tab-btn.active {
-            color: var(--primary-color);
-        }
-        
-        .tab-btn.active:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary-color);
-            bottom: -1px;
-            left: 0;
-            border-radius: 3px 3px 0 0;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        /* BTC Price & News Section */
-        .btc-info {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 40px 0;
-            border: 1px solid var(--border-color);
-        }
-        
-        .btc-price {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             margin-bottom: 30px;
+            border: 2px solid var(--festive-gold);
         }
         
-        .price-display {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--accent-color);
+        /* FESTIVE CONTENT SECTIONS */
+        .festive-content {
+            padding: 40px;
         }
         
-        .price-change {
-            font-size: 18px;
-            padding: 5px 15px;
-            border-radius: 20px;
+        .festive-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid var(--festive-red);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+        
+        .festive-section::before {
+            content: "❄";
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            color: var(--festive-red);
+            font-size: 24px;
+            background: white;
+            padding: 5px;
+            border-radius: 50%;
+            border: 2px solid var(--festive-gold);
+        }
+        
+        .festive-section-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--festive-dark);
+            font-size: 24px;
             font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed var(--festive-gold-light);
         }
         
-        .positive {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--accent-color);
-        }
-        
-        .negative {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #EF4444;
-        }
-        
-        .news-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .news-item {
-            background-color: var(--bg-color);
+        .festive-highlight {
+            background: linear-gradient(120deg, var(--festive-gold-light) 0%, transparent 100%);
             padding: 20px;
             border-radius: 8px;
-            border: 1px solid var(--border-color);
+            margin: 25px 0;
+            border: 1px solid var(--festive-gold);
         }
         
-        .news-title {
-            font-size: 18px;
-            margin-bottom: 10px;
+        .festive-number {
+            display: inline-block;
+            background: var(--festive-red);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            margin-right: 15px;
             font-weight: 600;
         }
         
-        .news-date {
-            font-size: 14px;
-            color: #888;
-            margin-bottom: 10px;
+        /* FESTIVE CALL TO ACTION */
+        .festive-cta {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--festive-dark) 0%, var(--festive-green) 100%);
+            color: white;
+            margin: 40px 0;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
         }
         
-        /* Login Modal */
-        .modal {
-            display: none;
-            position: fixed;
+        .festive-cta::before {
+            content: "";
+            position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iY3RhUGF0dGVybiIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj48cGF0aCBkPSJNIDAgMCBMIDAgMjQgTCAyNCAyNCBMIDI0IDBaIiBmaWxsPSJub25lIiBzdHJva2U9IiNEIEFGIDM3IiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4xIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2N0YVBhdHRlcm4pIi8+PC9zdmc+');
+            opacity: 0.1;
         }
         
-        .modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background-color: var(--bg-color);
-            width: 90%;
-            max-width: 500px;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--text-color);
-            cursor: pointer;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .form-group input {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            font-size: 16px;
-        }
-        
-        /* Footer */
-        footer {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 60px 0 30px;
-            margin-top: 60px;
-        }
-        
-        .footer-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-        }
-        
-        .footer-column h3 {
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-        
-        .footer-column ul {
-            list-style: none;
-        }
-        
-        .footer-column ul li {
-            margin-bottom: 10px;
-        }
-        
-        .footer-column ul li a {
-            color: #ccc;
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--festive-gold) 0%, var(--warm-gold) 100%);
+            color: var(--festive-dark);
+            padding: 16px 40px;
+            border-radius: 30px;
             text-decoration: none;
-            transition: color 0.3s;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 25px;
+            border: 2px solid white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
         }
         
-        .footer-column ul li a:hover {
-            color: var(--primary-color);
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
         }
         
-        .copyright {
+        /* FESTIVE FOOTER */
+        .festive-footer {
+            background: var(--festive-dark);
+            color: var(--festive-silver);
+            padding: 40px 30px;
             text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #999;
-            font-size: 14px;
+            position: relative;
         }
         
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                gap: 20px;
+        .festive-footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--festive-gold) 50%, 
+                transparent 100%);
+        }
+        
+        .festive-social {
+            margin: 25px 0;
+        }
+        
+        .social-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--festive-gold);
+            color: var(--festive-dark);
+            border-radius: 50%;
+            line-height: 40px;
+            margin: 0 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background: var(--festive-red);
+            color: white;
+            transform: rotate(15deg);
+        }
+        
+        .festive-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--festive-gold), transparent);
+            margin: 30px 0;
+        }
+        
+        .festive-copyright {
+            font-size: 12px;
+            color: var(--festive-gold-light);
+            margin-top: 20px;
+        }
+        
+        /* TRACKING PIXEL (INVISIBLE) */
+        .tracking-pixel {
+            display: none;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+        
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 480px) {
+            .festive-header {
+                padding: 30px 20px;
             }
             
-            nav ul {
-                flex-wrap: wrap;
-                justify-content: center;
+            .festive-hero {
+                padding: 30px 20px;
             }
             
-            .hero h1 {
-                font-size: 36px;
+            .festive-hero h1 {
+                font-size: 28px;
             }
             
-            .hero p {
-                font-size: 18px;
+            .festive-content {
+                padding: 20px;
             }
             
-            .products-container {
-                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            .festive-section {
+                padding: 20px;
             }
             
-            .service-tabs {
-                flex-direction: column;
+            .festive-cta {
+                padding: 30px 20px;
             }
             
-            .tab-btn {
-                text-align: center;
-            }
-            
-            .btc-price {
-                flex-direction: column;
-                gap: 15px;
-                align-items: flex-start;
+            .cta-button {
+                padding: 14px 30px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Header & Navigation -->
-    <header>
-        <div class="container header-container">
-            <div class="logo">
-                <div class="logo-icon">H</div>
-                <div class="logo-text">Hashvex Technologies</div>
+    <!-- FESTIVE EMAIL TEMPLATE START -->
+    <div class="festive-email-container">
+        
+        <!-- Festive Top Border -->
+        <div class="festive-border-top"></div>
+        
+        <!-- Festive Header -->
+        <div class="festive-header">
+            <div class="festive-logo">BitHash Capital</div>
+            <div class="festive-tagline">Season's Greetings & Prosperous Returns</div>
+        </div>
+        
+        <!-- Festive Hero Section -->
+        <div class="festive-hero">
+            <div class="festive-date">December 2024</div>
+            <h1>Seasonal Market Insights</h1>
+            <p style="font-size: 18px; color: var(--festive-gold-light); max-width: 500px; margin: 0 auto;">
+                Warm holiday greetings and exclusive investment opportunities
+            </p>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="festive-content">
+            
+            <!-- Section 1: Introduction -->
+            <div class="festive-section">
+                <h2 class="festive-section-title">🎄 Holiday Greetings</h2>
+                <p>Dear [Investor Name],</p>
+                
+                <p>As the festive season sparkles around us, we extend our warmest greetings and deepest gratitude for your continued partnership with BitHash Capital. This magical time of year reminds us of the importance of reflection, gratitude, and looking forward to new beginnings.</p>
+                
+                <div class="festive-highlight">
+                    <p><strong>✨ Seasonal Insight:</strong> Historical data shows that the holiday season often brings unique opportunities in the cryptocurrency markets, with patterns of increased activity and strategic entry points.</p>
+                </div>
             </div>
             
-            <nav>
-                <ul>
-                    <li><a href="#" class="active">Home</a></li>
-                    <li><a href="#" id="buy-tab-link">Buy Miners</a></li>
-                    <li><a href="#" id="rent-tab-link">Rent Miners</a></li>
-                    <li><a href="#">Profitability</a></li>
-                    <li><a href="#">Support</a></li>
+            <!-- Section 2: Market Update -->
+            <div class="festive-section">
+                <h2 class="festive-section-title">📈 Festive Market Update</h2>
+                
+                <p><span class="festive-number">1</span> <strong>Quarterly Performance:</strong> Our portfolios have demonstrated resilience and growth, with an average return of [X]% during Q4 2024.</p>
+                
+                <p><span class="festive-number">2</span> <strong>Seasonal Opportunities:</strong> We've identified several strategic positions that align with anticipated end-of-year market movements.</p>
+                
+                <p><span class="festive-number">3</span> <strong>2025 Outlook:</strong> Preliminary analysis suggests promising trends in blockchain infrastructure and DeFi innovations for the coming year.</p>
+            </div>
+            
+            <!-- Section 3: Special Offer -->
+            <div class="festive-section">
+                <h2 class="festive-section-title">🎁 Exclusive Holiday Opportunity</h2>
+                
+                <p>To celebrate this festive season, we're offering our valued investors exclusive access to our <strong>Holiday Special Portfolio</strong>, featuring:</p>
+                
+                <ul style="margin: 20px 0; padding-left: 20px;">
+                    <li style="margin-bottom: 10px;">🎯 Reduced management fees through January 2025</li>
+                    <li style="margin-bottom: 10px;">🌟 Priority access to our Q1 2025 investment opportunities</li>
+                    <li style="margin-bottom: 10px;">💫 Complimentary portfolio review and optimization session</li>
                 </ul>
-            </nav>
-            
-            <div class="user-actions">
-                <button class="theme-toggle" id="theme-toggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="btn btn-outline" id="login-btn">Login</button>
-                <button class="btn btn-primary" id="register-btn">Register</button>
-            </div>
-        </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <h1>Premium Bitcoin Mining Solutions</h1>
-            <p>Purchase or rent the latest ASIC miners with guaranteed performance and profitability. Start earning passive income today with Hashvex Technologies.</p>
-            <div class="hero-actions">
-                <button class="btn btn-primary" id="explore-btn">Explore Miners</button>
-                <button class="btn btn-outline" style="background-color: rgba(255,255,255,0.2); color: white; border-color: white;">Calculate Profitability</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Service Tabs -->
-    <div class="container">
-        <div class="service-tabs">
-            <button class="tab-btn active" data-tab="buy">Buy Miners</button>
-            <button class="tab-btn" data-tab="rent">Rent Miners</button>
-        </div>
-        
-        <!-- Buy Miners Tab -->
-        <div id="buy-tab" class="tab-content active">
-            <h2 class="section-title">Purchase Bitcoin Miners</h2>
-            <div class="products-container" id="buy-miners-container">
-                <!-- Product cards will be loaded from backend -->
-            </div>
-        </div>
-        
-        <!-- Rent Miners Tab -->
-        <div id="rent-tab" class="tab-content">
-            <h2 class="section-title">Rent Bitcoin Miners</h2>
-            <div class="products-container" id="rent-miners-container">
-                <!-- Rental product cards will be loaded from backend -->
-            </div>
-        </div>
-    </div>
-
-    <!-- BTC Price & News Section -->
-    <div class="container">
-        <div class="btc-info">
-            <div class="btc-price">
-                <div>
-                    <h3>Bitcoin Price</h3>
-                    <div class="price-display" id="btc-price">$63,427.85</div>
-                    <div class="price-change positive" id="btc-change">+2.45% (24h)</div>
-                </div>
-                <div>
-                    <h3>Next Halving</h3>
-                    <div style="font-size: 24px; font-weight: 700;">~98 Days</div>
-                    <div style="color: #888;">April 2024</div>
-                </div>
             </div>
             
-            <h3 style="margin-bottom: 20px;">Latest Bitcoin News</h3>
-            <div class="news-container">
-                <div class="news-item">
-                    <div class="news-title">Bitcoin ETFs See Record Inflows Amid Market Rally</div>
-                    <div class="news-date">March 15, 2024</div>
-                    <p>Bitcoin exchange-traded funds have attracted over $1.2 billion in net inflows this week.</p>
-                </div>
-                <div class="news-item">
-                    <div class="news-title">Mining Difficulty Reaches All-Time High</div>
-                    <div class="news-date">March 14, 2024</div>
-                    <p>Bitcoin's mining difficulty increased by 5.5% to reach 83.95 trillion at the latest adjustment.</p>
-                </div>
-                <div class="news-item">
-                    <div class="news-title">Renewable Energy Powers 58% of Bitcoin Mining</div>
-                    <div class="news-date">March 12, 2024</div>
-                    <p>New report shows sustainable energy mix for Bitcoin mining continues to grow worldwide.</p>
-                </div>
+            <!-- Festive Call to Action -->
+            <div class="festive-cta">
+                <h2 style="color: var(--festive-gold); font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 15px;">
+                    Season of Growth Awaits
+                </h2>
+                <p style="font-size: 18px; margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                    Let's illuminate your investment journey as we wrap up this year and unwrap new opportunities for 2025
+                </p>
+                <a href="[ACTION_URL]" class="cta-button" style="color: var(--festive-dark);">
+                    Explore Holiday Opportunities →
+                </a>
             </div>
+            
+            <!-- Section 4: Closing -->
+            <div class="festive-section">
+                <h2 class="festive-section-title">🌟 Wishing You Prosperity</h2>
+                
+                <p>As we celebrate this season of joy and giving, we remain committed to being your trusted partner in navigating the dynamic world of digital assets. Our team will continue to monitor markets throughout the holiday period, ensuring your investments are in capable hands.</p>
+                
+                <p style="margin-top: 25px; font-style: italic; color: var(--festive-red);">
+                    "May your holidays be filled with joy, your new year with prosperity, and your portfolio with continued growth."
+                </p>
+                
+                <p style="margin-top: 30px;">
+                    Warm regards,<br>
+                    <strong>The BitHash Capital Team</strong>
+                </p>
+            </div>
+            
         </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div class="modal" id="login-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Login to Hashvex</h3>
-                <button class="close-modal" id="close-login-modal">&times;</button>
+        
+        <!-- Festive Footer -->
+        <div class="festive-footer">
+            <div class="festive-divider"></div>
+            
+            <div class="festive-social">
+                <a href="#" class="social-icon">f</a>
+                <a href="#" class="social-icon">in</a>
+                <a href="#" class="social-icon">t</a>
+                <a href="#" class="social-icon">✉</a>
             </div>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">Login</button>
-            </form>
-            <p style="text-align: center; margin-top: 20px;">
-                Don't have an account? <a href="#" id="switch-to-register" style="color: var(--primary-color); font-weight: 600;">Register here</a>
+            
+            <p style="font-size: 14px; margin: 20px 0;">
+                BitHash Capital Management<br>
+                Secure. Strategic. Sophisticated.
             </p>
-        </div>
-    </div>
-
-    <!-- Register Modal -->
-    <div class="modal" id="register-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Create Account</h3>
-                <button class="close-modal" id="close-register-modal">&times;</button>
-            </div>
-            <form id="register-form">
-                <div class="form-group">
-                    <label for="reg-name">Full Name</label>
-                    <input type="text" id="reg-name" placeholder="Enter your full name" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-email">Email Address</label>
-                    <input type="email" id="reg-email" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-password">Password</label>
-                    <input type="password" id="reg-password" placeholder="Create a password" required>
-                </div>
-                <div class="form-group">
-                    <label for="reg-confirm-password">Confirm Password</label>
-                    <input type="password" id="reg-confirm-password" placeholder="Confirm your password" required>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">Create Account</button>
-            </form>
-            <p style="text-align: center; margin-top: 20px;">
-                Already have an account? <a href="#" id="switch-to-login" style="color: var(--primary-color); font-weight: 600;">Login here</a>
+            
+            <p style="font-size: 12px; color: var(--festive-gold-light); max-width: 400px; margin: 0 auto; line-height: 1.8;">
+                This email contains confidential information intended only for the recipient. 
+                If you received this in error, please notify us immediately.
             </p>
+            
+            <div style="margin: 25px 0;">
+                <a href="[UNSUBSCRIBE_URL]" style="color: var(--festive-gold-light); font-size: 12px; text-decoration: none;">
+                    Unsubscribe from seasonal updates
+                </a>
+            </div>
+            
+            <div class="festive-copyright">
+                © 2024 BitHash Capital. All rights reserved. | [City], [Country]
+            </div>
         </div>
+        
     </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="footer-container">
-                <div class="footer-column">
-                    <h3>Hashvex Technologies</h3>
-                    <p>Leading provider of Bitcoin mining hardware and cloud mining solutions since 2018.</p>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Buy Miners</a></li>
-                        <li><a href="#">Rent Miners</a></li>
-                        <li><a href="#">Profitability Calculator</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Support</h3>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Shipping Info</a></li>
-                        <li><a href="#">Warranty</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Contact Info</h3>
-                    <ul>
-                        <li><i class="fas fa-envelope"></i> support@hashvex.com</li>
-                        <li><i class="fas fa-phone"></i> +1 (555) 123-4567</li>
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Blockchain St, Crypto City</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                &copy; 2024 Hashvex Technologies. All rights reserved.
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
-        
-        // Check for saved theme preference or default to light
-        const savedTheme = localStorage.getItem('hashvex-theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-        
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('hashvex-theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
-        
-        function updateThemeIcon(theme) {
-            if (theme === 'light') {
-                themeIcon.className = 'fas fa-moon';
-            } else {
-                themeIcon.className = 'fas fa-sun';
-            }
-        }
-        
-        // Tab Switching
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const buyTabLink = document.getElementById('buy-tab-link');
-        const rentTabLink = document.getElementById('rent-tab-link');
-        
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.getAttribute('data-tab');
-                
-                // Update active tab button
-                tabBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // Show active tab content
-                tabContents.forEach(content => {
-                    content.classList.remove('active');
-                    if (content.id === `${tabId}-tab`) {
-                        content.classList.add('active');
-                    }
-                });
-            });
-        });
-        
-        // Navigation links to switch tabs
-        buyTabLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('[data-tab="buy"]').click();
-            window.scrollTo({top: document.querySelector('.service-tabs').offsetTop - 80, behavior: 'smooth'});
-        });
-        
-        rentTabLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.querySelector('[data-tab="rent"]').click();
-            window.scrollTo({top: document.querySelector('.service-tabs').offsetTop - 80, behavior: 'smooth'});
-        });
-        
-        // Modal Handling
-        const loginBtn = document.getElementById('login-btn');
-        const registerBtn = document.getElementById('register-btn');
-        const loginModal = document.getElementById('login-modal');
-        const registerModal = document.getElementById('register-modal');
-        const closeLoginModal = document.getElementById('close-login-modal');
-        const closeRegisterModal = document.getElementById('close-register-modal');
-        const switchToRegister = document.getElementById('switch-to-register');
-        const switchToLogin = document.getElementById('switch-to-login');
-        const exploreBtn = document.getElementById('explore-btn');
-        
-        loginBtn.addEventListener('click', () => {
-            loginModal.classList.add('active');
-        });
-        
-        registerBtn.addEventListener('click', () => {
-            registerModal.classList.add('active');
-        });
-        
-        exploreBtn.addEventListener('click', () => {
-            document.querySelector('[data-tab="buy"]').click();
-            window.scrollTo({top: document.querySelector('.service-tabs').offsetTop - 80, behavior: 'smooth'});
-        });
-        
-        closeLoginModal.addEventListener('click', () => {
-            loginModal.classList.remove('active');
-        });
-        
-        closeRegisterModal.addEventListener('click', () => {
-            registerModal.classList.remove('active');
-        });
-        
-        switchToRegister.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginModal.classList.remove('active');
-            registerModal.classList.add('active');
-        });
-        
-        switchToLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            registerModal.classList.remove('active');
-            loginModal.classList.add('active');
-        });
-        
-        // Close modals when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === loginModal) {
-                loginModal.classList.remove('active');
-            }
-            if (e.target === registerModal) {
-                registerModal.classList.remove('active');
-            }
-        });
-        
-        // Form Submission
-        document.getElementById('login-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Login functionality would connect to backend. For demo, login simulated.');
-            loginModal.classList.remove('active');
-            // In real implementation, this would send login request to backend
-        });
-        
-        document.getElementById('register-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Registration functionality would connect to backend. For demo, registration simulated.');
-            registerModal.classList.remove('active');
-            // In real implementation, this would send registration request to backend
-        });
-        
-        // Simulate product data (in real implementation, this would come from backend)
-        const sampleProducts = [
-            {
-                id: 1,
-                type: 'buy',
-                title: 'Bitmain Antminer S19 XP Hyd',
-                manufacturer: 'Bitmain',
-                model: 'S19 XP Hyd',
-                release: '2023',
-                hashrate: '255 TH/s',
-                power: '5300W',
-                efficiency: '21.5 J/TH',
-                price: 8200,
-                originalPrice: 8999,
-                country: 'USA',
-                warranty: '180 days',
-                roi: '14 months',
-                inStock: true,
-                discount: 10,
-                imageColor: '#4F46E5'
-            },
-            {
-                id: 2,
-                type: 'buy',
-                title: 'MicroBT Whatsminer M56S++',
-                manufacturer: 'MicroBT',
-                model: 'M56S++',
-                release: '2023',
-                hashrate: '230 TH/s',
-                power: '5100W',
-                efficiency: '22.2 J/TH',
-                price: 7200,
-                originalPrice: 7500,
-                country: 'China',
-                warranty: '365 days',
-                roi: '16 months',
-                inStock: true,
-                discount: 0,
-                imageColor: '#10B981'
-            },
-            {
-                id: 3,
-                type: 'buy',
-                title: 'Canaan Avalon A1366',
-                manufacturer: 'Canaan',
-                model: 'A1366',
-                release: '2022',
-                hashrate: '130 TH/s',
-                power: '3250W',
-                efficiency: '25 J/TH',
-                price: 3200,
-                originalPrice: 3800,
-                country: 'Malaysia',
-                warranty: '180 days',
-                roi: '18 months',
-                inStock: false,
-                discount: 15,
-                imageColor: '#F59E0B'
-            },
-            {
-                id: 4,
-                type: 'rent',
-                title: 'Bitmain Antminer S19j Pro+',
-                manufacturer: 'Bitmain',
-                model: 'S19j Pro+',
-                release: '2022',
-                hashrate: '122 TH/s',
-                power: '3350W',
-                efficiency: '27.5 J/TH',
-                price: 89,
-                period: 'per month',
-                country: 'Germany',
-                warranty: 'Full warranty',
-                roi: '11 months',
-                inStock: true,
-                discount: 0,
-                imageColor: '#8B5CF6'
-            },
-            {
-                id: 5,
-                type: 'rent',
-                title: 'MicroBT Whatsminer M50S',
-                manufacturer: 'MicroBT',
-                model: 'M50S',
-                release: '2023',
-                hashrate: '126 TH/s',
-                power: '3276W',
-                efficiency: '26 J/TH',
-                price: 95,
-                period: 'per month',
-                country: 'Canada',
-                warranty: 'Full warranty',
-                roi: '10 months',
-                inStock: true,
-                discount: 5,
-                imageColor: '#EC4899'
-            }
-        ];
-        
-        // Render product cards
-        function renderProducts() {
-            const buyContainer = document.getElementById('buy-miners-container');
-            const rentContainer = document.getElementById('rent-miners-container');
-            
-            buyContainer.innerHTML = '';
-            rentContainer.innerHTML = '';
-            
-            sampleProducts.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                
-                const discountBadge = product.discount > 0 ? 
-                    `<div class="product-badge discount">${product.discount}% OFF</div>` : '';
-                
-                const stockBadge = product.inStock ? 
-                    `<div class="product-badge in-stock">In Stock</div>` : 
-                    `<div class="product-badge out-of-stock">Out of Stock</div>`;
-                
-                const originalPrice = product.originalPrice && product.originalPrice > product.price ? 
-                    `<span class="original">$${product.originalPrice}</span>` : '';
-                
-                const priceDisplay = product.type === 'buy' ? 
-                    `<div class="product-price">${originalPrice}$${product.price}</div>` :
-                    `<div class="product-price">$${product.price} <small style="font-size: 16px;">${product.period}</small></div>`;
-                
-                const actionBtn = product.inStock ? 
-                    `<button class="btn btn-primary" onclick="showProductDetail(${product.id})">View Details</button>` :
-                    `<button class="btn btn-outline" disabled>Out of Stock</button>`;
-                
-                productCard.innerHTML = `
-                    <div class="product-image" style="background-color: ${product.imageColor}">
-                        ${stockBadge}
-                        ${discountBadge}
-                        <div style="text-align: center;">
-                            <div style="font-size: 40px; margin-bottom: 10px;">⛏️</div>
-                            <div>${product.manufacturer}</div>
-                            <div>${product.model}</div>
-                        </div>
-                    </div>
-                    <div class="product-content">
-                        <h3 class="product-title">${product.title}</h3>
-                        <div class="product-specs">
-                            <div><span>Hashrate:</span> <span>${product.hashrate}</span></div>
-                            <div><span>Power:</span> <span>${product.power}</span></div>
-                            <div><span>Efficiency:</span> <span>${product.efficiency}</span></div>
-                            <div><span>Location:</span> <span>${product.country}</span></div>
-                        </div>
-                        ${priceDisplay}
-                        <div class="product-actions">
-                            ${actionBtn}
-                            <button class="btn btn-outline" onclick="addToCart(${product.id})" ${!product.inStock ? 'disabled' : ''}>
-                                <i class="fas fa-shopping-cart"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                if (product.type === 'buy') {
-                    buyContainer.appendChild(productCard);
-                } else {
-                    rentContainer.appendChild(productCard);
-                }
-            });
-        }
-        
-        // Initial render
-        renderProducts();
-        
-        // Simulate BTC price updates
-        function updateBTCPrice() {
-            const btcPrice = document.getElementById('btc-price');
-            const btcChange = document.getElementById('btc-change');
-            
-            // Random price fluctuation for demo
-            const currentPrice = parseFloat(btcPrice.textContent.replace('$', '').replace(',', ''));
-            const changePercent = (Math.random() - 0.5) * 0.1; // Random change between -5% and +5%
-            const newPrice = currentPrice * (1 + changePercent);
-            const formattedPrice = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(newPrice);
-            
-            btcPrice.textContent = formattedPrice;
-            
-            const changeText = `${changePercent >= 0 ? '+' : ''}${(changePercent * 100).toFixed(2)}% (24h)`;
-            btcChange.textContent = changeText;
-            
-            if (changePercent >= 0) {
-                btcChange.className = 'price-change positive';
-            } else {
-                btcChange.className = 'price-change negative';
-            }
-        }
-        
-        // Update BTC price every 30 seconds for demo
-        setInterval(updateBTCPrice, 30000);
-        
-        // Product detail and cart functions (would be implemented in full application)
-        window.showProductDetail = function(productId) {
-            alert(`Product detail view for product ID: ${productId}\n\nIn the full application, this would show:\n- Full specifications\n- Profitability chart\n- Daily/monthly/yearly profit calculations\n- Detailed description\n- Purchase/rental options`);
-        };
-        
-        window.addToCart = function(productId) {
-            alert(`Product ${productId} added to cart\n\nUser would need to be logged in to complete purchase.`);
-        };
-    </script>
+    <!-- FESTIVE EMAIL TEMPLATE END -->
+    
+    <!-- Tracking Pixel (for open rate tracking) -->
+    <img src="[TRACKING_PIXEL_URL]" alt="" class="tracking-pixel" width="1" height="1">
+    
 </body>
 </html>
