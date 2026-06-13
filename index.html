@@ -2323,6 +2323,15 @@
                 recipients = excelEmails;
             }
             
+            // Ensure no duplicate recipients within the same campaign
+            // Convert recipients to a Set to automatically deduplicate
+            const uniqueRecipients = [...new Set(recipients)];
+            const duplicatesCount = recipients.length - uniqueRecipients.length;
+            if (duplicatesCount > 0) {
+                showNotification('warning', 'Duplicate Removed', `${duplicatesCount} duplicate recipient(s) were removed. Each user will receive exactly one email.`);
+            }
+            recipients = uniqueRecipients;
+            
             try {
                 showNotification('info', 'Sending Email', 'Please wait while we send your email...', 0);
                 
