@@ -912,6 +912,108 @@
             cursor: pointer;
         }
         
+
+        /* Email Tracking Center */
+        .tracking-toolbar {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            flex-wrap:wrap;
+            margin-bottom:18px;
+        }
+        .tracking-summary {
+            display:grid;
+            grid-template-columns:repeat(5,minmax(130px,1fr));
+            gap:12px;
+            margin-bottom:18px;
+        }
+        .tracking-metric {
+            background:var(--primary);
+            border:1px solid var(--border);
+            border-radius:var(--radius);
+            padding:16px;
+        }
+        .tracking-metric-label {
+            color:var(--text-secondary);
+            font-size:12px;
+            text-transform:uppercase;
+            letter-spacing:.05em;
+            margin-bottom:6px;
+        }
+        .tracking-metric-value {
+            font-size:24px;
+            font-weight:700;
+        }
+        .tracking-table-wrap {
+            overflow:auto;
+            max-height:520px;
+            border:1px solid var(--border);
+            border-radius:var(--radius);
+        }
+        .tracking-table-wrap table { min-width:1050px; }
+        .tracking-row-click { cursor:pointer; }
+        .tracking-row-click:hover { background:rgba(255,255,255,.03); }
+        .tracking-status {
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:5px 9px;
+            border-radius:999px;
+            font-size:11px;
+            font-weight:700;
+            text-transform:uppercase;
+        }
+        .tracking-status-queued { background:rgba(66,153,225,.12); color:var(--info); }
+        .tracking-status-sent { background:rgba(66,153,225,.16); color:var(--info); }
+        .tracking-status-delivered { background:rgba(72,187,120,.15); color:var(--success); }
+        .tracking-status-opened { background:rgba(237,137,54,.16); color:var(--warning); }
+        .tracking-status-bounced,.tracking-status-failed { background:rgba(245,101,101,.15); color:var(--danger); }
+        .tracking-muted { color:var(--text-secondary); font-size:12px; }
+        .tracking-progress {
+            width:100%;
+            height:7px;
+            background:var(--border);
+            border-radius:99px;
+            overflow:hidden;
+            margin-top:10px;
+        }
+        .tracking-progress > span {
+            display:block;
+            height:100%;
+            width:0;
+            background:var(--accent);
+            transition:width .35s ease;
+        }
+        .tracking-details {
+            margin-top:18px;
+            padding-top:18px;
+            border-top:1px solid var(--border);
+            display:none;
+        }
+        .tracking-details.active { display:block; }
+        .tracking-detail-grid {
+            display:grid;
+            grid-template-columns:repeat(4,minmax(150px,1fr));
+            gap:12px;
+        }
+        .tracking-detail-card {
+            background:var(--primary);
+            border:1px solid var(--border);
+            border-radius:var(--radius);
+            padding:12px;
+        }
+        .tracking-detail-card strong { display:block; margin-top:4px; word-break:break-word; }
+        .tracking-empty {
+            padding:35px;
+            text-align:center;
+            color:var(--text-secondary);
+        }
+        .tracking-refreshing {
+            animation:trackingSpin 1s linear infinite;
+        }
+        @keyframes trackingSpin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
         /* Responsive */
         @media (max-width: 768px) {
             .mobile-menu-toggle {
@@ -1064,6 +1166,7 @@
             <button class="tab-btn active" data-tab="send-email">Send Email</button>
             <button class="tab-btn" data-tab="investors">Investors</button>
             <button class="tab-btn" data-tab="email-history">Email History</button>
+            <button class="tab-btn" data-tab="email-tracking">Email Tracking</button>
             <button class="tab-btn" data-tab="templates">Templates</button>
             <button class="tab-btn" data-tab="analytics">Analytics</button>
         </div>
@@ -1289,6 +1392,87 @@
             </div>
         </div>
         
+        <!-- Email Tracking Tab -->
+        <div class="tab-content" id="email-tracking">
+            <div class="card">
+                <div class="tracking-toolbar">
+                    <div>
+                        <h3 class="card-title">Email Delivery & Engagement Tracking</h3>
+                        <div class="tracking-muted">Live status from the email tracking backend</div>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center;">
+                        <select id="tracking-campaign-select" class="form-control" style="min-width:280px;">
+                            <option value="">Select a campaign</option>
+                        </select>
+                        <button class="btn btn-secondary" id="refresh-tracking-btn" title="Refresh tracking">
+                            <i class="fas fa-sync-alt" id="tracking-refresh-icon"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tracking-summary">
+                    <div class="tracking-metric">
+                        <div class="tracking-metric-label">Recipients</div>
+                        <div class="tracking-metric-value" id="tracking-total">0</div>
+                    </div>
+                    <div class="tracking-metric">
+                        <div class="tracking-metric-label">Delivered</div>
+                        <div class="tracking-metric-value" id="tracking-delivered">0</div>
+                    </div>
+                    <div class="tracking-metric">
+                        <div class="tracking-metric-label">Opened</div>
+                        <div class="tracking-metric-value" id="tracking-opened">0</div>
+                    </div>
+                    <div class="tracking-metric">
+                        <div class="tracking-metric-label">Bounced</div>
+                        <div class="tracking-metric-value" id="tracking-bounced">0</div>
+                    </div>
+                    <div class="tracking-metric">
+                        <div class="tracking-metric-label">Failed</div>
+                        <div class="tracking-metric-value" id="tracking-failed">0</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <div style="display:flex;justify-content:space-between;gap:10px;">
+                        <span class="tracking-muted">Delivery progress</span>
+                        <strong id="tracking-delivery-rate">0%</strong>
+                    </div>
+                    <div class="tracking-progress"><span id="tracking-progress-bar"></span></div>
+                </div>
+
+                <div class="table-container tracking-table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Recipient</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Sent</th>
+                                <th>Delivered</th>
+                                <th>First Open</th>
+                                <th>Last Open</th>
+                                <th>Opens</th>
+                                <th>Message ID</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tracking-recipient-table">
+                            <tr><td colspan="9" class="tracking-empty">Select a campaign to view tracking.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tracking-details" id="tracking-details">
+                    <h4 style="margin-bottom:12px;">Recipient Activity</h4>
+                    <div class="tracking-detail-grid" id="tracking-detail-grid"></div>
+                </div>
+
+                <div class="tracking-muted" id="tracking-last-updated" style="margin-top:12px;">
+                    Not loaded
+                </div>
+            </div>
+        </div>
+
         <!-- Templates Tab -->
         <div class="tab-content" id="templates">
             <div class="card">
@@ -1482,6 +1666,16 @@
         const sendEmailBtn = document.getElementById('send-email-btn');
         const previewEmailBtn = document.getElementById('preview-email-btn');
         const loadTemplateBtn = document.getElementById('load-template-btn');
+        const trackingCampaignSelect = document.getElementById('tracking-campaign-select');
+        const refreshTrackingBtn = document.getElementById('refresh-tracking-btn');
+        const trackingRefreshIcon = document.getElementById('tracking-refresh-icon');
+        const trackingRecipientTable = document.getElementById('tracking-recipient-table');
+        const trackingDetails = document.getElementById('tracking-details');
+        const trackingDetailGrid = document.getElementById('tracking-detail-grid');
+        const trackingLastUpdated = document.getElementById('tracking-last-updated');
+        let selectedTrackingCampaignId = null;
+        let trackingRefreshTimer = null;
+
         
         // Modals
         const emailPreviewModal = document.getElementById('email-preview-modal');
@@ -1529,6 +1723,8 @@
                                 fetchInvestors();
                             } else if (tabId === 'email-history') {
                                 fetchEmailHistory();
+                            } else if (tabId === 'email-tracking') {
+                                fetchTrackingCampaigns();
                             } else if (tabId === 'templates') {
                                 fetchTemplates();
                             } else if (tabId === 'analytics') {
@@ -1539,6 +1735,22 @@
                 });
             });
             
+            // Email tracking
+            refreshTrackingBtn.addEventListener('click', () => {
+                if (selectedTrackingCampaignId) fetchEmailTracking(selectedTrackingCampaignId);
+                else fetchTrackingCampaigns();
+            });
+            trackingCampaignSelect.addEventListener('change', function() {
+                selectedTrackingCampaignId = this.value || null;
+                if (selectedTrackingCampaignId) {
+                    fetchEmailTracking(selectedTrackingCampaignId);
+                    startTrackingAutoRefresh();
+                } else {
+                    stopTrackingAutoRefresh();
+                    resetTrackingPanel();
+                }
+            });
+
             // Recipient type change
             recipientType.addEventListener('change', function() {
                 const value = this.value;
@@ -2095,12 +2307,19 @@
                     emailHistory.forEach(email => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${email.subject}</td>
+                            <td>${escapeTrackingHtml(email.subject)}</td>
                             <td>${email.recipientCount}</td>
-                            <td>${new Date(email.sentDate).toLocaleString()}</td>
+                            <td>${formatTrackingDate(email.sentDate)}</td>
                             <td>${email.openRate}%</td>
-                            <td><span class="status-badge">${email.status}</span></td>
-                            <td>${email.sentBy}</td>
+                            <td><span class="status-badge">${escapeTrackingHtml(email.status)}</span></td>
+                            <td>
+                                ${escapeTrackingHtml(email.sentBy)}
+                                <button class="btn btn-secondary" style="margin-left:8px;padding:6px 9px;"
+                                    title="View delivery and open tracking"
+                                    onclick="openTrackingForCampaign('${email.id}')">
+                                    <i class="fas fa-chart-line"></i>
+                                </button>
+                            </td>
                         `;
                         emailHistoryTable.appendChild(row);
                     });
@@ -2114,6 +2333,224 @@
             }
         }
         
+        function escapeTrackingHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value == null ? '' : String(value);
+            return div.innerHTML;
+        }
+
+        function formatTrackingDate(value) {
+            if (!value) return '—';
+            const d = new Date(value);
+            return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString();
+        }
+
+        function trackingStatusBadge(status) {
+            const safe = String(status || 'unknown').toLowerCase();
+            const icon = {
+                queued: 'fa-clock',
+                sent: 'fa-paper-plane',
+                delivered: 'fa-check',
+                opened: 'fa-envelope-open',
+                bounced: 'fa-rotate-left',
+                failed: 'fa-triangle-exclamation'
+            }[safe] || 'fa-circle-info';
+            return `<span class="tracking-status tracking-status-${escapeTrackingHtml(safe)}"><i class="fas ${icon}"></i>${escapeTrackingHtml(safe)}</span>`;
+        }
+
+        function resetTrackingPanel() {
+            ['tracking-total','tracking-delivered','tracking-opened','tracking-bounced','tracking-failed']
+                .forEach(id => document.getElementById(id).textContent = '0');
+            document.getElementById('tracking-delivery-rate').textContent = '0%';
+            document.getElementById('tracking-progress-bar').style.width = '0%';
+            trackingRecipientTable.innerHTML =
+                '<tr><td colspan="9" class="tracking-empty">Select a campaign to view tracking.</td></tr>';
+            trackingDetails.classList.remove('active');
+            trackingDetailGrid.innerHTML = '';
+            trackingLastUpdated.textContent = 'Not loaded';
+        }
+
+        async function fetchTrackingCampaigns() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/emails?page=1&limit=100`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                if (!response.ok) throw new Error('Failed to load campaigns');
+
+                const data = await response.json();
+                const campaigns = data.data?.emails || [];
+                const previous = selectedTrackingCampaignId;
+
+                trackingCampaignSelect.innerHTML =
+                    '<option value="">Select a campaign</option>';
+
+                campaigns.forEach(campaign => {
+                    const option = document.createElement('option');
+                    option.value = campaign.id;
+                    option.textContent =
+                        `${campaign.subject} — ${formatTrackingDate(campaign.sentDate)}`;
+                    trackingCampaignSelect.appendChild(option);
+                });
+
+                if (previous && campaigns.some(c => String(c.id) === String(previous))) {
+                    trackingCampaignSelect.value = previous;
+                    await fetchEmailTracking(previous);
+                    startTrackingAutoRefresh();
+                } else if (campaigns.length) {
+                    trackingCampaignSelect.value = campaigns[0].id;
+                    selectedTrackingCampaignId = campaigns[0].id;
+                    await fetchEmailTracking(selectedTrackingCampaignId);
+                    startTrackingAutoRefresh();
+                } else {
+                    resetTrackingPanel();
+                }
+            } catch (error) {
+                console.error('Error fetching tracking campaigns:', error);
+                showNotification('error', 'Tracking Error', 'Failed to load email campaigns.');
+            }
+        }
+
+        async function fetchEmailTracking(campaignId) {
+            if (!campaignId) return;
+
+            trackingRefreshIcon.classList.add('tracking-refreshing');
+
+            try {
+                const response = await fetch(
+                    `${API_BASE_URL}/admin/emails/${encodeURIComponent(campaignId)}/tracking`,
+                    { headers: { 'Authorization': `Bearer ${authToken}` } }
+                );
+
+                if (response.status === 401) {
+                    authToken = null;
+                    stopTrackingAutoRefresh();
+                    showNotification('error', 'Session Expired', 'Please sign in again.');
+                    return;
+                }
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Failed to load email tracking');
+                }
+
+                const data = await response.json();
+                const payload = data.data || {};
+                const summary = payload.summary || {};
+                const recipients = payload.recipients || [];
+
+                document.getElementById('tracking-total').textContent = summary.total || 0;
+                document.getElementById('tracking-delivered').textContent = summary.delivered || 0;
+                document.getElementById('tracking-opened').textContent = summary.opened || 0;
+                document.getElementById('tracking-bounced').textContent = summary.bounced || 0;
+                document.getElementById('tracking-failed').textContent = summary.failed || 0;
+
+                const deliveryRate = Number(summary.deliveryRate || 0);
+                document.getElementById('tracking-delivery-rate').textContent = `${deliveryRate}%`;
+                document.getElementById('tracking-progress-bar').style.width =
+                    `${Math.max(0, Math.min(100, deliveryRate))}%`;
+
+                trackingRecipientTable.innerHTML = '';
+
+                if (!recipients.length) {
+                    trackingRecipientTable.innerHTML =
+                        '<tr><td colspan="9" class="tracking-empty">No recipient tracking records found.</td></tr>';
+                } else {
+                    recipients.forEach(recipient => {
+                        const row = document.createElement('tr');
+                        row.className = 'tracking-row-click';
+                        row.innerHTML = `
+                            <td>${escapeTrackingHtml(recipient.name || '—')}</td>
+                            <td>${escapeTrackingHtml(recipient.email || '—')}</td>
+                            <td>${trackingStatusBadge(recipient.status)}</td>
+                            <td>${escapeTrackingHtml(formatTrackingDate(recipient.sentAt))}</td>
+                            <td>${escapeTrackingHtml(formatTrackingDate(recipient.deliveredAt))}</td>
+                            <td>${escapeTrackingHtml(formatTrackingDate(recipient.openedAt))}</td>
+                            <td>${escapeTrackingHtml(formatTrackingDate(recipient.lastOpenedAt))}</td>
+                            <td>${Number(recipient.openCount || 0)}</td>
+                            <td title="${escapeTrackingHtml(recipient.messageId || '')}">
+                                ${escapeTrackingHtml(
+                                    recipient.messageId
+                                        ? String(recipient.messageId).slice(0, 28) + (String(recipient.messageId).length > 28 ? '…' : '')
+                                        : '—'
+                                )}
+                            </td>
+                        `;
+                        row.addEventListener('click', () => showTrackingRecipient(recipient));
+                        trackingRecipientTable.appendChild(row);
+                    });
+                }
+
+                const campaign = payload.campaign || {};
+                trackingLastUpdated.textContent =
+                    `Last updated ${new Date().toLocaleTimeString()} · Campaign status: ${campaign.status || '—'}`;
+            } catch (error) {
+                console.error('Error fetching email tracking:', error);
+                trackingLastUpdated.textContent = `Tracking update failed: ${error.message}`;
+            } finally {
+                trackingRefreshIcon.classList.remove('tracking-refreshing');
+            }
+        }
+
+        function showTrackingRecipient(recipient) {
+            trackingDetails.classList.add('active');
+
+            const details = [
+                ['Recipient', recipient.name || '—'],
+                ['Email', recipient.email || '—'],
+                ['Status', recipient.status || '—'],
+                ['Message ID', recipient.messageId || '—'],
+                ['Queued', formatTrackingDate(recipient.queuedAt)],
+                ['Sent', formatTrackingDate(recipient.sentAt)],
+                ['Delivered', formatTrackingDate(recipient.deliveredAt)],
+                ['First Open', formatTrackingDate(recipient.openedAt)],
+                ['Last Open', formatTrackingDate(recipient.lastOpenedAt)],
+                ['Open Count', Number(recipient.openCount || 0)],
+                ['Delivery Events', Number(recipient.deliveryEvents || 0)],
+                ['Last Delivery Event', formatTrackingDate(recipient.lastDeliveryEventAt)],
+                ['Error', recipient.error || 'None']
+            ];
+
+            trackingDetailGrid.innerHTML = details.map(([label, value]) => `
+                <div class="tracking-detail-card">
+                    <div class="tracking-muted">${escapeTrackingHtml(label)}</div>
+                    <strong>${escapeTrackingHtml(value)}</strong>
+                </div>
+            `).join('');
+        }
+
+        function startTrackingAutoRefresh() {
+            stopTrackingAutoRefresh();
+            if (!selectedTrackingCampaignId) return;
+
+            // Poll while the admin is viewing a campaign so provider delivery
+            // events and subsequent opens appear without a page reload.
+            trackingRefreshTimer = setInterval(() => {
+                if (selectedTrackingCampaignId) {
+                    fetchEmailTracking(selectedTrackingCampaignId);
+                }
+            }, 10000);
+        }
+
+        function stopTrackingAutoRefresh() {
+            if (trackingRefreshTimer) {
+                clearInterval(trackingRefreshTimer);
+                trackingRefreshTimer = null;
+            }
+        }
+
+        function openTrackingForCampaign(campaignId) {
+            selectedTrackingCampaignId = campaignId;
+            trackingCampaignSelect.value = campaignId;
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-tab') === 'email-tracking');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.toggle('active', content.id === 'email-tracking');
+            });
+            fetchEmailTracking(campaignId);
+            startTrackingAutoRefresh();
+        }
+
         async function fetchTemplates() {
             try {
                 const searchQuery = document.getElementById('template-search').value;
